@@ -9,7 +9,8 @@ export class HealthService {
     @InjectModel(HealthClass.name)
     private readonly healthModel: Model<HealthClass>,
   ) {}
-  createRecord() {
-    return this.healthModel.create({});
+  async createRecord(): Promise<HealthClass> {
+    const doc = await this.healthModel.create({});
+    return doc.toObject({ virtuals: true });
   }
 }

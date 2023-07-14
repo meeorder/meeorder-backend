@@ -6,7 +6,6 @@ import { Types } from 'mongoose';
   collection: 'healths',
 })
 export class HealthClass {
-  @Prop({ auto: true })
   _id: Types.ObjectId;
 
   @ApiProperty()

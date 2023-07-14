@@ -7,9 +7,6 @@ export enum Config {
 }
 
 export const configuration = () => {
-  if (process.env.NODE_ENV === 'development') {
-    config();
-  }
   return {
     [Config.PORT]: +(process.env.PORT ?? 3000),
     [Config.MONGO_URI]: process.env.MONGO_URI,

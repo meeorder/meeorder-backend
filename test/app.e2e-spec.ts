@@ -25,11 +25,15 @@ describe('AppController (e2e)', () => {
   it('/health (GET)', async () => {
     const { payload, statusCode } = await app.inject({
       method: 'GET',
-      url: '/api/v1/health',
+      url: '/health',
     });
     expect(statusCode).toBe(200);
     const parsedPayload: HealthResponseDto = JSON.parse(payload);
     expect(parsedPayload).toHaveProperty('createdAt');
     expect(parsedPayload.status).toBe('OK');
+  });
+
+  afterEach(async () => {
+    await app.close();
   });
 });
