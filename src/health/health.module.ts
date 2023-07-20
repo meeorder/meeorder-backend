@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { HealthService } from './health.service';
 import { HealthController } from './health.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { HealthClass, HealthSchema } from 'src/schema/health.schema';
+import { HealthClass, HealthSchema } from '@/schema/health.schema';
 
 @Module({
   imports: [
