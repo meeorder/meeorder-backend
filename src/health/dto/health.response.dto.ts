@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { HealthClass } from 'src/schema/health.schema';
+import { HealthClass } from '@/schema/health.schema';
 
 export class HealthResponseDto extends HealthClass {
   @ApiProperty({
