@@ -4,10 +4,12 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { MongooseConfigService } from './config/mongoose.config.service';
 import { ConfigModule } from '@nestjs/config';
 import { configuration } from './config';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
     HealthModule,
+    CategoriesModule,
     ConfigModule.forRoot({
       load: [configuration],
       isGlobal: true,
