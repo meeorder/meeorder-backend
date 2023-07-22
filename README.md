@@ -81,7 +81,7 @@ export class IAmController {
 
 When you want to use a `Query` or `Params` types of payload you have two choice
 
-- Use `@Query???('field-name')` for query attribute or `@Param('field-name')` for params attribute in method's parameter
+- Use `@Query('field-name')` for query attribute or `@Param('field-name')` for params attribute in method's parameter
 - Use `@Query()` for query dto or `@Param()` for params dto in method's parameter and create a class (dto) for body types of payload (same as above)
 
 but, you must provide `@ApiParams()` or `@ApiQuery()` for swagger document
