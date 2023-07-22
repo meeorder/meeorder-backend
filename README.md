@@ -24,8 +24,8 @@ $ npm i -g pnpm
 $ pnpm i
 ```
 
-- If you are not host mongodb in own dev environment (not a `mongodb://localhost:27017/meeorder`) Please change in `configurations[0].env.MONGO_URI` in launch.json to your connection uri (if you use vscode)
-- Or provide the environment variable `MONGO_URI` to your connection uri
+- If you are not host mongodb in own dev environment (not a `mongodb://localhost:27017/meeorder`) Please change in `configurations[0].env.MONGO_URI` in launch.json to your connection URI (if you use vscode)
+- Or provide the environment variable `MONGO_URI` to your connection URI
 
 ## Run the project
 
