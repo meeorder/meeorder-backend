@@ -12,16 +12,16 @@
 - Cloning the project
 
 ```bash
-$ git clone <meeorder_backend_git_url>
+git clone <meeorder_backend_git_url>
 ```
 
 - Install dependencies
 
 ```bash
 # pnpm
-$ npm i -g pnpm
+npm i -g pnpm
 # Install project's dependencies
-$ pnpm i
+pnpm i
 ```
 
 - If you are not host mongodb in own dev environment (not a `mongodb://localhost:27017/meeorder`) Please change in `configurations[0].env.MONGO_URI` in launch.json to your connection URI (if you use vscode)
@@ -30,7 +30,7 @@ $ pnpm i
 ## Run the project
 
 ```bash
-$ pnpm run start:dev # Development Mode (Hot-Reload Avaliable)
+pnpm run start:dev # Development Mode (Hot-Reload Avaliable)
 ```
 
 # Guideline
