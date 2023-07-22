@@ -34,26 +34,25 @@ export class OrdersService {
   async get_orders() {
     return await this.orderModel.find().exec();
   }
-  async update_order_status(UpdateOrder: UpdateOrderDto) {
-    // Check if the order id is valid
-    if (!isValidObjectId(UpdateOrder.id)) {
+  async update_order_status(id: string, UpdateOrder: UpdateOrderDto) {
+    // Check if the status is not in OrderStatus enum
+    if (!isValidObjectId(id)) {
       throw new HttpException('Invalid order id', 400);
     }
-    // Check if the status is not in OrderStatus enum
     if (!Object.values(OrderStatus).includes(UpdateOrder.status)) {
       throw new HttpException('Invalid order status', 400);
     }
     // Check if the order is exist
-    if (!(await this.orderModel.findById(UpdateOrder.id))) {
-      throw new HttpException('Order not found', 404);
-    }
     // Update the order status if the order is exist and the status is valid
-    await this.orderModel.findByIdAndUpdate(UpdateOrder.id, {
-      status: UpdateOrder.status,
-    });
     return {
       status: 'success',
-      data: await this.orderModel.findById(UpdateOrder.id),
+      data: await this.orderModel.findByIdAndUpdate(
+        new Types.ObjectId(id),
+        {
+          status: UpdateOrder.status,
+        },
+        { new: true },
+      ),
     };
   }
 }
