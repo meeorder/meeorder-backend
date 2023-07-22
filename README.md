@@ -4,7 +4,7 @@
 
 - mongodb
   - Docker (waiting for PrAe)
-  - [Self hosted Install](https://www.mongodb.com/docs/manual/installation/)
+  - [Host locally](https://www.mongodb.com/docs/manual/installation/)
 - node v18 or greater [Download](https://nodejs.org/en)
 
 ## Preparing project
