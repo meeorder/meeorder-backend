@@ -8,7 +8,7 @@ import { Types } from 'mongoose';
 export class OrdersClass {
   @Prop({ name: 'created_at', default: new Date() })
   created_at: Date;
-  @Prop({ required: true })
+  @Prop({ default: OrderStatus.in_queue })
   status: OrderStatus;
   @Prop()
   uid: string;

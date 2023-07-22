@@ -9,17 +9,17 @@ import { ApiTags } from '@nestjs/swagger';
 export class OrdersController {
   constructor(private ordersService: OrdersService) {}
 
-  @Get() // Request type : GET /api/v1/orders
+  @Get()
   get_orders() {
     return this.ordersService.get_orders();
   }
 
-  @Post() // Request type : POST /api/v1/orders
+  @Post()
   create_order(@Body() createOrderDto: CreateOrderDto) {
     return this.ordersService.create_order(createOrderDto);
   }
 
-  @Patch('/:id') // Request type : PATCH /api/v1/orders/:id
+  @Patch('/:id')
   update_order(@Param('id') id: string, @Body() new_status: UpdateOrderDto) {
     return this.ordersService.update_order_status(id, new_status);
   }

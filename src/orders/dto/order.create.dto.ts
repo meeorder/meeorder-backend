@@ -1,13 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsString, Validate } from 'class-validator';
 import { OrderStatus } from '../enums/orders.status';
+import { IsObjectId } from '@/validator/mongoose.objectid.validator';
 export class CreateOrderDto {
   @ApiProperty({ enum: OrderStatus, default: OrderStatus.in_queue })
   status: OrderStatus;
   @ApiProperty()
   @IsString()
   uid: string;
-  @ApiProperty()
-  @IsString()
-  food: string; // use string becasuse I use objectID validator in the pipe.
+  @ApiProperty({ example: 'ObjectID from MongoDB food collection schema' })
+  @Validate(IsObjectId)
+  food: string;
 }

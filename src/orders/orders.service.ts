@@ -13,20 +13,11 @@ export class OrdersService {
   ) {}
 
   async create_order(order: CreateOrderDto) {
-    // Check if the food id is valid
     if (!isValidObjectId(order.food)) {
       throw new HttpException('Invalid food id', 400);
     }
-    // Check if the status is not in OrderStatus enum
-    if (!Object.values(OrderStatus).includes(order.status)) {
-      throw new HttpException('Invalid order status', 400);
-    }
-
-    // Create new Order
     const newOrder = new this.orderModel();
-    newOrder.status = await order.status;
-    // uid is userID
-    newOrder.uid = await order.uid;
+    newOrder.uid = order.uid;
     newOrder.food = new Types.ObjectId(order.food);
     await newOrder.save();
     return { status: 'success', data: newOrder };
@@ -35,15 +26,12 @@ export class OrdersService {
     return await this.orderModel.find().exec();
   }
   async update_order_status(id: string, UpdateOrder: UpdateOrderDto) {
-    // Check if the status is not in OrderStatus enum
     if (!isValidObjectId(id)) {
       throw new HttpException('Invalid order id', 400);
     }
     if (!Object.values(OrderStatus).includes(UpdateOrder.status)) {
       throw new HttpException('Invalid order status', 400);
     }
-    // Check if the order is exist
-    // Update the order status if the order is exist and the status is valid
     return {
       status: 'success',
       data: await this.orderModel.findByIdAndUpdate(

@@ -1,9 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { Validate } from 'class-validator';
 import { OrderStatus } from '../enums/orders.status';
+import { IsObjectId } from '@/validator/mongoose.objectid.validator';
 
 export class UpdateOrderDto {
   @ApiProperty({ enum: OrderStatus, default: OrderStatus.in_queue })
-  @IsString()
+  @Validate(IsObjectId)
   status: OrderStatus;
 }
