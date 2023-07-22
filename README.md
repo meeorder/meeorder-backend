@@ -9,13 +9,13 @@
 
 ## Preparing project
 
-- Cloning the project
+### Cloning the project
 
 ```bash
 git clone <meeorder_backend_git_url>
 ```
 
-- Install dependencies
+### Install dependencies
 
 ```bash
 # pnpm
@@ -24,8 +24,20 @@ npm i -g pnpm
 pnpm i
 ```
 
-- If you are not host mongodb in own dev environment (not a `mongodb://localhost:27017/meeorder`) Please change in `configurations[0].env.MONGO_URI` in launch.json to your connection URI (if you use vscode)
-- Or provide the environment variable `MONGO_URI` to your connection URI
+### Setting MongoDB URI
+
+There are two way to set the MongoDB URI
+
+#### In `.env` file
+
+1. Create a file named `.env` in project's root
+2. Write `MONGO_URI=<your_mongodb_uri>` in the file
+
+#### In `launch.json` file (for vscode)
+
+1. Open `.vscode/launch.json`
+2. Find line that contains `MONGO_URI`
+3. Change the value to your MongoDB URI
 
 ## Run the project
 
