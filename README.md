@@ -43,7 +43,7 @@ $ pnpm run start:dev # Development Mode (Hot-Reload Avaliable)
 - health.service.ts (service file use for store useCase or business logic)
 - health.controller.ts (controller file that provide endpoints by method)
 
-## Guideline for naming
+## Naming convention
 
 - camelCase for normal variable, function, methods
 - PascalCase for class, type, interface, enum
@@ -81,12 +81,12 @@ export class IAmController {
 
 When you want to use a `Query` or `Params` types of payload you have two choice
 
-- Use `@Query('field-name')` for query attribute or `@Param('field-name')` for params attribute in method's parameter
+- Use `@Query???('field-name')` for query attribute or `@Param('field-name')` for params attribute in method's parameter
 - Use `@Query()` for query dto or `@Param()` for params dto in method's parameter and create a class (dto) for body types of payload (same as above)
 
 but, you must provide `@ApiParams()` or `@ApiQuery()` for swagger document
 
-#### Example for ??? endpoints (first style)
+#### Example for any endpoints (first style)
 
 ##### health.controller.ts (not same health module below) in first style
 
@@ -103,7 +103,7 @@ export class HealthController {
 }
 ```
 
-#### Example for ??? endpoints (second style)
+#### Example for any endpoints (second style)
 
 ##### health.controller.ts (not same health module below) in second style
 
