@@ -47,6 +47,7 @@ $ pnpm run start:dev # Development Mode (Hot-Reload Avaliable)
 
 - camelCase for normal variable, function, methods
 - PascalCase for class, type, interface, enum
+- SCREAMING_SNAKE_CASE for string enum
 - ตั้งชื่อให้สื่อด้วยนะจ๊ะ
 
 ### Guideline for Request payload
