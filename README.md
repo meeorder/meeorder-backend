@@ -45,9 +45,9 @@ There are two way to set the MongoDB URI
 pnpm run start:dev # Development Mode (Hot-Reload Avaliable)
 ```
 
-# Guideline
+## Guideline
 
-## Guideline for create module
+### Guideline for create module
 
 3 files that require to have (example for health module)
 
@@ -55,20 +55,20 @@ pnpm run start:dev # Development Mode (Hot-Reload Avaliable)
 - health.service.ts (service file use for store useCase or business logic)
 - health.controller.ts (controller file that provide endpoints by method)
 
-## Naming convention
+### Naming convention
 
 - camelCase for normal variable, function, methods
 - PascalCase for class, type, interface, enum
 - SCREAMING_SNAKE_CASE for string enum
 - ตั้งชื่อให้สื่อด้วยนะจ๊ะ
 
-### Guideline for Request payload
+#### Guideline for Request payload
 
 - In some endpoints, you must provide request a payload for use in business logic I recommend you to create a class (dto) for body types of payload
 
-#### Example for auth endpoints
+##### Example for auth endpoints
 
-##### login-body.dto.ts
+###### login-body.dto.ts
 
 ```ts
 import { ApiProperty } from '@nestjs/swagger';
@@ -80,7 +80,7 @@ export class LoginBodyDto {
 }
 ```
 
-##### auth.controller.ts
+###### auth.controller.ts
 
 ```ts
 @Controller('auth')
@@ -99,9 +99,9 @@ When you want to use a `Query` or `Params` types of payload you have two choice
 
 but, you must provide `@ApiParams()` or `@ApiQuery()` for swagger document
 
-#### Example for any endpoints (first style)
+##### Example for any endpoints (first style)
 
-##### health.controller.ts (not same health module below) in first style
+###### health.controller.ts (not same health module below) in first style
 
 ```ts
 import { ApiQuery, ApiParam } from '@nestjs/swagger';
@@ -116,9 +116,9 @@ export class HealthController {
 }
 ```
 
-#### Example for any endpoints (second style)
+##### Example for any endpoints (second style)
 
-##### health.controller.ts (not same health module below) in second style
+###### health.controller.ts (not same health module below) in second style
 
 ```ts
 import { ApiQuery, ApiParam } from '@nestjs/swagger';
@@ -134,7 +134,7 @@ export class HealthController {
 }
 ```
 
-##### health-query.dto.ts
+###### health-query.dto.ts
 
 ```ts
 import { ApiProperty } from '@nestjs/swagger';
@@ -144,7 +144,7 @@ export class HealthQueryDto {
 }
 ```
 
-##### health-param.dto.ts
+###### health-param.dto.ts
 
 ```ts
 import { ApiProperty } from '@nestjs/swagger';
@@ -154,7 +154,7 @@ export class HealthParamDto {
 }
 ```
 
-# Health Module Example
+## Health Module Example
 
 ## Abstract Endpoint
 
