@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { HealthClass } from 'src/schema/health.schema';
+import { HealthClass } from '@/schema/health.schema';
 
 @Injectable()
 export class HealthService {
