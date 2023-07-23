@@ -6,7 +6,7 @@ services:
     links:
       - "mongo:database"
     environment:
-      DB: mongodb://database/meeorder
+      MONGO_URI: mongodb://database/meeorder
 
   mongo:
     image: mongo
