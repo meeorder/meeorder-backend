@@ -16,8 +16,9 @@ COPY . .
 # Creates a "dist" folder with the production build
 RUN npm run build
 
+# http port =80
+ENV PORT=80 
+
 # Start the server using the production build
 CMD [ "node", "dist/main.js" ]
 
-# http port =80
-ENV PORT=80 
