@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { HealthService } from './health.service';
 import { getModelToken } from '@nestjs/mongoose';
-import { HealthClass, HealthSchema } from 'src/schema/health.schema';
+import { HealthClass, HealthSchema } from '@/schema/health.schema';
 import { model } from 'mongoose';
 
 describe('HealthService', () => {
