@@ -1,0 +1,14 @@
+services:
+  web:
+    build: .
+    ports:
+      - "1234:80"
+    links:
+      - "mongo:database"
+    environment:
+      DB: mongodb://database/nest
+
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
