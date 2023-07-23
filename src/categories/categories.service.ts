@@ -2,7 +2,7 @@ import { Injectable, Param } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { CategoryClass } from 'src/schema/categories.schema';
 import { Model, Types } from 'mongoose';
-import { UpdateCategoryDto } from './dto/update-category.dto';
+import { CategoryDto } from './dto/category.dto';
 
 @Injectable()
 export class CategoriesService {
@@ -23,18 +23,22 @@ export class CategoriesService {
     return doc;
   }
 
-  async getCategory(id: string) {
-    const doc = await this.categoryModel.findOne(new Types.ObjectId(id));
+  async getCategoryById(id: string) {
+    const doc = await this.categoryModel.findById(new Types.ObjectId(id));
     return doc;
   }
 
-  async updateCategory(id: string, updatecategory: UpdateCategoryDto) {
+  async updateCategory(id: string, updatecategory: CategoryDto) {
     const doc = await this.categoryModel.findByIdAndUpdate(
       new Types.ObjectId(id),
-      {
-        description: UpdateCategoryDto,
-      },
+      updatecategory,
+      { new: true },
     );
+    return doc;
+  }
+
+  async deleteCategory(id: string): Promise<any> {
+    const doc = await this.categoryModel.deleteOne(new Types.ObjectId(id));
     return doc;
   }
 }

@@ -1,7 +1,17 @@
-import { Body, Controller, Get, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpStatus,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CategoriesService } from './categories.service';
-import { CreateCategoryDto } from './dto/create-category.dto';
+import { CategoryDto } from './dto/category.dto';
+import { PARAMTYPES_METADATA } from '@nestjs/common/constants';
 
 @Controller('categories')
 @ApiTags('categories')
@@ -10,11 +20,10 @@ export class CategoriesController {
 
   @ApiResponse({
     status: HttpStatus.CREATED,
-    description: 'Create new category',
-    type: () => CreateCategoryDto,
+    description: 'Created new category',
   })
   @Post()
-  createCategory(@Body() doc: CreateCategoryDto) {
+  createCategory(@Body() doc: CategoryDto) {
     return this.categoriesService.createCategory(doc.title, doc.description);
   }
 
@@ -25,5 +34,32 @@ export class CategoriesController {
   @Get()
   getAllCategories() {
     return this.categoriesService.getAllCategories();
+  }
+
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Get all categories',
+  })
+  @Get(':id')
+  getCategory(@Param('id') id: string) {
+    return this.categoriesService.getCategoryById(id);
+  }
+
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Update category',
+  })
+  @Put(':id')
+  updateCategory(@Param('id') id: string, @Body() doc: CategoryDto) {
+    return this.categoriesService.updateCategory(id, doc);
+  }
+
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Delete category',
+  })
+  @Delete(':id')
+  deleteCategory(@Param('id') id: string) {
+    return this.categoriesService.deleteCategory(id);
   }
 }

@@ -1,6 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class UpdateCategoryDto {
+export class CategoryDto {
+  @ApiProperty()
+  title: string;
+
   @ApiProperty()
   description: string;
 }

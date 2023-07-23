@@ -6,9 +6,11 @@ import { Collection, Types } from 'mongoose';
 export class CategoryClass {
   _id: Types.ObjectId;
 
+  @Prop()
   @ApiProperty()
   title: string;
 
+  @Prop()
   @ApiProperty()
   description: string;
 }
