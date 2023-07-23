@@ -9,15 +9,22 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      MONGO_URI: mongodb://localhost:27017/meeorder
     strategy:
       matrix:
-        node-version: [18.x, 20.x]
+        node-version: [18.x]
+        mongodb-version: ['6.0']
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+      - name: Start MongoDB
+        uses: supercharge/mongodb-github-action@1.8.0
+        with:
+          mongodb-version: ${{ matrix.mongodb-version }}
       - run: npm install -g pnpm
       - run: pnpm install
       - run: pnpm run build
