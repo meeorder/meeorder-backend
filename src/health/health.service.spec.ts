@@ -31,6 +31,7 @@ describe('HealthService', () => {
       const expectedDate = new Date();
       healthModel.create = jest.fn().mockResolvedValue({
         createdAt: expectedDate,
+        toObject: jest.fn().mockReturnThis(),
       });
       const result = await service.createRecord();
       expect(result.createdAt).toBe(expectedDate);
