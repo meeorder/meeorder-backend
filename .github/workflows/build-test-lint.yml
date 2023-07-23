@@ -9,8 +9,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      MONGO_URI: mongodb://localhost:27017/meeorder
     strategy:
       matrix:
         node-version: [18.x]
@@ -25,9 +23,12 @@ jobs:
         uses: supercharge/mongodb-github-action@1.8.0
         with:
           mongodb-version: ${{ matrix.mongodb-version }}
+          mongodb-db: meeorder
       - run: npm install -g pnpm
       - run: pnpm install
       - run: pnpm run build
       - run: pnpm run lint
       - run: pnpm run test
       - run: pnpm run test:e2e
+        env:
+          MONGO_URI: mongodb://localhost:27017/meeorder
