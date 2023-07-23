@@ -3,7 +3,7 @@
 ## Prerequisite
 
 - mongodb
-  - Docker (waiting for PrAe)
+  - Docker
   - [Host locally](https://www.mongodb.com/docs/manual/installation/)
 - node v18 or greater [Download](https://nodejs.org/en)
 
