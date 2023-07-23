@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { ApiProperty } from '@nestjs/swagger';
 import { Collection, Types } from 'mongoose';
 
 @Schema(
@@ -7,10 +8,10 @@ import { Collection, Types } from 'mongoose';
 export class CategoryClass{
     _id: Types.ObjectId;
 
-    @Prop()
+    @ApiProperty()
     title: string;
 
-    @Prop()
+    @ApiProperty()
     description: string;
 }
 
