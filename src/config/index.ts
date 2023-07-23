@@ -1,5 +1,3 @@
-import { config } from 'dotenv';
-
 export enum Config {
   PORT = 'PORT',
   MONGO_URI = 'MONGO_URI',
