@@ -3,12 +3,15 @@ import { Type } from 'class-transformer';
 import { IsArray, IsMongoId, IsString, ValidateNested } from 'class-validator';
 import { Types } from 'mongoose';
 
-class orders {
+export class orders {
+  @ApiProperty({ type: Types.ObjectId })
   @IsMongoId()
   menu: Types.ObjectId;
+  @ApiProperty({ type: [Types.ObjectId] })
   @IsArray()
   @IsMongoId({ each: true })
   addons: Types.ObjectId[];
+  @ApiProperty({ type: String })
   @IsString()
   additional_info: string;
 }

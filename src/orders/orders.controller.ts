@@ -1,6 +1,6 @@
 import { CreateOrderDto } from '@/orders/dto/order.create.dto';
 import { Body, Controller, HttpCode, Post } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { OrdersService } from './orders.service';
 
 @Controller('orders')
@@ -9,8 +9,9 @@ export class OrdersController {
   constructor(private ordersService: OrdersService) {}
   @Post()
   @ApiTags('orders')
+  @ApiBody({ type: CreateOrderDto })
   @HttpCode(201)
-  async CreateOrder(@Body() createorderdto: CreateOrderDto) {
-    return await this.ordersService.CreateOrder(createorderdto);
+  async createOrder(@Body() createorderdto: CreateOrderDto) {
+    return await this.ordersService.createOrder(createorderdto);
   }
 }

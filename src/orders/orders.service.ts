@@ -9,7 +9,7 @@ export class OrdersService {
   constructor(
     @InjectModel('orders') private readonly orderModel: Model<OrdersClass>,
   ) {}
-  async CreateOrder(createorderdto: CreateOrderDto) {
+  async createOrder(createorderdto: CreateOrderDto) {
     const insertObject = new Array();
     createorderdto.orders.forEach((food_element) => {
       const element = new OrdersClass();
