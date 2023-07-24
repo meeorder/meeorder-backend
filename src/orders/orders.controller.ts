@@ -1,26 +1,16 @@
-import { CreateOrderDto } from './dto/order.create.dto';
-import { OrdersService } from './orders.service';
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
-import { UpdateOrderDto } from './dto/order.update.dto';
+import { CreateOrderDto } from '@/orders/dto/order.create.dto';
+import { Body, Controller, HttpCode, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { OrdersService } from './orders.service';
 
 @Controller('orders')
 @ApiTags('orders')
 export class OrdersController {
   constructor(private ordersService: OrdersService) {}
-
-  @Get()
-  get_orders() {
-    return this.ordersService.get_orders();
-  }
-
   @Post()
-  create_order(@Body() createOrderDto: CreateOrderDto) {
-    return this.ordersService.create_order(createOrderDto);
-  }
-
-  @Patch('/:id')
-  update_order(@Param('id') id: string, @Body() new_status: UpdateOrderDto) {
-    return this.ordersService.update_order_status(id, new_status);
+  @ApiTags('orders')
+  @HttpCode(201)
+  async CreateOrder(@Body() createorderdto: CreateOrderDto) {
+    return await this.ordersService.CreateOrder(createorderdto);
   }
 }

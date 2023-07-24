@@ -8,12 +8,16 @@ import { Types } from 'mongoose';
 export class OrdersClass {
   @Prop({ name: 'created_at', default: new Date() })
   created_at: Date;
-  @Prop({ default: OrderStatus.in_queue })
+  @Prop({ default: OrderStatus.InQueue })
   status: OrderStatus;
   @Prop()
-  uid: string;
+  session: Types.ObjectId;
   @Prop()
-  food: Types.ObjectId;
+  menu: Types.ObjectId;
+  @Prop()
+  addons: Types.ObjectId[];
+  @Prop()
+  additional_info: String;
 }
 
 export const OrderSchema = SchemaFactory.createForClass(OrdersClass);
