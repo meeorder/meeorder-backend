@@ -1,19 +1,19 @@
+import { HealthSchema } from '@/schema/health.schema';
 import { Test, TestingModule } from '@nestjs/testing';
+import { getModelForClass } from '@typegoose/typegoose';
+import { getModelToken } from 'nest-typegoose';
 import { HealthService } from './health.service';
-import { getModelToken } from '@nestjs/mongoose';
-import { HealthClass, HealthSchema } from '@/schema/health.schema';
-import { model } from 'mongoose';
 
 describe('HealthService', () => {
   let service: HealthService;
-  const healthModel = model(HealthClass.name, HealthSchema);
+  const healthModel = getModelForClass(HealthSchema);
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         HealthService,
         {
-          provide: getModelToken(HealthClass.name),
+          provide: getModelToken(HealthSchema.name),
           useValue: healthModel,
         },
       ],
