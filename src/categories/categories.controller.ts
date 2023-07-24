@@ -11,7 +11,6 @@ import {
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CategoriesService } from './categories.service';
 import { CategoryDto } from './dto/category.dto';
-import { PARAMTYPES_METADATA } from '@nestjs/common/constants';
 
 @Controller('categories')
 @ApiTags('categories')
