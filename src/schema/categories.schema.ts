@@ -1,16 +1,16 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
-import { Collection, Types } from 'mongoose';
+import { Types } from 'mongoose';
 
 @Schema({ collection: 'categories' })
 export class CategoryClass {
   _id: Types.ObjectId;
 
-  @Prop()
+  @Prop({ required: true })
   @ApiProperty()
   title: string;
 
-  @Prop()
+  @Prop({ required: true })
   @ApiProperty()
   description: string;
 }
