@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { HealthModule } from './health/health.module';
-import { MongooseModule } from '@nestjs/mongoose';
-import { MongooseConfigService } from './config/mongoose.config.service';
 import { ConfigModule } from '@nestjs/config';
-import { configuration } from './config';
+import { MongooseModule } from '@nestjs/mongoose';
 import { CategoriesModule } from './categories/categories.module';
+import { configuration } from './config';
+import { MongooseConfigService } from './config/mongoose.config.service';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
