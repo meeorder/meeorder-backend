@@ -3,6 +3,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 export class SwaggerBuilder {
   private readonly documentBuilder: DocumentBuilder;
+
   constructor(private readonly app: NestFastifyApplication) {
     this.documentBuilder = new DocumentBuilder()
       .setTitle('MeeOrder')

@@ -5,8 +5,9 @@ export enum Config {
 }
 
 export const configuration = () => {
+  const DEFAULT_PORT = 3000;
   return {
-    [Config.PORT]: +(process.env.PORT ?? 3000),
+    [Config.PORT]: +(process.env.PORT ?? DEFAULT_PORT),
     [Config.MONGO_URI]: process.env.MONGO_URI,
     [Config.NODE_ENV]: process.env.NODE_ENV,
   };
