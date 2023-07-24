@@ -1,13 +1,14 @@
+import { CategorySchema } from '@/schema/categories.schema';
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { CategoryClass } from '@/schema/categories.schema';
-import { Model, Types } from 'mongoose';
+import { ReturnModelType } from '@typegoose/typegoose';
+import { Types } from 'mongoose';
+import { InjectModel } from 'nest-typegoose';
 import { CategoryDto } from './dto/category.dto';
 @Injectable()
 export class CategoriesService {
   constructor(
-    @InjectModel(CategoryClass.name)
-    private readonly categoryModel: Model<CategoryClass>,
+    @InjectModel(CategorySchema)
+    private readonly categoryModel: ReturnModelType<typeof CategorySchema>,
   ) {}
 
   async createCategory(title: string, description: string) {

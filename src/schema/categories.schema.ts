@@ -1,9 +1,9 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
+import { Prop, modelOptions } from '@typegoose/typegoose';
 import { Types } from 'mongoose';
 
-@Schema({ collection: 'categories' })
-export class CategoryClass {
+@modelOptions({ schemaOptions: { collection: 'categories' } })
+export class CategorySchema {
   _id: Types.ObjectId;
 
   @Prop({ required: true })
@@ -14,5 +14,3 @@ export class CategoryClass {
   @ApiProperty()
   description: string;
 }
-
-export const CategorySchema = SchemaFactory.createForClass(CategoryClass);
