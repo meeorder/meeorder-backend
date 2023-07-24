@@ -54,11 +54,11 @@ export class CategoriesController {
   }
 
   @ApiResponse({
-    status: HttpStatus.OK,
+    status: HttpStatus.NO_CONTENT,
     description: 'Delete category',
   })
   @Delete(':id')
   deleteCategory(@Param('id') id: string) {
-    return this.categoriesService.deleteCategory(id);
+    this.categoriesService.deleteCategory(id);
   }
 }
