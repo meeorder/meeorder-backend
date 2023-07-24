@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { HealthModule } from './health/health.module';
-import { MongooseModule } from '@nestjs/mongoose';
-import { MongooseConfigService } from './config/mongoose.config.service';
 import { ConfigModule } from '@nestjs/config';
+import { TypegooseModule } from 'nest-typegoose';
 import { configuration } from './config';
+import { TypegooseConfigService } from './config/typegoose.config.service';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
@@ -12,8 +12,8 @@ import { configuration } from './config';
       load: [configuration],
       isGlobal: true,
     }),
-    MongooseModule.forRootAsync({
-      useClass: MongooseConfigService,
+    TypegooseModule.forRootAsync({
+      useClass: TypegooseConfigService,
     }),
   ],
 })

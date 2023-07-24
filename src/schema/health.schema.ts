@@ -1,11 +1,11 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
+import { modelOptions, Prop } from '@typegoose/typegoose';
 import { Types } from 'mongoose';
 
-@Schema({
-  collection: 'healths',
+@modelOptions({
+  schemaOptions: { collection: 'healths' },
 })
-export class HealthClass {
+export class HealthSchema {
   _id: Types.ObjectId;
 
   @ApiProperty()
@@ -15,5 +15,3 @@ export class HealthClass {
   @ApiProperty()
   createdAt: Date;
 }
-
-export const HealthSchema = SchemaFactory.createForClass(HealthClass);

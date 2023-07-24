@@ -1,15 +1,11 @@
+import { HealthSchema } from '@/schema/health.schema';
 import { Module } from '@nestjs/common';
-import { HealthService } from './health.service';
+import { TypegooseModule } from 'nest-typegoose';
 import { HealthController } from './health.controller';
-import { MongooseModule } from '@nestjs/mongoose';
-import { HealthClass, HealthSchema } from '@/schema/health.schema';
+import { HealthService } from './health.service';
 
 @Module({
-  imports: [
-    MongooseModule.forFeature([
-      { name: HealthClass.name, schema: HealthSchema },
-    ]),
-  ],
+  imports: [TypegooseModule.forFeature([HealthSchema])],
   providers: [HealthService],
   controllers: [HealthController],
 })
