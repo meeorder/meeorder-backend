@@ -5,7 +5,6 @@ import { CategoriesModule } from './categories/categories.module';
 import { configuration } from './config';
 import { MongooseConfigService } from './config/mongoose.config.service';
 import { HealthModule } from './health/health.module';
-import { OrdersModule } from './orders/orders.module';
 
 @Module({
   imports: [
@@ -18,7 +17,6 @@ import { OrdersModule } from './orders/orders.module';
     MongooseModule.forRootAsync({
       useClass: MongooseConfigService,
     }),
-    OrdersModule,
   ],
 })
 export class AppModule {}
