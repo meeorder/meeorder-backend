@@ -10,7 +10,7 @@ export class OrdersService {
     @InjectModel('orders') private readonly orderModel: Model<OrdersClass>,
   ) {}
   async createOrder(createorderdto: CreateOrderDto) {
-    const insertObject = new Array();
+    const insertObject = new Array(createorderdto.orders.length);
     createorderdto.orders.forEach((food_element) => {
       const element = new OrdersClass();
       element.session = new Types.ObjectId(createorderdto.session);

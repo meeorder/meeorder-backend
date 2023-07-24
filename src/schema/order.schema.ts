@@ -17,7 +17,7 @@ export class OrdersClass {
   @Prop()
   addons: Types.ObjectId[];
   @Prop()
-  additional_info: String;
+  additional_info: string;
 }
 
 export const OrderSchema = SchemaFactory.createForClass(OrdersClass);
