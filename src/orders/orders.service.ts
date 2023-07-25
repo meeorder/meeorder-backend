@@ -12,9 +12,7 @@ export class OrdersService {
     private readonly orderModel: ReturnModelType<typeof OrdersSchema>,
   ) {}
   async createOrder(createorderdto: CreateOrderDto) {
-    let i = 0;
-    const insertObject = new Array(createorderdto.orders.length);
-    createorderdto.orders.forEach((food_element) => {
+    const insertObject = createorderdto.orders.map((food_element) => {
       const element = new OrdersSchema();
       element.session = new Types.ObjectId(createorderdto.session);
       element.menu = new Types.ObjectId(food_element.menu);
@@ -22,9 +20,11 @@ export class OrdersService {
         (addons_element) => new Types.ObjectId(addons_element),
       );
       element.additional_info = food_element.additional_info;
-      insertObject[i] = element;
-      i++;
+      return element;
     });
-    this.orderModel.insertMany(insertObject);
+    await this.orderModel.insertMany(insertObject);
+  }
+  async findBySessionId(id: Types.ObjectId) {
+    return this.orderModel.find({ session: id }).exec();
   }
 }

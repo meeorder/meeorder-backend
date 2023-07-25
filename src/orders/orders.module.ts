@@ -8,5 +8,6 @@ import { OrdersService } from './orders.service';
   imports: [TypegooseModule.forFeature([OrdersSchema])],
   providers: [OrdersService],
   controllers: [OrdersController],
+  exports: [OrdersService],
 })
 export class OrdersModule {}

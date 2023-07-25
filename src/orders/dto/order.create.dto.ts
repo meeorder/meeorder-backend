@@ -1,27 +1,26 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsArray, IsMongoId, IsString, ValidateNested } from 'class-validator';
-import { Types } from 'mongoose';
 
-export class orders {
-  @ApiProperty({ type: Types.ObjectId })
+export class Orders {
+  @ApiProperty({ type: String, description: 'menu is ObjectID' })
   @IsMongoId()
-  menu: Types.ObjectId;
-  @ApiProperty({ type: [Types.ObjectId] })
+  menu: string;
+  @ApiProperty({ type: String, description: 'Array of ObjectID' })
   @IsArray()
   @IsMongoId({ each: true })
-  addons: Types.ObjectId[];
+  addons: string[];
   @ApiProperty({ type: String })
   @IsString()
   additional_info: string;
 }
 export class CreateOrderDto {
-  @ApiProperty({ type: Types.ObjectId })
+  @ApiProperty({ type: String, description: 'session is ObjectID' })
   @IsMongoId()
-  session: Types.ObjectId;
-  @ApiProperty({ type: [orders] })
+  session: string;
+  @ApiProperty({ type: () => [Orders] })
   @IsArray()
   @ValidateNested({ each: true })
-  @Type(() => orders)
-  orders: orders[];
+  @Type(() => Orders)
+  orders: Orders[];
 }

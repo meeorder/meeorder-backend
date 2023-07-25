@@ -1,6 +1,6 @@
 import { OrderStatus } from '@/orders/enums/orders.status';
 import { modelOptions, Prop } from '@typegoose/typegoose';
-import { Types } from 'mongoose';
+import { Schema, Types } from 'mongoose';
 
 @modelOptions({
   schemaOptions: { collection: 'orders' },
@@ -14,7 +14,7 @@ export class OrdersSchema {
   session: Types.ObjectId;
   @Prop()
   menu: Types.ObjectId;
-  @Prop()
+  @Prop({ type: Schema.Types.ObjectId })
   addons: Types.ObjectId[];
   @Prop()
   additional_info: string;

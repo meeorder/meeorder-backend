@@ -1,5 +1,5 @@
 import { CreateOrderDto } from '@/orders/dto/order.create.dto';
-import { Body, Controller, HttpCode, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { OrdersService } from './orders.service';
 
@@ -10,7 +10,7 @@ export class OrdersController {
   @Post()
   @ApiTags('orders')
   @ApiBody({ type: CreateOrderDto })
-  @HttpCode(201)
+  @HttpCode(HttpStatus.CREATED)
   async createOrder(@Body() createorderdto: CreateOrderDto) {
     return await this.ordersService.createOrder(createorderdto);
   }
