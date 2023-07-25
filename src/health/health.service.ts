@@ -1,16 +1,16 @@
+import { HealthSchema } from '@/schema/health.schema';
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { HealthClass } from '@/schema/health.schema';
+import { DocumentType, ReturnModelType } from '@typegoose/typegoose';
+import { InjectModel } from 'nest-typegoose';
 
 @Injectable()
 export class HealthService {
   constructor(
-    @InjectModel(HealthClass.name)
-    private readonly healthModel: Model<HealthClass>,
+    @InjectModel(HealthSchema)
+    private readonly healthModel: ReturnModelType<typeof HealthSchema>,
   ) {}
-  async createRecord(): Promise<HealthClass> {
-    const doc = await this.healthModel.create({});
+  async createRecord(): Promise<HealthSchema> {
+    const doc: DocumentType<HealthSchema> = await this.healthModel.create({});
     return doc.toObject({ virtuals: true });
   }
 }

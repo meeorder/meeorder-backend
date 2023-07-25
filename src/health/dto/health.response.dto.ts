@@ -1,14 +1,14 @@
+import { HealthSchema } from '@/schema/health.schema';
 import { ApiProperty } from '@nestjs/swagger';
-import { HealthClass } from '@/schema/health.schema';
 
-export class HealthResponseDto extends HealthClass {
+export class HealthResponseDto extends HealthSchema {
   @ApiProperty({
     description: 'Health status',
     example: 'OK',
   })
   status: string;
 
-  constructor(obj: HealthClass, status = 'OK') {
+  constructor(obj: HealthSchema, status = 'OK') {
     super();
     Object.assign(this, obj);
     this.status = status;
