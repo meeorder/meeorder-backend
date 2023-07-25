@@ -1,9 +1,8 @@
-name: Releaseing Docker
+name: Releaseing Docker (Dev)
 
 on:
   push:
     branches:
-      - main
       - develop
 
 jobs:
