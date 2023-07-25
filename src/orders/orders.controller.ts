@@ -11,7 +11,7 @@ export class OrdersController {
   @ApiTags('orders')
   @ApiBody({ type: CreateOrderDto })
   @HttpCode(HttpStatus.CREATED)
-  async createOrder(@Body() createorderdto: CreateOrderDto) {
-    return await this.ordersService.createOrder(createorderdto);
+  async createOrder(@Body() createOrderDto: CreateOrderDto) {
+    return await this.ordersService.createOrder(createOrderDto);
   }
 }
