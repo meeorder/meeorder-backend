@@ -7,6 +7,7 @@ import { HealthService } from './health.service';
 @ApiTags('health')
 export class HealthController {
   constructor(private readonly healthService: HealthService) {}
+
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Health status',
