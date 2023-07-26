@@ -3,7 +3,7 @@
 ## Prerequisite
 
 - mongodb
-  - Docker
+  - [Docker](#preparing-project)
   - [Host locally](https://www.mongodb.com/docs/manual/installation/)
 - node v18 or greater [Download](https://nodejs.org/en)
 
@@ -38,6 +38,11 @@ There are two way to set the MongoDB URI
 1. Open `.vscode/launch.json`
 2. Find line that contains `MONGO_URI`
 3. Change the value to your MongoDB URI
+
+### Docker
+```shell
+$ docker compose up -d mongo
+```
 
 ## Run the project
 
