@@ -14,8 +14,8 @@ export class OrdersSchema {
   session: Types.ObjectId;
   @Prop()
   menu: Types.ObjectId;
-  @Prop({ type: Schema.Types.ObjectId })
+  @Prop({ type: Schema.Types.ObjectId, default: [] })
   addons: Types.ObjectId[];
-  @Prop()
+  @Prop({ default: '' })
   additional_info: string;
 }
