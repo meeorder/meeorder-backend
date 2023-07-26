@@ -38,7 +38,7 @@ export class CategoriesService {
     return doc;
   }
 
-  async deleteCategory(id: string): Promise<mongoose.mongo.DeleteResult> {
+  deleteCategory(id: string): Promise<mongoose.mongo.DeleteResult> {
     return this.categoryModel.deleteOne({ _id: id }).exec();
   }
 }

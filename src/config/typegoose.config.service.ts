@@ -13,6 +13,7 @@ export class TypegooseConfigService implements TypegooseOptionsFactory {
   createTypegooseOptions(): TypegooseModuleOptions {
     return {
       uri: this.configService.get<string>(Config.MONGO_URI),
+      dbName: this.configService.get<string>(Config.MONGO_DB_NAME),
     };
   }
 }
