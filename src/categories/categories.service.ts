@@ -39,7 +39,7 @@ export class CategoriesService {
     return doc;
   }
 
-  async deleteCategory(id: string): Promise<DeleteResult> {
+  deleteCategory(id: string): Promise<DeleteResult> {
     return this.categoryModel.deleteOne({ _id: id }).exec();
   }
 }

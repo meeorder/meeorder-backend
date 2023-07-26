@@ -1,9 +1,10 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '@/app.module';
+import { HttpStatus } from '@nestjs/common';
 import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
+import { Test, TestingModule } from '@nestjs/testing';
 import { HealthResponseDto } from 'src/health/dto/health.response.dto';
 
 describe('AppController (e2e)', () => {
@@ -26,7 +27,7 @@ describe('AppController (e2e)', () => {
       method: 'GET',
       url: '/health',
     });
-    expect(statusCode).toBe(200);
+    expect(statusCode).toBe(HttpStatus.OK);
     const parsedPayload: HealthResponseDto = JSON.parse(payload);
     expect(parsedPayload).toHaveProperty('createdAt');
     expect(parsedPayload.status).toBe('OK');
