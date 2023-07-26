@@ -30,5 +30,5 @@ export class MenuSchema {
 
   @Prop()
   @ApiProperty()
-  addons: Types.ObjectId[];
+  addon: Types.ObjectId[];
 }
