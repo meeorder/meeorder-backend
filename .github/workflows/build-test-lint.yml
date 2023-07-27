@@ -70,7 +70,9 @@ jobs:
           MONGO_URI: mongodb://localhost:27017/meeorder
 
   e2e:
-    runs-on: ubuntu-latest]
+    runs-on: ubuntu-latest
+    needs:
+      - build-image
     services:
       db:
         image: mongo:6
