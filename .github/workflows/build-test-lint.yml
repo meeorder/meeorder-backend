@@ -23,28 +23,6 @@ jobs:
       - run: pnpm run lint
       - run: pnpm run build
 
-  build-image:
-    runs-on: ubuntu-latest
-    needs:
-      - build
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-      - name: Login to GHCR
-        run: |
-          echo $CR_PAT | docker login ghcr.io -u meeorder --password-stdin
-        env:
-          CR_PAT: ${{ secrets.CR_PAT }}
-      - name: Build and push
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          push: true
-          tags: ghcr.io/meeorder/meeorder-backend-test:${{github.sha}}
   test:
     runs-on: ubuntu-latest
     strategy:
@@ -64,29 +42,19 @@ jobs:
 
   e2e:
     runs-on: ubuntu-latest
-    needs:
-      - build-image
-    services:
-      db:
-        image: mongo:6
-        ports:
-          - 27017:27017
-      backend:
-        image: ghcr.io/meeorder/meeorder-backend-test:${{github.sha}}
-        credentials:
-          username: meeorder
-          password: ${{ secrets.CR_PAT }}
-        ports:
-          - 4000:80
-        env:
-          MONGO_URI: mongodb://db:27017
-          MONGO_DB_NAME: meeorder
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js 18
         uses: actions/setup-node@v3
         with:
           node-version: 18
+      - uses: isbang/compose-action@v1.5.0
+        with:
+          compose-file: './docker-compose.yml'
+          services: |
+            mongo
+            backend
+
       - name: Curl Test
         run: curl -X GET http://localhost:4000/api/v1/health/ping
       - run: npm install -g pnpm
