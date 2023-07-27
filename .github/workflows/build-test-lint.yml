@@ -73,6 +73,9 @@ jobs:
           - 27017:27017
       backend:
         image: ghcr.io/meeorder/meeorder-backend-test:${{github.sha}}
+        credentials:
+          username: meeorder
+          password: ${{ secrets.CR_PAT }}
         ports:
           - 4000:80
         env:
