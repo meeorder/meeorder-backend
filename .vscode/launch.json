@@ -24,17 +24,17 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug E2E",
+      "name": "Debug E2E (Cucumber)",
       "skipFiles": ["<node_internals>/**"],
       "cwd": "${workspaceRoot}",
-      "program": "${workspaceRoot}/node_modules/jest/bin/jest.js",
-      "args": ["--config", "./test/jest-e2e.json"],
+      "program": "${workspaceRoot}/node_modules/@cucumber/cucumber/bin/cucumber.js",
+      "args": [],
       "console": "integratedTerminal",
       "runtimeVersion": "18",
       "env": {
         "NODE_ENV": "development",
-        "PORT": "4000",
-        "MONGO_URI": "mongodb://localhost:27017/meeorder"
+        "MONGO_URI": "mongodb://localhost:27017/",
+        "BASE_URL": "http://127.0.0.1:4000"
       },
       "envFile": "${workspaceFolder}/.env"
     }
