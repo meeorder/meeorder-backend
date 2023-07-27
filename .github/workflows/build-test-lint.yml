@@ -71,7 +71,6 @@ jobs:
         image: mongo:6
         ports:
           - 27017:27017
-        options: --network default
       backend:
         image: ghcr.io/meeorder/meeorder-backend-test:${{github.sha}}
         credentials:
@@ -79,7 +78,6 @@ jobs:
           password: ${{ secrets.CR_PAT }}
         ports:
           - 4000:80
-        options: --network default
         env:
           MONGO_URI: mongodb://db:27017
           MONGO_DB_NAME: meeorder
@@ -89,6 +87,8 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
+      - name: Curl Test
+        run: curl -X GET http://localhost:4000/api/v1/health/ping
       - run: npm install -g pnpm
       - run: pnpm install
       - run: pnpm run test:cucumber
