@@ -57,17 +57,10 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-      - name: Start MongoDB
-        uses: supercharge/mongodb-github-action@1.8.0
-        with:
-          mongodb-version: ${{ matrix.mongodb-version }}
-          mongodb-db: meeorder
       - run: npm install -g pnpm
       - run: pnpm install
       - run: pnpm run lint
       - run: pnpm run test
-        env:
-          MONGO_URI: mongodb://localhost:27017/meeorder
 
   e2e:
     runs-on: ubuntu-latest
