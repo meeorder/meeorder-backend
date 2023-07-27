@@ -33,7 +33,7 @@
       "runtimeVersion": "18",
       "env": {
         "NODE_ENV": "development",
-        "MONGO_URI": "mongodb://localhost:27017/",
+        "MONGO_URI": "mongodb://localhost:27017/meeorder",
         "BASE_URL": "http://127.0.0.1:4000"
       },
       "envFile": "${workspaceFolder}/.env"

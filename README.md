@@ -1,5 +1,17 @@
 # MeeOrder (Backend)
 
+## Index
+
+- [Prerequisite](#prerequisite)
+- [Preparing Project](#preparing-project)
+- [Cloning the project](#cloning-the-project)
+- [Install dependencies](#install-dependencies)
+- [Setting MongoDB URI](#setting-mongodb-uri)
+- [Docker](#docker)
+- [Run the project](#run-the-project)
+- [Guideline](#guideline)
+- [E2E (Cucumber)](#e2e-cucumber)
+
 ## Prerequisite
 
 - mongodb
@@ -40,6 +52,7 @@ There are two way to set the MongoDB URI
 3. Change the value to your MongoDB URI
 
 ### Docker
+
 ```shell
 $ docker compose up -d mongo
 ```
@@ -218,3 +231,8 @@ export class HealthController {
   }
 }
 ```
+
+## E2E Cucumber
+
+- Cucumber spec file: [https://cucumber.io/docs/gherkin/](https://cucumber.io/docs/gherkin/)
+- Cucumber step defination file: [https://github.com/timjroberts/cucumber-js-tsflow](https://github.com/timjroberts/cucumber-js-tsflow#create-the-support-files-to-support-the-feature)

@@ -70,30 +70,28 @@ jobs:
           MONGO_URI: mongodb://localhost:27017/meeorder
 
   e2e:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [18.x]
-        mongodb-version: ['6.0']
+    runs-on: ubuntu-latest]
     services:
       db:
-        image: mongo:${{ matrix.mongodb-version }}
+        image: mongo:6
         ports:
           - 27017:27017
       backend:
         image: ghcr.io/meeorder/meeorder-backend-test:${{github.sha}}
         ports:
-          - 3000:80
+          - 4000:80
         env:
           MONGO_URI: mongodb://db:27017
     steps:
       - uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js 18
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 18
       - run: npm install -g pnpm
       - run: pnpm install
       - run: pnpm run test:cucumber
         env:
-          BASE_URL: http://localhost:3000
+          BASE_URL: http://localhost:4000
+          MONGO_URI: mongodb://localhost:27017
+          MONGO_DB_NAME: meeorder
