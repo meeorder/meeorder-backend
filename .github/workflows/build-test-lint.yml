@@ -54,7 +54,10 @@ jobs:
           services: |
             mongo
             backend
-
+      - name: Sleep for 15 seconds
+        uses: jakejarvis/wait-action@master
+        with:
+          time: '15s'
       - name: Curl Test
         run: curl -X GET http://localhost:4000/api/v1/health/ping
       - run: npm install -g pnpm
