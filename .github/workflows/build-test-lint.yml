@@ -71,6 +71,7 @@ jobs:
         image: mongo:6
         ports:
           - 27017:27017
+        options: --network default
       backend:
         image: ghcr.io/meeorder/meeorder-backend-test:${{github.sha}}
         credentials:
@@ -78,6 +79,7 @@ jobs:
           password: ${{ secrets.CR_PAT }}
         ports:
           - 4000:80
+        options: --network default
         env:
           MONGO_URI: mongodb://db:27017
           MONGO_DB_NAME: meeorder
@@ -91,6 +93,6 @@ jobs:
       - run: pnpm install
       - run: pnpm run test:cucumber
         env:
-          BASE_URL: http://backend:4000
-          MONGO_URI: mongodb://db:27017
+          BASE_URL: http://localhost:4000
+          MONGO_URI: mongodb://localhost:27017
           MONGO_DB_NAME: meeorder
