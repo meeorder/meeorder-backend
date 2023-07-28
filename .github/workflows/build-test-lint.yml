@@ -48,21 +48,22 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
-      - uses: isbang/compose-action@v1.5.0
-        with:
-          compose-file: './docker-compose.yml'
-          services: |
-            mongo
-            backend
-      - name: Sleep for 15 seconds
-        uses: jakejarvis/wait-action@master
-        with:
-          time: '15s'
-      - name: Curl Test
-        run: curl -X GET http://localhost:4000/api/v1/health/ping
       - run: npm install -g pnpm
       - run: pnpm install
-      - run: pnpm run test:cucumber
+      - name: Start MongoDB
+        uses: supercharge/mongodb-github-action@1.8.0
+        with:
+          mongodb-version: '6.0'
+      - name: Start Backend Server
+        run: pnpm run start:pm2
+        env:
+          MONGO_URI: mongodb://localhost:27017
+          MONGO_DB_NAME: meeorder
+          PORT: 4000
+      - name: Curl Test
+        run: curl -X GET http://localhost:4000/api/v1/health/ping
+      - name: Run Cucumber Test
+        run: pnpm run test:cucumber
         env:
           BASE_URL: http://localhost:4000
           MONGO_URI: mongodb://localhost:27017
