@@ -54,14 +54,18 @@ jobs:
         uses: supercharge/mongodb-github-action@1.8.0
         with:
           mongodb-version: '6.0'
+      - name: Build Backend
+        run: pnpm run build
       - name: Start Backend Server
         run: pnpm run start:pm2
         env:
           MONGO_URI: mongodb://localhost:27017
           MONGO_DB_NAME: meeorder
           PORT: 4000
-      - name: Curl Test
-        run: curl -X GET http://localhost:4000/api/v1/health/ping
+      - name: Waiting Service
+        run: chmod +x ./.github/wait.sh && ./.github/wait.sh ${{env.TEST_URL}}
+        env:
+          TEST_URL: http://localhost:4000/api/v1/health/ping
       - name: Run Cucumber Test
         run: pnpm run test:cucumber
         env:
