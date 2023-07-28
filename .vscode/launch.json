@@ -18,7 +18,7 @@
         "NODE_ENV": "development",
         "PORT": "4000",
         "MONGO_URI": "mongodb://localhost:27017",
-        "MONGODB_NAME": "meeorder"
+        "MONGO_DB_NAME": "meeorder"
       },
       "envFile": "${workspaceFolder}/.env"
     },
@@ -36,7 +36,7 @@
         "NODE_ENV": "development",
         "MONGO_URI": "mongodb://localhost:27017/meeorder",
         "BASE_URL": "http://127.0.0.1:4000",
-        "MONGODB_NAME": "meeorder"
+        "MONGO_DB_NAME": "meeorder"
       },
       "envFile": "${workspaceFolder}/.env"
     }
