@@ -1,8 +1,7 @@
 import { CategorySchema } from '@/schema/categories.schema';
-import { DeleteResult } from '@/types/delete-result.type';
 import { Injectable } from '@nestjs/common';
 import { ReturnModelType } from '@typegoose/typegoose';
-import { Types } from 'mongoose';
+import { Types, mongo } from 'mongoose';
 import { InjectModel } from 'nest-typegoose';
 import { CategoryDto } from './dto/category.dto';
 
@@ -39,7 +38,7 @@ export class CategoriesService {
     return doc;
   }
 
-  deleteCategory(id: string): Promise<DeleteResult> {
+  deleteCategory(id: string): Promise<mongo.DeleteResult> {
     return this.categoryModel.deleteOne({ _id: id }).exec();
   }
 }
