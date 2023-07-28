@@ -59,16 +59,16 @@ jobs:
       - name: Start Backend Server
         run: pnpm run start:pm2
         env:
-          MONGO_URI: mongodb://localhost:27017
+          MONGO_URI: mongodb://127.0.0.1:27017
           MONGO_DB_NAME: meeorder
           PORT: 4000
       - name: Waiting Service
         run: chmod +x ./.github/wait.sh && ./.github/wait.sh ${{env.TEST_URL}}
         env:
-          TEST_URL: http://localhost:4000/api/v1/health/ping
+          TEST_URL: http://127.0.0.1:4000/api/v1/health/ping
       - name: Run Cucumber Test
         run: pnpm run test:cucumber
         env:
-          BASE_URL: http://localhost:4000
-          MONGO_URI: mongodb://localhost:27017
+          BASE_URL: http://127.0.0.1:4000
+          MONGO_URI: mongodb://127.0.0.1:27017
           MONGO_DB_NAME: meeorder
