@@ -6,6 +6,7 @@ import { configuration } from './config';
 import { TypegooseConfigService } from './config/typegoose.config.service';
 import { HealthModule } from './health/health.module';
 import { SessionModule } from './session/session.module';
+import { TablesModule } from './tables/tables.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { SessionModule } from './session/session.module';
       useClass: TypegooseConfigService,
     }),
     SessionModule,
+    TablesModule,
   ],
 })
 export class AppModule {}
