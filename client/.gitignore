@@ -1,0 +1,5 @@
+*
+!.gitignore
+!openapitools.json
+!package.json
+!pnpm-lock.yaml

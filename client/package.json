@@ -1,0 +1,16 @@
+{
+  "name": "@meeorder/client",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "generate": "npx @openapitools/openapi-generator-cli generate",
+    "build": "tsc -p ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "@openapitools/openapi-generator-cli": "2.7.0"
+  }
+}
