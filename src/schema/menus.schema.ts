@@ -34,7 +34,7 @@ export class MenuSchema {
 
   @Prop({ default: null })
   @ApiProperty()
-  created_at: Date;
+  published_at: Date;
 
   @Prop({ default: null })
   @ApiProperty()
