@@ -96,9 +96,8 @@ export class MenusService {
         },
       },
     ];
-    const menu = await this.menuModel.aggregate(script).exec();
-    console.log(menu);
-    return menu[0];
+    const menu = await this.menuModel.aggregate(script).exec()[0];
+    return menu;
   }
 
   async createMenu(menuData: CreateMenuDto): Promise<MenuSchema> {
