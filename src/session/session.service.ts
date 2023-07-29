@@ -1,5 +1,5 @@
 import { SessionSchema } from '@/schema/session.schema';
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { DocumentType, ReturnModelType } from '@typegoose/typegoose';
 import { Types } from 'mongoose';
 import { InjectModel } from 'nest-typegoose';
@@ -41,7 +41,6 @@ export class SessionService {
         finished_at: null,
         deleted_at: null,
       })
-      .orFail()
       .exec();
 
     return session;
@@ -63,5 +62,15 @@ export class SessionService {
       .updateOne({ _id: id, deleted_at: null }, { deleted_at: new Date() })
       .orFail()
       .exec();
+  }
+
+  async validateTableHasSession(table: number) {
+    const doc = await this.getSessionByTable(table);
+    if (doc) {
+      throw new HttpException(
+        `Table ${table} doesn't have an active session`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 }

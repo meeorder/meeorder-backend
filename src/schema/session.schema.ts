@@ -34,7 +34,7 @@ export class SessionSchema {
   })
   uid: string;
 
-  @Prop({ required: true, ref: TablesSchema })
+  @Prop({ required: true, ref: TablesSchema, type: Number })
   @ApiProperty({ type: Number, description: 'Table ID' })
   table: Ref<TablesSchema, number>;
 

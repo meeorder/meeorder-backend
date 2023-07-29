@@ -11,6 +11,7 @@ import {
   HttpException,
   HttpStatus,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -18,8 +19,8 @@ import {
 import { ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { MongooseError, Types } from 'mongoose';
 
-@Controller('session')
-@ApiTags('session')
+@Controller('sessions')
+@ApiTags('sessions')
 export class SessionController {
   constructor(private readonly sessionService: SessionService) {}
 
@@ -46,16 +47,13 @@ export class SessionController {
   })
   @ApiParam({ name: 'id', type: Number, description: 'Table ID' })
   @Get('table/:id')
-  getSessionByTable(@Param('id') id: number) {
-    try {
-      return this.sessionService.getSessionByTable(id);
-    } catch (e) {
-      if (e instanceof MongooseError) {
-        throw new HttpException('Session not found', HttpStatus.NOT_FOUND);
-      } else {
-        throw e;
-      }
+  async getSessionByTable(@Param('id', new ParseIntPipe()) id: number) {
+    const doc = await this.sessionService.getSessionByTable(id);
+    if (!doc) {
+      throw new HttpException('Session not found', HttpStatus.NOT_FOUND);
     }
+
+    return doc;
   }
 
   @ApiResponse({
@@ -65,8 +63,10 @@ export class SessionController {
   })
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  createSession(@Body() dto: CreateSessionDto) {
-    return this.sessionService.createSession(dto.table, dto.uid);
+  async createSession(@Body() dto: CreateSessionDto) {
+    await this.sessionService.validateTableHasSession(dto.table);
+    const doc = await this.sessionService.createSession(dto.table, dto.uid);
+    return doc;
   }
 
   @ApiResponse({
