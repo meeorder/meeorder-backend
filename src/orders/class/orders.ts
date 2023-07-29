@@ -5,6 +5,7 @@ export class Orders {
   @ApiProperty({ type: String, description: 'menu is ObjectID' })
   @IsMongoId()
   menu: string;
+
   @ApiProperty({
     type: String,
     description: 'Array of ObjectID',
@@ -14,6 +15,7 @@ export class Orders {
   @IsOptional()
   @IsMongoId({ each: true })
   addons?: string[];
+
   @ApiProperty({ type: String, required: false })
   @IsString()
   @IsOptional()

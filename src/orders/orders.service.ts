@@ -11,6 +11,7 @@ export class OrdersService {
     @InjectModel(OrdersSchema)
     private readonly orderModel: ReturnModelType<typeof OrdersSchema>,
   ) {}
+
   async createOrder(createOrderDto: CreateOrderDto) {
     const insertObject = createOrderDto.orders.map((food_element) => {
       const element = new OrdersSchema();
@@ -24,7 +25,8 @@ export class OrdersService {
     });
     await this.orderModel.insertMany(insertObject);
   }
+
   async findBySessionId(id: Types.ObjectId) {
-    return this.orderModel.find({ session: id }).exec();
+    return await this.orderModel.find({ session: id }).exec();
   }
 }

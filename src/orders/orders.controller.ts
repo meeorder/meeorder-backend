@@ -7,6 +7,7 @@ import { OrdersService } from './orders.service';
 @ApiTags('orders')
 export class OrdersController {
   constructor(private ordersService: OrdersService) {}
+
   @Post()
   @ApiTags('orders')
   @ApiBody({ type: CreateOrderDto })
