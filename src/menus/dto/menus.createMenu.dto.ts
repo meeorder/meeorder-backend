@@ -21,4 +21,10 @@ export class CreateMenuDto {
   @ApiProperty()
   @Transform(({ value }) => value.map((v) => new Types.ObjectId(v)))
   addons: Types.ObjectId[];
+
+  @ApiProperty()
+  published_at: Date;
+
+  @ApiProperty()
+  deleted_at: Date;
 }

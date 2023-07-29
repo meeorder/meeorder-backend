@@ -31,4 +31,12 @@ export class MenuSchema {
   @Prop()
   @ApiProperty()
   addons: Types.ObjectId[];
+
+  @Prop({ default: null })
+  @ApiProperty()
+  created_at: Date;
+
+  @Prop({ default: null })
+  @ApiProperty()
+  deleted_at: Date;
 }
