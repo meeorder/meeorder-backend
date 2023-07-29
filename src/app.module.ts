@@ -5,6 +5,7 @@ import { CategoriesModule } from './categories/categories.module';
 import { configuration } from './config';
 import { TypegooseConfigService } from './config/typegoose.config.service';
 import { HealthModule } from './health/health.module';
+import { TablesModule } from './tables/tables.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { HealthModule } from './health/health.module';
     TypegooseModule.forRootAsync({
       useClass: TypegooseConfigService,
     }),
+    TablesModule,
   ],
 })
 export class AppModule {}
