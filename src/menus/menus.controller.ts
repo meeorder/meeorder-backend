@@ -3,8 +3,6 @@ import { DeleteMenusDto } from '@/menus/dto/menus.deleteMenus.dto';
 import { GetAllMenuResponseDto } from '@/menus/dto/menus.getAllMenuResponse.dto';
 import { GetMenuByIdResponseDto } from '@/menus/dto/menus.getMenuByIdReponse.dto';
 import { MenuSchema } from '@/schema/menus.schema';
-import { DeleteResponseDto } from '@/utils/dto/deleteResponse.dto';
-import { UpdateResponseDto } from '@/utils/dto/updateResponse.dto';
 import {
   Body,
   Controller,
@@ -66,7 +64,6 @@ export class MenusController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'The menu has been successfully updated.',
-    type: () => UpdateResponseDto,
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
@@ -83,7 +80,6 @@ export class MenusController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'The menu has been successfully deleted.',
-    type: () => DeleteResponseDto,
   })
   @ApiResponse({
     status: HttpStatus.NO_CONTENT,
@@ -97,7 +93,6 @@ export class MenusController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'The menus have been successfully deleted.',
-    type: () => DeleteResponseDto,
   })
   @ApiResponse({
     status: HttpStatus.NO_CONTENT,
