@@ -1,7 +1,7 @@
 import { CreateMenuDto } from '@/menus/dto/menus.createMenu.dto';
-import { DeleteMenusDto } from '@/menus/dto/menus.deleteMenus.dto';
 import { GetAllMenuResponseDto } from '@/menus/dto/menus.getAllMenuResponse.dto';
 import { GetMenuByIdResponseDto } from '@/menus/dto/menus.getMenuByIdReponse.dto';
+import { ParseStringObjectIdArrayPipe } from '@/menus/menus.pipe';
 import { MenuSchema } from '@/schema/menus.schema';
 import {
   Body,
@@ -13,8 +13,10 @@ import {
   Param,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Types } from 'mongoose';
 import { MenusService } from './menus.service';
 @Controller('menus')
 @ApiTags('menus')
@@ -99,7 +101,9 @@ export class MenusController {
     description: 'No menu found',
   })
   @Delete()
-  async removeMenus(@Body() deleteMenuIds: DeleteMenusDto) {
-    await this.menuservice.deleteManyMenus(deleteMenuIds);
+  async removeMenus(
+    @Query('ids', new ParseStringObjectIdArrayPipe()) ids: Types.ObjectId[],
+  ) {
+    await this.menuservice.deleteManyMenus(ids);
   }
 }

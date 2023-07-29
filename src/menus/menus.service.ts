@@ -1,5 +1,4 @@
 import { CreateMenuDto } from '@/menus/dto/menus.createMenu.dto';
-import { DeleteMenusDto } from '@/menus/dto/menus.deleteMenus.dto';
 import { GetAllMenuResponseDto } from '@/menus/dto/menus.getAllMenuResponse.dto';
 import { GetMenuByIdResponseDto } from '@/menus/dto/menus.getMenuByIdReponse.dto';
 import { MenuSchema } from '@/schema/menus.schema';
@@ -111,9 +110,9 @@ export class MenusService {
     await this.menuModel.deleteOne({ _id: id }).exec();
   }
 
-  async deleteManyMenus(data: DeleteMenusDto) {
+  async deleteManyMenus(ids: Types.ObjectId[]) {
     const deleteManyScript = {
-      _id: { $in: data.ids },
+      _id: { $in: ids },
     };
     await this.menuModel.deleteMany(deleteManyScript).exec();
   }
