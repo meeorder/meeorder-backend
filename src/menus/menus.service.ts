@@ -3,12 +3,10 @@ import { DeleteMenusDto } from '@/menus/dto/menus.deleteMenus.dto';
 import { GetAllMenuResponseDto } from '@/menus/dto/menus.getAllMenuResponse.dto';
 import { GetMenuByIdResponseDto } from '@/menus/dto/menus.getMenuByIdReponse.dto';
 import { MenuSchema } from '@/schema/menus.schema';
-import { UpdateResponseDto } from '@/utils/dto/updateResponse.dto';
 import { Injectable } from '@nestjs/common';
 import { ReturnModelType } from '@typegoose/typegoose';
 import { Types } from 'mongoose';
 import { InjectModel } from 'nest-typegoose';
-import { DeleteResponseDto } from '../utils/dto/deleteResponse.dto';
 @Injectable()
 export class MenusService {
   constructor(
@@ -105,28 +103,18 @@ export class MenusService {
     return createdMenu;
   }
 
-  async updateOne(
-    id: string,
-    menuData: CreateMenuDto,
-  ): Promise<UpdateResponseDto> {
-    const updatedMenu = await this.menuModel
-      .updateOne({ _id: id }, menuData)
-      .exec();
-    return updatedMenu;
+  async updateOne(id: string, menuData: CreateMenuDto) {
+    await this.menuModel.updateOne({ _id: id }, menuData).exec();
   }
 
-  async deleteOneMenu(id: string): Promise<DeleteResponseDto> {
-    const deletedMenu = await this.menuModel.deleteOne({ _id: id }).exec();
-    return deletedMenu;
+  async deleteOneMenu(id: string) {
+    await this.menuModel.deleteOne({ _id: id }).exec();
   }
 
-  async deleteManyMenus(data: DeleteMenusDto): Promise<DeleteResponseDto> {
+  async deleteManyMenus(data: DeleteMenusDto) {
     const deleteManyScript = {
       _id: { $in: data.ids },
     };
-    const deletedMenus = await this.menuModel
-      .deleteMany(deleteManyScript)
-      .exec();
-    return deletedMenus;
+    await this.menuModel.deleteMany(deleteManyScript).exec();
   }
 }

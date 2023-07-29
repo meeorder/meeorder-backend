@@ -58,8 +58,6 @@ export class MenuTest {
     this.workspace.response = await this.workspace.axiosInstance.delete(
       `/menus/${this.menuId}`,
     );
-
-    expect(this.workspace.response.data.deletedCount).toBe(1);
   }
 
   @then('update this menu with name {string}')
@@ -79,5 +77,16 @@ export class MenuTest {
     );
 
     expect(this.workspace.response.data.name).toBe(newName);
+  }
+
+  @when('get this menu by the same id')
+  async getMenuById() {
+    try {
+      this.workspace.response = await this.workspace.axiosInstance.get(
+        `/menus/${this.menuId}`,
+      );
+    } catch (error) {
+      this.workspace.response = error.response;
+    }
   }
 }

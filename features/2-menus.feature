@@ -5,7 +5,8 @@ Feature: Menu Test
         Then should return status code 201
         And should return a same menu id when get by the same id
         When delete this menu
-        Then should return status code 200
+        And get this menu by the same id
+        Then should return status code 404
 
     Scenario: Update Menu
         Given a menu

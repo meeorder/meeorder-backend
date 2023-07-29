@@ -76,12 +76,8 @@ export class MenusController {
   async updateMenuById(
     @Param('id') id: string,
     @Body() foodData: CreateMenuDto,
-  ): Promise<UpdateResponseDto> {
-    const updatedMenu = await this.menuservice.updateOne(id, foodData);
-    if (updatedMenu.modifiedCount === 0) {
-      throw new HttpException('No menu updated', HttpStatus.NOT_FOUND);
-    }
-    return updatedMenu;
+  ) {
+    await this.menuservice.updateOne(id, foodData);
   }
 
   @ApiResponse({
@@ -94,12 +90,8 @@ export class MenusController {
     description: 'No menu found',
   })
   @Delete(':id')
-  async removeMenuById(@Param('id') id: string): Promise<DeleteResponseDto> {
-    const deletedMenu = await this.menuservice.deleteOneMenu(id);
-    if (deletedMenu.deletedCount === 0) {
-      throw new HttpException('No menu found', HttpStatus.NOT_FOUND);
-    }
-    return deletedMenu;
+  async removeMenuById(@Param('id') id: string) {
+    await this.menuservice.deleteOneMenu(id);
   }
 
   @ApiResponse({
@@ -112,13 +104,7 @@ export class MenusController {
     description: 'No menu found',
   })
   @Delete()
-  async removeMenus(
-    @Body() deleteMenuIds: DeleteMenusDto,
-  ): Promise<DeleteResponseDto> {
-    const deletedMenus = await this.menuservice.deleteManyMenus(deleteMenuIds);
-    if (deletedMenus.deletedCount === 0) {
-      throw new HttpException('No menu found', HttpStatus.NOT_FOUND);
-    }
-    return deletedMenus;
+  async removeMenus(@Body() deleteMenuIds: DeleteMenusDto) {
+    await this.menuservice.deleteManyMenus(deleteMenuIds);
   }
 }
