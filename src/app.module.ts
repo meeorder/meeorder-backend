@@ -1,3 +1,4 @@
+import { MenusModule } from '@/menus/menus.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypegooseModule } from 'nest-typegoose';
@@ -11,6 +12,7 @@ import { TablesModule } from './tables/tables.module';
   imports: [
     HealthModule,
     CategoriesModule,
+    MenusModule,
     ConfigModule.forRoot({
       load: [configuration],
       isGlobal: true,
