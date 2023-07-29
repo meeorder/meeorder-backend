@@ -1,6 +1,7 @@
 import { SessionSchema } from '@/schema/session.schema';
 import { Injectable } from '@nestjs/common';
-import { ReturnModelType } from '@typegoose/typegoose';
+import { DocumentType, ReturnModelType } from '@typegoose/typegoose';
+import { Types } from 'mongoose';
 import { InjectModel } from 'nest-typegoose';
 
 @Injectable()
@@ -19,27 +20,48 @@ export class SessionService {
     return session;
   }
 
-  async finishSession(sessionId: string) {
+  async finishSession(id: Types.ObjectId) {
     const result = await this.sessionModel
       .updateOne(
-        { _id: sessionId },
+        { _id: id, deleted_at: null },
         {
           finished_at: new Date(),
         },
       )
+      .orFail()
       .exec();
 
     return result;
   }
 
-  async getSessionByTable(table: number) {
+  async getSessionByTable(table: number): Promise<DocumentType<SessionSchema>> {
     const session = await this.sessionModel
       .findOne({
         table,
         finished_at: null,
+        deleted_at: null,
       })
+      .orFail()
       .exec();
 
     return session;
+  }
+
+  async getSessions(finished = false): Promise<DocumentType<SessionSchema>[]> {
+    const sessions = await this.sessionModel
+      .find({
+        finished_at: finished ? { $ne: null } : null,
+        deleted_at: null,
+      })
+      .exec();
+
+    return sessions;
+  }
+
+  deleteSession(id: Types.ObjectId) {
+    return this.sessionModel
+      .updateOne({ _id: id, deleted_at: null }, { deleted_at: new Date() })
+      .orFail()
+      .exec();
   }
 }
