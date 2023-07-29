@@ -3,6 +3,7 @@ import { Transform } from 'class-transformer';
 import { Types } from 'mongoose';
 
 export class CreateMenuDto {
+  @ApiProperty()
   image: string;
 
   @ApiProperty()
