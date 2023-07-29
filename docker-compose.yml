@@ -1,14 +1,14 @@
 services:
-  web:
+  backend:
     build: .
     ports:
-      - "1234:80"
+      - '4000:80'
     links:
-      - "mongo:database"
+      - 'mongo:database'
     environment:
       MONGO_URI: mongodb://database/meeorder
 
   mongo:
     image: mongo
     ports:
-      - "27017:27017"
+      - '27017:27017'
