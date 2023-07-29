@@ -1,3 +1,4 @@
+import { TablesSchema } from '@/schema/tables.schema';
 import { TablesDto } from '@/tables/dto/tables.dto';
 import { TablesService } from '@/tables/tables.service';
 import { Body, Controller, Get, HttpStatus, Post } from '@nestjs/common';
@@ -20,6 +21,8 @@ export class TablesController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Get tables',
+    type: () => TablesSchema,
+    isArray: true,
   })
   @Get()
   getTables() {
