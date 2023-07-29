@@ -86,7 +86,7 @@ export class MenusController {
     type: () => DeleteResponseDto,
   })
   @ApiResponse({
-    status: HttpStatus.NOT_FOUND,
+    status: HttpStatus.NO_CONTENT,
     description: 'No menu found',
   })
   @Delete(':id')
@@ -100,7 +100,7 @@ export class MenusController {
     type: () => DeleteResponseDto,
   })
   @ApiResponse({
-    status: HttpStatus.NOT_FOUND,
+    status: HttpStatus.NO_CONTENT,
     description: 'No menu found',
   })
   @Delete()
