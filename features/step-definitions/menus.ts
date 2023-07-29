@@ -4,7 +4,7 @@ import { ReturnModelType, getModelForClass } from '@typegoose/typegoose';
 import { binding, given, then, when } from 'cucumber-tsflow';
 import expect from 'expect';
 import { Workspace } from 'features/step-definitions/workspace';
-
+import { Types } from 'mongoose';
 @binding([Workspace])
 export class MenuTest {
   private readonly menuModel: ReturnModelType<typeof MenuSchema>;
@@ -26,8 +26,11 @@ export class MenuTest {
       name: 'Menu 1',
       description: 'Menu 1 description',
       price: 100,
-      category: '5f9d88b9c3b9c3b9c3b9c3be',
-      addons: ['5f9d88b9c3b9c3b9c3b9c3bc', '5f9d88b9c3b9c3b9c3b9c3bb'],
+      category: new Types.ObjectId('5f9d88b9c3b9c3b9c3b9c3ba'),
+      addons: [
+        new Types.ObjectId('5f9d88b9c3b9c3b9c3b9c3bc'),
+        new Types.ObjectId('5f9d88b9c3b9c3b9c3b9c3bb'),
+      ],
     };
   }
 
