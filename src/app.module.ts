@@ -1,5 +1,4 @@
 import { OrdersModule } from '@/orders/orders.module';
-import { SessionsModule } from '@/sessions/sessions.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypegooseModule } from 'nest-typegoose';
@@ -20,7 +19,6 @@ import { HealthModule } from './health/health.module';
       useClass: TypegooseConfigService,
     }),
     OrdersModule,
-    SessionsModule,
   ],
 })
 export class AppModule {}
