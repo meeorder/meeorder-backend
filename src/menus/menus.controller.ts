@@ -15,7 +15,7 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Types } from 'mongoose';
 import { MenusService } from './menus.service';
 @Controller('menus')
@@ -29,9 +29,12 @@ export class MenusController {
     type: () => GetAllMenuResponseDto,
     isArray: true,
   })
+  @ApiQuery({ name: 'status', enum: ['published', 'draft', 'all'] })
   @Get()
-  async getMenus(): Promise<GetAllMenuResponseDto[]> {
-    return await this.menuservice.findAllMenus();
+  async getMenus(
+    @Query('status') status: string = 'published',
+  ): Promise<GetAllMenuResponseDto[]> {
+    return await this.menuservice.findAllMenus(status);
   }
 
   @ApiResponse({
