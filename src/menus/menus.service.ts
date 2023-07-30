@@ -147,4 +147,8 @@ export class MenusService {
     const currentDate = new Date();
     await this.menuModel.updateOne({ _id: id }, { published_at: currentDate });
   }
+
+  async unpublishMenu(id: string) {
+    await this.menuModel.updateOne({ _id: id }, { published_at: null });
+  }
 }

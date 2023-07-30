@@ -123,4 +123,17 @@ export class MenusController {
   async publishMenuById(@Param('id') id: string) {
     await this.menuservice.publishMenu(id);
   }
+
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'The menu has been successfully unpublished.',
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'No menu found',
+  })
+  @Patch(':id/unpublish')
+  async unpublishMenuById(@Param('id') id: string) {
+    await this.menuservice.unpublishMenu(id);
+  }
 }
