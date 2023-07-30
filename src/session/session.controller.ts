@@ -11,7 +11,6 @@ import {
   HttpException,
   HttpStatus,
   Param,
-  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -36,6 +35,21 @@ export class SessionController {
     return this.sessionService.getSessions(finished);
   }
 
+  @ApiParam({ name: 'id', type: String, description: 'Session ID (ObjectID)' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Session',
+    type: () => SessionSchema,
+  })
+  @Get(':id')
+  async getSession(@Param('id', new ParseMongoIdPipe()) id: Types.ObjectId) {
+    const doc = await this.sessionService.getSessionById(id);
+    if (!doc) {
+      throw new HttpException(`Session ${id} not found`, HttpStatus.NOT_FOUND);
+    }
+    return doc;
+  }
+
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Session',
@@ -43,14 +57,17 @@ export class SessionController {
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
-    description: 'Session not found',
+    description: 'No session found in the table',
   })
   @ApiParam({ name: 'id', type: Number, description: 'Table ID' })
   @Get('table/:id')
-  async getSessionByTable(@Param('id', new ParseIntPipe()) id: number) {
+  async getSessionByTable(@Param('id') id: number) {
     const doc = await this.sessionService.getSessionByTable(id);
     if (!doc) {
-      throw new HttpException('Session not found', HttpStatus.NOT_FOUND);
+      throw new HttpException(
+        `No session found in the table ${id}`,
+        HttpStatus.NOT_FOUND,
+      );
     }
 
     return doc;

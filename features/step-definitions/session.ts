@@ -69,6 +69,13 @@ export class SessionStepDefination {
     );
   }
 
+  @when('get session {string}')
+  async getSessionById(id: string) {
+    this.workspace.response = await this.workspace.axiosInstance.get(
+      `/sessions/${id}`,
+    );
+  }
+
   @then('should session appear in database')
   async shouldSessionAppearInDatabase() {
     const session = await this.sessionModel.findById(

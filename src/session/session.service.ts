@@ -46,6 +46,15 @@ export class SessionService {
     return session;
   }
 
+  getSessionById(id: Types.ObjectId): Promise<DocumentType<SessionSchema>> {
+    return this.sessionModel
+      .findOne({
+        _id: id,
+        deleted_at: null,
+      })
+      .exec();
+  }
+
   async getSessions(finished = false): Promise<DocumentType<SessionSchema>[]> {
     const sessions = await this.sessionModel
       .find({
@@ -68,7 +77,7 @@ export class SessionService {
     const doc = await this.getSessionByTable(table);
     if (doc) {
       throw new HttpException(
-        `Table ${table} doesn't have an active session`,
+        `Table ${table} has session ${doc._id}`,
         HttpStatus.BAD_REQUEST,
       );
     }

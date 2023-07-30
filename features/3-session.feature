@@ -36,3 +36,15 @@ Feature: Session
     When get all sessions
     Then should return status code 200
     Then should not finished session appear
+
+  Scenario: Get session
+    Given sessions
+      | _id                      | finished_at | table |
+      | 64c5485a510698e8c9e7bdc0 |             | 1     |
+    When get session "64c5485a510698e8c9e7bdc0"
+    Then should return status code 200
+    Then should response data be
+      | key         | value                    | type   |
+      | _id         | 64c5485a510698e8c9e7bdc0 | string |
+      | finished_at |                          | null   |
+      | table       | 1                        | number |
