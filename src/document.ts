@@ -16,7 +16,7 @@ export class SwaggerBuilder {
       this.app,
       this.documentBuilder.build(),
     );
-    require('fs').writeFileSync('./swagger-spec.json', JSON.stringify(docs));
+
     SwaggerModule.setup('docs', this.app, docs);
   }
 }
