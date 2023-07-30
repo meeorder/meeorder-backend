@@ -11,11 +11,12 @@ import {
   HttpException,
   HttpStatus,
   Param,
+  Patch,
   Post,
   Put,
   Query,
 } from '@nestjs/common';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Types } from 'mongoose';
 import { MenusService } from './menus.service';
 @Controller('menus')
@@ -29,9 +30,12 @@ export class MenusController {
     type: () => GetAllMenuResponseDto,
     isArray: true,
   })
+  @ApiQuery({ name: 'status', enum: ['published', 'draft', 'all'] })
   @Get()
-  async getMenus(): Promise<GetAllMenuResponseDto[]> {
-    return await this.menuservice.findAllMenus();
+  async getMenus(
+    @Query('status') status: string = 'published',
+  ): Promise<GetAllMenuResponseDto[]> {
+    return await this.menuservice.findAllMenus(status);
   }
 
   @ApiResponse({
@@ -105,5 +109,31 @@ export class MenusController {
     @Query('ids', new ParseStringObjectIdArrayPipe()) ids: Types.ObjectId[],
   ) {
     await this.menuservice.deleteManyMenus(ids);
+  }
+
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'The menu has been successfully published.',
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'No menu found',
+  })
+  @Patch(':id/publish')
+  async publishMenuById(@Param('id') id: string) {
+    await this.menuservice.publishMenu(id);
+  }
+
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'The menu has been successfully unpublished.',
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'No menu found',
+  })
+  @Patch(':id/unpublish')
+  async unpublishMenuById(@Param('id') id: string) {
+    await this.menuservice.unpublishMenu(id);
   }
 }

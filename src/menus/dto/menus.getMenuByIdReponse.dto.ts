@@ -16,9 +16,17 @@ export class GetMenuByIdResponseDto {
   @ApiProperty()
   price: number;
 
-  @ApiProperty()
+  @ApiProperty({
+    type: String,
+  })
   category: Types.ObjectId;
 
   @ApiProperty({ type: AddonSchema, isArray: true })
   addons: AddonSchema[];
+
+  @ApiProperty()
+  published_at: Date;
+
+  @ApiProperty()
+  deleted_at: Date;
 }
