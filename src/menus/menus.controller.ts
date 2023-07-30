@@ -119,7 +119,7 @@ export class MenusController {
     status: HttpStatus.NOT_FOUND,
     description: 'No menu found',
   })
-  @Patch(':id')
+  @Patch(':id/publish')
   async publishMenuById(@Param('id') id: string) {
     await this.menuservice.publishMenu(id);
   }

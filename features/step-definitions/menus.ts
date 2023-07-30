@@ -93,7 +93,7 @@ export class MenuTest {
   @when('publish this menu')
   async publishMenu() {
     this.workspace.response = await this.workspace.axiosInstance.patch(
-      `/menus/${this.menuId}`,
+      `/menus/${this.menuId}/publish`,
     );
   }
 }
