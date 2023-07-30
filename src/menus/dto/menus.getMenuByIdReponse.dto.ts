@@ -16,7 +16,9 @@ export class GetMenuByIdResponseDto {
   @ApiProperty()
   price: number;
 
-  @ApiProperty()
+  @ApiProperty({
+    type: String,
+  })
   category: Types.ObjectId;
 
   @ApiProperty({ type: AddonSchema, isArray: true })
