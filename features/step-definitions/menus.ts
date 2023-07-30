@@ -1,6 +1,6 @@
 import { CreateMenuDto } from '@/menus/dto/menus.createMenu.dto';
 import { MenuSchema } from '@/schema/menus.schema';
-import { ReturnModelType, getModelForClass } from '@typegoose/typegoose';
+import { ReturnModelType } from '@typegoose/typegoose';
 import { binding, given, then, when } from 'cucumber-tsflow';
 import expect from 'expect';
 import { Workspace } from 'features/step-definitions/workspace';
@@ -10,9 +10,7 @@ export class MenuTest {
   private readonly menuModel: ReturnModelType<typeof MenuSchema>;
 
   constructor(private readonly workspace: Workspace) {
-    this.menuModel = getModelForClass(MenuSchema, {
-      existingConnection: this.workspace.mongooseConnection,
-    });
+    this.menuModel = this.workspace.datasource.getModel(MenuSchema);
   }
 
   private menuData: CreateMenuDto;
