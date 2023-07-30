@@ -6,6 +6,8 @@ import { Types } from 'mongoose';
   schemaOptions: { collection: 'addons' },
 })
 export class AddonSchema {
+  @Prop({ auto: true })
+  @ApiProperty({ type: String, description: 'Addon ID' })
   _id: Types.ObjectId;
 
   @Prop({ required: true })
@@ -18,5 +20,5 @@ export class AddonSchema {
 
   @Prop({ default: null })
   @ApiProperty()
-  delete_at: Date;
+  deleted_at: Date;
 }

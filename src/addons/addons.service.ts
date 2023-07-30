@@ -19,16 +19,16 @@ export class AddonsService {
   }
 
   async getAllAddons() {
-    return await this.addonModel.find({ delete_at: null }).exec();
+    return await this.addonModel.find({ deleted_at: null }).exec();
   }
 
   async getAddonById(id: string) {
-    return await this.addonModel.findOne({ _id: id, delete_at: null }).exec();
+    return await this.addonModel.findOne({ _id: id, deleted_at: null }).exec();
   }
 
-  async updateAddon(id: string, updateaddon: CreateAddonDto) {
+  async updateAddon(id: string, updateAddon: CreateAddonDto) {
     return await this.addonModel
-      .findOneAndUpdate({ _id: id, delete_at: null }, updateaddon, {
+      .findOneAndUpdate({ _id: id, deleted_at: null }, updateAddon, {
         new: true,
       })
       .exec();
@@ -36,7 +36,7 @@ export class AddonsService {
 
   deleteAddon(id: string) {
     return this.addonModel
-      .updateOne({ _id: id }, { delete_at: new Date() })
+      .updateOne({ _id: id }, { deleted_at: new Date() })
       .exec();
   }
 }
