@@ -45,4 +45,9 @@ export class Workspace {
   shouldAppearInResponse(key: string) {
     expect(this.response.data).toHaveProperty(key);
   }
+
+  @then('{string} field should not be null in response')
+  fieldShouldBeNullInResponse(key: string) {
+    expect(this.response.data[key]).not.toBeNull();
+  }
 }
