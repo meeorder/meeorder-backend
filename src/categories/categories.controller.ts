@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   HttpStatus,
   Param,
   Post,
@@ -17,6 +18,7 @@ import { CategoryDto } from './dto/category.dto';
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
+  @HttpCode(HttpStatus.CREATED)
   @ApiResponse({
     status: HttpStatus.CREATED,
     description: 'Created new category',
@@ -53,6 +55,7 @@ export class CategoriesController {
     return this.categoriesService.updateCategory(id, doc);
   }
 
+  @HttpCode(HttpStatus.NO_CONTENT)
   @ApiResponse({
     status: HttpStatus.NO_CONTENT,
     description: 'Delete category',
