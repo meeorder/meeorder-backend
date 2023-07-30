@@ -14,7 +14,9 @@ export class CreateMenuDto {
   @ApiProperty()
   price: number;
 
-  @ApiProperty()
+  @ApiProperty({
+    type: String,
+  })
   @Transform(({ value }) => new Types.ObjectId(value))
   category: Types.ObjectId;
 
