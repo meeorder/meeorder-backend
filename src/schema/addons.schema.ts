@@ -1,4 +1,5 @@
-import { modelOptions } from '@typegoose/typegoose';
+import { ApiProperty } from '@nestjs/swagger';
+import { Prop, modelOptions } from '@typegoose/typegoose';
 import { Types } from 'mongoose';
 
 @modelOptions({
@@ -6,4 +7,16 @@ import { Types } from 'mongoose';
 })
 export class AddonSchema {
   _id: Types.ObjectId;
+
+  @Prop({ required: true })
+  @ApiProperty()
+  title: string;
+
+  @Prop()
+  @ApiProperty()
+  price: number;
+
+  @Prop({ default: null })
+  @ApiProperty()
+  delete_at: Date;
 }
