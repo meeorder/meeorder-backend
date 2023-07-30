@@ -13,7 +13,7 @@ export class MenusService {
     private readonly menuModel: ReturnModelType<typeof MenuSchema>,
   ) {}
 
-  getAddonInfoScript = [
+  private readonly getAddonInfoScript = [
     {
       $unwind: {
         path: '$addons',
@@ -56,7 +56,7 @@ export class MenusService {
     },
   ];
 
-  groupCategoryScript = [
+  private readonly groupCategoryScript = [
     {
       $lookup: {
         from: 'categories',
@@ -129,13 +129,22 @@ export class MenusService {
   }
 
   async deleteOneMenu(id: string) {
-    await this.menuModel.deleteOne({ _id: id }).exec();
+    const currentDate = new Date();
+    await this.menuModel.updateOne({ _id: id }, { deleted_at: currentDate });
   }
 
   async deleteManyMenus(ids: Types.ObjectId[]) {
+    const currentDate = new Date();
     const deleteManyScript = {
       _id: { $in: ids },
     };
-    await this.menuModel.deleteMany(deleteManyScript).exec();
+    await this.menuModel.updateMany(deleteManyScript, {
+      deleted_at: currentDate,
+    });
+  }
+
+  async publishMenu(id: string) {
+    const currentDate = new Date();
+    await this.menuModel.updateOne({ _id: id }, { published_at: currentDate });
   }
 }
