@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Transform, Type } from 'class-transformer';
-import { IsDate, IsOptional } from 'class-validator';
+import { Transform } from 'class-transformer';
 import { Types } from 'mongoose';
 export class CreateMenuDto {
   @ApiProperty()
@@ -22,16 +21,4 @@ export class CreateMenuDto {
   @ApiProperty()
   @Transform(({ value }) => value.map((v) => new Types.ObjectId(v)))
   addons: Types.ObjectId[];
-
-  @ApiProperty()
-  @IsOptional()
-  @Type(() => Date)
-  @IsDate()
-  published_at: Date = null;
-
-  @ApiProperty()
-  @IsOptional()
-  @Type(() => Date)
-  @IsDate()
-  deleted_at: Date = null;
 }
