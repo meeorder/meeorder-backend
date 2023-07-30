@@ -26,11 +26,12 @@ export class CreateMenuDto {
   @ApiProperty()
   @IsOptional()
   @Type(() => Date)
+  @IsDate()
   published_at: Date = null;
 
   @ApiProperty()
-  @Type(() => Date)
   @IsOptional()
+  @Type(() => Date)
   @IsDate()
   deleted_at: Date = null;
 }
