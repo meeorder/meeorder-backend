@@ -12,7 +12,7 @@ export class AddonSchema {
   @ApiProperty()
   title: string;
 
-  @Prop()
+  @Prop({ required: true })
   @ApiProperty()
   price: number;
 

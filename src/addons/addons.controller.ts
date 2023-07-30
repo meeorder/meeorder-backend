@@ -18,6 +18,7 @@ import { AddonsService } from './addons.service';
 export class AddonsController {
   constructor(private readonly addonService: AddonsService) {}
 
+  @HttpCode(HttpStatus.CREATED)
   @ApiResponse({
     status: HttpStatus.CREATED,
     description: 'Create addon',
