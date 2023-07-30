@@ -19,6 +19,8 @@ jobs:
           dir: './'
           pattern: 'swagger-spec.json'
           debug: 'true'
+        env:
+          SWAGGER_JSON_URL: https://meeorder.github.io/meeorder-backend/apis/swagger-spec.json
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
