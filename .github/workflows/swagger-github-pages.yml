@@ -21,7 +21,16 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: npm install -g pnpm
       - run: pnpm install
-      - run: pnpm run test:e2e
+      - name: Start MongoDB
+        uses: supercharge/mongodb-github-action@1.8.0
+        with:
+          mongodb-version: '6.0'
+      - name: Generate Swaggon json
+        run: pnpm run test:e2e
+        env:
+          BASE_URL: http://127.0.0.1:4000
+          MONGO_URI: mongodb://127.0.0.1:27017
+          MONGO_DB_NAME: meeorder
       - name: Generate Swagger UI
         uses: Legion2/swagger-ui-action@v1
         with:
