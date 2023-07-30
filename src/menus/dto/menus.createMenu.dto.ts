@@ -1,42 +1,31 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { modelOptions, Prop } from '@typegoose/typegoose';
+import { Transform } from 'class-transformer';
 import { Types } from 'mongoose';
 
-@modelOptions({
-  schemaOptions: { collection: 'menus' },
-})
-export class MenuSchema {
-  _id: Types.ObjectId;
-
-  @Prop()
+export class CreateMenuDto {
   @ApiProperty()
   image: string;
 
-  @Prop()
   @ApiProperty()
   name: string;
 
-  @Prop()
   @ApiProperty()
   description: string;
 
-  @Prop()
   @ApiProperty()
   price: number;
 
-  @Prop()
   @ApiProperty()
+  @Transform(({ value }) => new Types.ObjectId(value))
   category: Types.ObjectId;
 
-  @Prop()
   @ApiProperty()
+  @Transform(({ value }) => value.map((v) => new Types.ObjectId(v)))
   addons: Types.ObjectId[];
 
-  @Prop({ default: null })
   @ApiProperty()
   published_at: Date;
 
-  @Prop({ default: null })
   @ApiProperty()
   deleted_at: Date;
 }
