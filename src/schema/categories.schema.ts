@@ -4,6 +4,8 @@ import { Types } from 'mongoose';
 
 @modelOptions({ schemaOptions: { collection: 'categories' } })
 export class CategorySchema {
+  @Prop({ auto: true })
+  @ApiProperty({ type: String, description: 'Category ID' })
   _id: Types.ObjectId;
 
   @Prop({ required: true })

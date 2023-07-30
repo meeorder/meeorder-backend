@@ -67,6 +67,11 @@ export class Workspace {
     expect(this.response.data).toHaveProperty(key);
   }
 
+  @then('{string} field should not be null in response')
+  fieldShouldBeNullInResponse(key: string) {
+    expect(this.response.data[key]).not.toBeNull();
+  }
+
   @then('should response data be')
   shouldResponseDataBe(dt: DataTable) {
     const expected = Workspace.responseDtMapType(

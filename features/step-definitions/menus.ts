@@ -29,8 +29,6 @@ export class MenuTest {
         new Types.ObjectId('5f9d88b9c3b9c3b9c3b9c3bc'),
         new Types.ObjectId('5f9d88b9c3b9c3b9c3b9c3bb'),
       ],
-      published_at: new Date(),
-      deleted_at: null,
     };
   }
 
@@ -88,5 +86,12 @@ export class MenuTest {
     } catch (error) {
       this.workspace.response = error.response;
     }
+  }
+
+  @when('publish this menu')
+  async publishMenu() {
+    this.workspace.response = await this.workspace.axiosInstance.patch(
+      `/menus/${this.menuId}/publish`,
+    );
   }
 }

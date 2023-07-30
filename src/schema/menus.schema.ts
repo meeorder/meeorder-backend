@@ -6,6 +6,8 @@ import { Types } from 'mongoose';
   schemaOptions: { collection: 'menus' },
 })
 export class MenuSchema {
+  @Prop({ auto: true })
+  @ApiProperty({ type: String, description: 'Menu ID' })
   _id: Types.ObjectId;
 
   @Prop()
@@ -25,7 +27,9 @@ export class MenuSchema {
   price: number;
 
   @Prop()
-  @ApiProperty()
+  @ApiProperty({
+    type: String,
+  })
   category: Types.ObjectId;
 
   @Prop()
