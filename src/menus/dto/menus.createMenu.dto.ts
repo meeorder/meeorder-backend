@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Transform } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
+import { IsDate, IsOptional } from 'class-validator';
 import { Types } from 'mongoose';
-
 export class CreateMenuDto {
   @ApiProperty()
   image: string;
@@ -24,8 +24,13 @@ export class CreateMenuDto {
   addons: Types.ObjectId[];
 
   @ApiProperty()
-  published_at: Date;
+  @IsOptional()
+  @Type(() => Date)
+  published_at: Date = null;
 
   @ApiProperty()
-  deleted_at: Date;
+  @Type(() => Date)
+  @IsOptional()
+  @IsDate()
+  deleted_at: Date = null;
 }

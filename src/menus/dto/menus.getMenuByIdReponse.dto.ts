@@ -21,4 +21,10 @@ export class GetMenuByIdResponseDto {
 
   @ApiProperty({ type: AddonSchema, isArray: true })
   addons: AddonSchema[];
+
+  @ApiProperty()
+  published_at: Date;
+
+  @ApiProperty()
+  deleted_at: Date;
 }
