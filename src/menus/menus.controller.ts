@@ -11,6 +11,7 @@ import {
   HttpException,
   HttpStatus,
   Param,
+  Patch,
   Post,
   Put,
   Query,
@@ -108,5 +109,18 @@ export class MenusController {
     @Query('ids', new ParseStringObjectIdArrayPipe()) ids: Types.ObjectId[],
   ) {
     await this.menuservice.deleteManyMenus(ids);
+  }
+
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'The menu has been successfully published.',
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'No menu found',
+  })
+  @Patch(':id')
+  async publishMenuById(@Param('id') id: string) {
+    await this.menuservice.publishMenu(id);
   }
 }
