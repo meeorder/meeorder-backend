@@ -1,3 +1,4 @@
+import { AddonsModule } from '@/addons/addons.module';
 import { MenusModule } from '@/menus/menus.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
@@ -13,6 +14,7 @@ import { TablesModule } from './tables/tables.module';
   imports: [
     HealthModule,
     CategoriesModule,
+    AddonsModule,
     MenusModule,
     ConfigModule.forRoot({
       load: [configuration],
