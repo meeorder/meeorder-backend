@@ -1,7 +1,13 @@
 import { MenusService } from '@/menus/menus.service';
 import { OrdersService } from '@/orders/orders.service';
 import { SessionSchema } from '@/schema/session.schema';
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  forwardRef,
+} from '@nestjs/common';
 import { DocumentType, ReturnModelType } from '@typegoose/typegoose';
 import { Types } from 'mongoose';
 import { InjectModel } from 'nest-typegoose';
@@ -11,10 +17,9 @@ import { OrdersListDto } from './dto/listorders.dto';
 export class SessionService {
   constructor(
     @InjectModel(SessionSchema)
-    @Inject(MenusService)
-    @Inject(OrdersService)
     private readonly sessionModel: ReturnModelType<typeof SessionSchema>,
     private readonly menusService: MenusService,
+    @Inject(forwardRef(() => OrdersService))
     private readonly ordersService: OrdersService,
   ) {}
 
