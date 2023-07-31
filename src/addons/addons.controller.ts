@@ -5,12 +5,14 @@ import {
   Delete,
   Get,
   HttpCode,
+  HttpException,
   HttpStatus,
   Param,
   Post,
   Put,
 } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { MongooseError } from 'mongoose';
 import { AddonsService } from './addons.service';
 
 @Controller('addons')
@@ -45,9 +47,17 @@ export class AddonsController {
     description: 'Get addon by Id',
     type: () => CreateAddonDto,
   })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Addon not found',
+  })
   @Get(':id')
   getAddon(@Param('id') id: string) {
-    return this.addonService.getAddonById(id);
+    const doc = this.addonService.getAddonById(id);
+    if (!doc) {
+      throw new HttpException('No addon found', HttpStatus.NOT_FOUND);
+    }
+    return doc;
   }
 
   @ApiResponse({
@@ -55,9 +65,21 @@ export class AddonsController {
     description: 'Updated addon',
     type: () => CreateAddonDto,
   })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Addon not found',
+  })
   @Put(':id')
-  updateAddon(@Param('id') id: string, @Body() doc: CreateAddonDto) {
-    return this.addonService.updateAddon(id, doc);
+  async updateAddon(@Param('id') id: string, @Body() doc: CreateAddonDto) {
+    try {
+      await this.addonService.updateAddon(id, doc);
+    } catch (e) {
+      if (e instanceof MongooseError) {
+        throw new HttpException('Addon not found', HttpStatus.NOT_FOUND);
+      } else {
+        throw e;
+      }
+    }
   }
 
   @HttpCode(HttpStatus.NO_CONTENT)
@@ -65,8 +87,20 @@ export class AddonsController {
     status: HttpStatus.NO_CONTENT,
     description: 'Deleted addon',
   })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Addon not found',
+  })
   @Delete(':id')
   async deleteAddon(@Param('id') id: string) {
-    await this.addonService.deleteAddon(id);
+    try {
+      await this.addonService.deleteAddon(id);
+    } catch (e) {
+      if (e instanceof MongooseError) {
+        throw new HttpException('Addon not found', HttpStatus.NOT_FOUND);
+      } else {
+        throw e;
+      }
+    }
   }
 }
