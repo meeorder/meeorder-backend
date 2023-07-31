@@ -37,6 +37,7 @@ export class AddonsService {
   deleteAddon(id: string) {
     return this.addonModel
       .updateOne({ _id: id }, { deleted_at: new Date() })
+      .orFail()
       .exec();
   }
 }
