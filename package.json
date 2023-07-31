@@ -16,6 +16,7 @@
     "lint:fix": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
+    "test:e2e": "jest --config ./test/jest-e2e.json",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:cucumber": "cucumber-js",
@@ -38,7 +39,8 @@
     "mongoose": "7.4.0",
     "nest-typegoose": "^1.1.1",
     "reflect-metadata": "^0.1.13",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@cucumber/cucumber": "^9.3.0",
@@ -50,6 +52,7 @@
     "@types/jest": "^29.5.2",
     "@types/node": "^20.3.1",
     "@types/supertest": "^2.0.12",
+    "@types/uuid": "^9.0.2",
     "@typescript-eslint/eslint-plugin": "6.1.0",
     "@typescript-eslint/parser": "6.1.0",
     "cucumber-tsflow": "^4.0.6",

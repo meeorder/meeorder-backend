@@ -16,6 +16,7 @@ export class SwaggerBuilder {
       this.app,
       this.documentBuilder.build(),
     );
+
     SwaggerModule.setup('docs', this.app, docs);
   }
 }

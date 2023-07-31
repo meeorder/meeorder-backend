@@ -1,6 +1,6 @@
 import { CreateMenuDto } from '@/menus/dto/menus.createMenu.dto';
 import { MenuSchema } from '@/schema/menus.schema';
-import { ReturnModelType, getModelForClass } from '@typegoose/typegoose';
+import { ReturnModelType } from '@typegoose/typegoose';
 import { binding, given, then, when } from 'cucumber-tsflow';
 import expect from 'expect';
 import { Workspace } from 'features/step-definitions/workspace';
@@ -10,9 +10,7 @@ export class MenuTest {
   private readonly menuModel: ReturnModelType<typeof MenuSchema>;
 
   constructor(private readonly workspace: Workspace) {
-    this.menuModel = getModelForClass(MenuSchema, {
-      existingConnection: this.workspace.mongooseConnection,
-    });
+    this.menuModel = this.workspace.datasource.getModel(MenuSchema);
   }
 
   private menuData: CreateMenuDto;
@@ -31,8 +29,6 @@ export class MenuTest {
         new Types.ObjectId('5f9d88b9c3b9c3b9c3b9c3bc'),
         new Types.ObjectId('5f9d88b9c3b9c3b9c3b9c3bb'),
       ],
-      published_at: new Date(),
-      deleted_at: null,
     };
   }
 
@@ -90,5 +86,12 @@ export class MenuTest {
     } catch (error) {
       this.workspace.response = error.response;
     }
+  }
+
+  @when('publish this menu')
+  async publishMenu() {
+    this.workspace.response = await this.workspace.axiosInstance.patch(
+      `/menus/${this.menuId}/publish`,
+    );
   }
 }
