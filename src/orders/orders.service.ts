@@ -108,7 +108,7 @@ export class OrdersService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    await element.updateOne({ status: status }).exec();
+    await element.updateOne({ status }).exec();
   }
 
   async cancel(id: Types.ObjectId) {

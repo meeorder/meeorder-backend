@@ -7,15 +7,19 @@ export class OrdersListDto {
   @ApiProperty({ type: Number, description: 'table number' })
   @IsNumber()
   table: number;
+
   @ApiProperty({ type: Number, description: 'total price' })
   @IsNumber()
   total_price: number;
+
   @ApiProperty({ type: Number, description: 'discount price' })
   @IsNumber()
   discount_price: number;
+
   @ApiProperty({ type: Number, description: 'net price' })
   @IsNumber()
   net_price: number;
+
   @ApiProperty({ type: () => OrdersSchema, isArray: true })
   @IsArray()
   @ValidateNested({ each: true })
