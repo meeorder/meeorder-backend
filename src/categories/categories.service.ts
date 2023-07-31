@@ -31,9 +31,9 @@ export class CategoriesService {
     return doc;
   }
 
-  async updateCategory(id: string, updatecategory: CategoryDto) {
+  async updateCategory(id: string, updateCategory: CategoryDto) {
     const doc = await this.categoryModel
-      .findByIdAndUpdate(new Types.ObjectId(id), updatecategory, { new: true })
+      .findByIdAndUpdate(new Types.ObjectId(id), updateCategory, { new: true })
       .exec();
     return doc;
   }

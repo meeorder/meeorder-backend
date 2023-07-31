@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { Types } from 'mongoose';
-
 export class CreateMenuDto {
   @ApiProperty()
   image: string;
@@ -15,17 +14,13 @@ export class CreateMenuDto {
   @ApiProperty()
   price: number;
 
-  @ApiProperty()
+  @ApiProperty({
+    type: String,
+  })
   @Transform(({ value }) => new Types.ObjectId(value))
   category: Types.ObjectId;
 
   @ApiProperty()
   @Transform(({ value }) => value.map((v) => new Types.ObjectId(v)))
   addons: Types.ObjectId[];
-
-  @ApiProperty()
-  published_at: Date;
-
-  @ApiProperty()
-  deleted_at: Date;
 }
