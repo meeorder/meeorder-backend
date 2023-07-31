@@ -19,6 +19,5 @@ export class AddonSchema {
   price: number;
 
   @Prop({ default: null })
-  @ApiProperty()
   deleted_at: Date;
 }

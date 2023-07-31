@@ -21,7 +21,8 @@ export class AddonsController {
   @HttpCode(HttpStatus.CREATED)
   @ApiResponse({
     status: HttpStatus.CREATED,
-    description: 'Create addon',
+    description: 'Created addon',
+    type: () => CreateAddonDto,
   })
   @Post()
   createAddon(@Body() doc: CreateAddonDto) {
@@ -31,6 +32,8 @@ export class AddonsController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Get all addons',
+    type: () => CreateAddonDto,
+    isArray: true,
   })
   @Get()
   getAllAddons() {
@@ -40,6 +43,7 @@ export class AddonsController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Get addon by Id',
+    type: () => CreateAddonDto,
   })
   @Get(':id')
   getAddon(@Param('id') id: string) {
@@ -48,7 +52,8 @@ export class AddonsController {
 
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Update addon',
+    description: 'Updated addon',
+    type: () => CreateAddonDto,
   })
   @Put(':id')
   updateAddon(@Param('id') id: string, @Body() doc: CreateAddonDto) {
@@ -58,7 +63,7 @@ export class AddonsController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiResponse({
     status: HttpStatus.NO_CONTENT,
-    description: 'Delete addon',
+    description: 'Deleted addon',
   })
   @Delete(':id')
   async deleteAddon(@Param('id') id: string) {
