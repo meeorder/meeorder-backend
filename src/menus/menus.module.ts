@@ -8,5 +8,6 @@ import { MenusService } from './menus.service';
   imports: [TypegooseModule.forFeature([MenuSchema])],
   providers: [MenusService],
   controllers: [MenusController],
+  exports: [MenusService],
 })
 export class MenusModule {}

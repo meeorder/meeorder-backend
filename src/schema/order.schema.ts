@@ -23,4 +23,7 @@ export class OrdersSchema {
 
   @Prop({ default: '' })
   additional_info: string;
+
+  @Prop({ default: null })
+  cancelled_at: Date;
 }

@@ -7,7 +7,7 @@ export class Orders {
   menu: string;
 
   @ApiProperty({
-    type: String,
+    type: [String],
     description: 'Array of ObjectID',
     required: false,
   })

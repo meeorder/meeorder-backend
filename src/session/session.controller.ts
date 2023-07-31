@@ -131,4 +131,13 @@ export class SessionController {
       }
     }
   }
+
+  @Get('/:id/orders')
+  @ApiParam({ name: 'id', type: String, description: 'Session ID (ObjectId)' })
+  @HttpCode(HttpStatus.OK)
+  async getOrdersBySession(
+    @Param('id', new ParseMongoIdPipe()) id: Types.ObjectId,
+  ) {
+    return await this.sessionService.listOrdersBySession(id);
+  }
 }
