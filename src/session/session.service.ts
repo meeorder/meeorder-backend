@@ -5,6 +5,7 @@ import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { DocumentType, ReturnModelType } from '@typegoose/typegoose';
 import { Types } from 'mongoose';
 import { InjectModel } from 'nest-typegoose';
+import { OrdersListDto } from './dto/listorders.dto';
 
 @Injectable()
 export class SessionService {
@@ -96,17 +97,17 @@ export class SessionService {
     return total_price;
   }
 
-  async listOrdersBySession(id: Types.ObjectId) {
-    const res = Object();
+  async listOrdersBySession(id: Types.ObjectId): Promise<OrdersListDto> {
+    const res = new OrdersListDto();
     const orders = await this.ordersService.getOrdersBySession(id);
     const sessions = await this.getSessionById(id);
     res.total_price = 0;
     for (const item of orders) {
       res.total_price += await this.findMenuPrice(item.menu);
     }
-    res.discount_price = 0;
+    res.discount_price = 0; // wait coupon
     res.net_price = res.total_price - res.discount_price;
-    res.table = sessions.table;
+    res.table = <number>sessions.table;
     res.orders = orders;
     return res;
   }
