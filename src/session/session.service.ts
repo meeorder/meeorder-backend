@@ -116,7 +116,7 @@ export class SessionService {
     const sessions = await this.getSessionById(id);
     res.total_price = 0;
     for (const item of orders) {
-      res.total_price += await this.findMenuPrice(item.menu);
+      res.total_price += await this.findMenuPrice(item.menu, item.addons);
     }
     res.discount_price = 0; // wait coupon
     res.net_price = res.total_price - res.discount_price;
