@@ -1,3 +1,4 @@
+import { AddonsService } from '@/addons/addons.service';
 import { MenusService } from '@/menus/menus.service';
 import { OrdersService } from '@/orders/orders.service';
 import { SessionSchema } from '@/schema/session.schema';
@@ -19,6 +20,7 @@ export class SessionService {
     @InjectModel(SessionSchema)
     private readonly sessionModel: ReturnModelType<typeof SessionSchema>,
     private readonly menusService: MenusService,
+    private readonly addonsService: AddonsService,
     @Inject(forwardRef(() => OrdersService))
     private readonly ordersService: OrdersService,
   ) {}
@@ -95,11 +97,17 @@ export class SessionService {
     }
   }
 
-  async findMenuPrice(id: Types.ObjectId) {
+  async findMenuPrice(id: Types.ObjectId, addons?: Types.ObjectId[]) {
     const menu = await this.menusService.findOneMenu(id.toString());
     const total_price = menu.price;
-    // addons will add later
-    return total_price;
+    let addonsPrice = 0;
+    if (addons) {
+      for (const item of addons) {
+        const addon = await this.addonsService.getAddonById(item.toString());
+        addonsPrice += addon.price;
+      }
+    }
+    return total_price + addonsPrice;
   }
 
   async listOrdersBySession(id: Types.ObjectId): Promise<OrdersListDto> {

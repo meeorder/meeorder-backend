@@ -1,3 +1,4 @@
+import { AddonsService } from '@/addons/addons.service';
 import { MenusService } from '@/menus/menus.service';
 import { OrdersService } from '@/orders/orders.service';
 import { SessionSchema } from '@/schema/session.schema';
@@ -11,12 +12,14 @@ describe('SessionService', () => {
   const sessionModel: Partial<ReturnModelType<typeof SessionSchema>> = {};
   const menuService: Partial<MenusService> = {};
   const orderService: Partial<OrdersService> = {};
+  const addonsService: Partial<AddonsService> = {};
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         SessionService,
         OrdersService,
+        AddonsService,
         MenusService,
         {
           provide: getModelToken(SessionSchema.name),
@@ -28,6 +31,8 @@ describe('SessionService', () => {
       .useValue(orderService)
       .overrideProvider(MenusService)
       .useValue(menuService)
+      .overrideProvider(AddonsService)
+      .useValue(addonsService)
       .compile();
 
     sessionService = module.get<SessionService>(SessionService);

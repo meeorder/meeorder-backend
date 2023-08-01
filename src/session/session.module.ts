@@ -1,3 +1,4 @@
+import { AddonsModule } from '@/addons/addons.module';
 import { MenusModule } from '@/menus/menus.module';
 import { OrdersModule } from '@/orders/orders.module';
 import { SessionSchema } from '@/schema/session.schema';
@@ -11,6 +12,7 @@ import { SessionService } from './session.service';
     TypegooseModule.forFeature([SessionSchema]),
     forwardRef(() => OrdersModule),
     MenusModule,
+    AddonsModule,
   ],
   providers: [SessionService],
   controllers: [SessionController],
