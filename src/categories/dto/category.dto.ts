@@ -1,9 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsNumber, IsString } from 'class-validator';
 
-export class CategoryDto {
+export class CreateCategoryDto {
   @ApiProperty()
+  @IsString()
   title: string;
 
   @ApiProperty()
-  description: string;
+  @IsNumber()
+  rank: number;
 }
