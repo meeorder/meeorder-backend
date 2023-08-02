@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { ReturnModelType } from '@typegoose/typegoose';
 import { Types, mongo } from 'mongoose';
 import { InjectModel } from 'nest-typegoose';
-import { CategoryDto } from './dto/category.dto';
+import { CreateCategoryDto } from './dto/category.dto';
 
 @Injectable()
 export class CategoriesService {
@@ -12,10 +12,10 @@ export class CategoriesService {
     private readonly categoryModel: ReturnModelType<typeof CategorySchema>,
   ) {}
 
-  async createCategory(title: string, description: string) {
+  async createCategory(title: string, rank: number) {
     return await this.categoryModel.create({
       title,
-      description,
+      rank,
     });
   }
 
@@ -31,7 +31,7 @@ export class CategoriesService {
     return doc;
   }
 
-  async updateCategory(id: string, updateCategory: CategoryDto) {
+  async updateCategory(id: string, updateCategory: CreateCategoryDto) {
     const doc = await this.categoryModel
       .findByIdAndUpdate(new Types.ObjectId(id), updateCategory, { new: true })
       .exec();
