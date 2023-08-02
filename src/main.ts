@@ -17,6 +17,9 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api/v1');
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
+  app.enableCors({
+    origin: '*',
+  });
 
   new SwaggerBuilder(app).setup();
 
