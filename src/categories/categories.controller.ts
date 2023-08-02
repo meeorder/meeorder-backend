@@ -1,3 +1,5 @@
+import { RankDto } from '@/categories/dto/category.rank.dto';
+import { UpdateCategoryDto } from '@/categories/dto/category.updateCategory.dto';
 import { CategorySchema } from '@/schema/categories.schema';
 import {
   Body,
@@ -14,7 +16,7 @@ import {
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { MongooseError } from 'mongoose';
 import { CategoriesService } from './categories.service';
-import { CreateCategoryDto } from './dto/category.dto';
+import { CreateCategoryDto } from './dto/category.createCategory.dto';
 
 @Controller('categories')
 @ApiTags('categories')
@@ -29,7 +31,7 @@ export class CategoriesController {
   })
   @Post()
   createCategory(@Body() doc: CreateCategoryDto) {
-    return this.categoriesService.createCategory(doc.title, doc.rank);
+    return this.categoriesService.createCategory(doc.title);
   }
 
   @ApiResponse({
@@ -73,7 +75,7 @@ export class CategoriesController {
   @Put(':id')
   async updateCategory(
     @Param('id') id: string,
-    @Body() doc: CreateCategoryDto,
+    @Body() doc: UpdateCategoryDto,
   ) {
     try {
       await this.categoriesService.updateCategory(id, doc);
@@ -106,5 +108,14 @@ export class CategoriesController {
         throw e;
       }
     }
+  }
+
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Change category rank',
+  })
+  @Post('updateRank')
+  async updateRank(@Body() doc: RankDto) {
+    await this.categoriesService.updateRank(doc);
   }
 }

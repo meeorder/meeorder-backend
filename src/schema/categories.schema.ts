@@ -16,7 +16,7 @@ export class CategorySchema {
   @ApiProperty({ type: String })
   menus: Types.ObjectId[];
 
-  @Prop({ required: true })
+  @Prop({ default: -1 })
   @ApiProperty()
   rank: number;
 }
