@@ -6,6 +6,10 @@ export class UpdateCategoryDto {
   @IsString()
   title: string;
 
+  @ApiProperty({ isArray: true })
+  @IsString()
+  menu: string;
+
   @ApiProperty()
   @IsNumber()
   rank: number;

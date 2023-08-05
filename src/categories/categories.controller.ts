@@ -66,7 +66,7 @@ export class CategoriesController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Update category',
-    type: () => CreateCategoryDto,
+    type: () => UpdateCategoryDto,
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
@@ -113,6 +113,7 @@ export class CategoriesController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Change category rank',
+    type: () => RankDto,
   })
   @Post('updateRank')
   async updateRank(@Body() doc: RankDto) {
