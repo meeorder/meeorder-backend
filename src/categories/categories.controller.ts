@@ -91,7 +91,7 @@ export class CategoriesController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiResponse({
     status: HttpStatus.NO_CONTENT,
-    description: 'Delete category',
+    description: 'Deleted category',
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
