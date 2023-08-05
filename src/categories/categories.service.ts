@@ -47,15 +47,12 @@ export class CategoriesService {
 
   async updateRank(rankBody: RankDto) {
     const doc = rankBody;
-    const updates = [];
-    doc.rank.forEach((id, index) => {
-      updates.push({
-        updateOne: {
-          filter: { _id: new Types.ObjectId(id) },
-          update: { $set: { rank: index } },
-        },
-      });
-    });
+    const updates = doc.rank.map((id, index) => ({
+      updateOne: {
+        filter: { _id: new Types.ObjectId(id) },
+        update: { $set: { rank: index } },
+      },
+    }));
     await this.categoryModel.bulkWrite(updates);
   }
 }
