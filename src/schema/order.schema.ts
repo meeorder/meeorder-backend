@@ -16,7 +16,7 @@ export class OrdersSchema {
   @ApiProperty({ type: String, enum: OrderStatus })
   status: OrderStatus;
 
-  @Prop({ ref: SessionSchema })
+  @Prop({ ref: () => SessionSchema })
   @ApiProperty({ type: String, description: 'Session ID' })
   session: Ref<SessionSchema>;
 

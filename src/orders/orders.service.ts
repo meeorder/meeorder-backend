@@ -1,4 +1,5 @@
 import { CreateOrderDto } from '@/orders/dto/order.create.dto';
+import { OrderGetDto } from '@/orders/dto/order.get.dto';
 import { OrderStatus } from '@/orders/enums/orders.status';
 import { OrdersSchema } from '@/schema/order.schema';
 import { SessionService } from '@/session/session.service';
@@ -45,59 +46,61 @@ export class OrdersService {
     await this.orderModel.insertMany(insertObject);
   }
 
-  async getOrders() {
+  async getOrders(): Promise<OrderGetDto[]> {
     // join orders and session with session id
-    return await this.orderModel.aggregate([
-      {
-        $lookup: {
-          from: 'sessions',
-          localField: 'session',
-          foreignField: '_id',
-          as: 'session',
-        },
-      },
-      {
-        $project: {
-          _id: 1,
-          created_at: 1,
-          status: 1,
-          menu: 1,
-          addons: 1,
-          additional_info: 1,
-          cancelled_at: 1,
-          session: {
-            $arrayElemAt: ['$session', 0],
+    return await this.orderModel
+      .aggregate([
+        {
+          $lookup: {
+            from: 'sessions',
+            localField: 'session',
+            foreignField: '_id',
+            as: 'session',
           },
         },
-      },
-      {
-        $match: {
-          'session.finished_at': null,
-        },
-      },
-      {
-        $lookup: {
-          from: 'menus',
-          localField: 'menu',
-          foreignField: '_id',
-          as: 'menu',
-        },
-      },
-      {
-        $project: {
-          _id: 1,
-          created_at: 1,
-          status: 1,
-          menu: {
-            $arrayElemAt: ['$menu', 0],
+        {
+          $project: {
+            _id: 1,
+            created_at: 1,
+            status: 1,
+            menu: 1,
+            addons: 1,
+            additional_info: 1,
+            cancelled_at: 1,
+            session: {
+              $arrayElemAt: ['$session', 0],
+            },
           },
-          addons: 1,
-          additional_info: 1,
-          cancelled_at: 1,
-          session: 1,
         },
-      },
-    ]);
+        {
+          $match: {
+            'session.finished_at': null,
+          },
+        },
+        {
+          $lookup: {
+            from: 'menus',
+            localField: 'menu',
+            foreignField: '_id',
+            as: 'menu',
+          },
+        },
+        {
+          $project: {
+            _id: 1,
+            created_at: 1,
+            status: 1,
+            menu: {
+              $arrayElemAt: ['$menu', 0],
+            },
+            addons: 1,
+            additional_info: 1,
+            cancelled_at: 1,
+            session: 1,
+          },
+        },
+      ])
+      .exec();
   }
 
   async setStatus(id: Types.ObjectId, status: OrderStatus) {

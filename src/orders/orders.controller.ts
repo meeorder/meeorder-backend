@@ -1,7 +1,7 @@
 import { CreateOrderDto } from '@/orders/dto/order.create.dto';
+import { OrderGetDto } from '@/orders/dto/order.get.dto';
 import { OrderStatus } from '@/orders/enums/orders.status';
 import { ParseMongoIdPipe } from '@/pipes/mongo-id.pipe';
-import { OrdersSchema } from '@/schema/order.schema';
 import {
   Body,
   Controller,
@@ -22,7 +22,6 @@ export class OrdersController {
   constructor(private ordersService: OrdersService) {}
 
   @Post()
-  @ApiTags('orders')
   @ApiBody({ type: CreateOrderDto })
   @ApiResponse({ status: HttpStatus.CREATED, description: 'Create order' })
   @HttpCode(HttpStatus.CREATED)
@@ -31,11 +30,10 @@ export class OrdersController {
   }
 
   @Get()
-  @ApiTags('orders')
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Get all orders',
-    type: () => OrdersSchema,
+    type: () => OrderGetDto,
     isArray: true,
   })
   @HttpCode(HttpStatus.OK)
@@ -44,7 +42,6 @@ export class OrdersController {
   }
 
   @Patch('/:id/preparing')
-  @ApiTags('orders')
   @ApiParam({ name: 'id', type: String, description: 'Session ID (ObjectId)' })
   @ApiResponse({
     status: HttpStatus.NO_CONTENT,
@@ -59,7 +56,6 @@ export class OrdersController {
   }
 
   @Patch('/:id/ready_to_serve')
-  @ApiTags('orders')
   @ApiParam({ name: 'id', type: String, description: 'Session ID (ObjectId)' })
   @ApiResponse({
     status: HttpStatus.NO_CONTENT,
@@ -74,7 +70,6 @@ export class OrdersController {
   }
 
   @Patch('/:id/done')
-  @ApiTags('orders')
   @ApiParam({ name: 'id', type: String, description: 'Session ID (ObjectId)' })
   @ApiResponse({
     status: HttpStatus.NO_CONTENT,
@@ -89,7 +84,6 @@ export class OrdersController {
   }
 
   @Patch('/:id/cancel')
-  @ApiTags('orders')
   @ApiParam({ name: 'id', type: String, description: 'Session ID (ObjectId)' })
   @ApiResponse({
     status: HttpStatus.NO_CONTENT,
