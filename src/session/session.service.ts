@@ -97,7 +97,7 @@ export class SessionService {
     }
   }
 
-  async findTotalPrice(id: Types.ObjectId) {
+  async findTotalPrice(id: Types.ObjectId): Promise<number> {
     const res = await this.sessionModel
       .aggregate([
         {
