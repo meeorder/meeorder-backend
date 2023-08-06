@@ -10,6 +10,7 @@ import {
   HttpException,
   HttpStatus,
   Param,
+  Patch,
   Post,
   Put,
 } from '@nestjs/common';
@@ -111,11 +112,11 @@ export class CategoriesController {
   }
 
   @ApiResponse({
-    status: HttpStatus.OK,
+    status: HttpStatus.NO_CONTENT,
     description: 'Change category rank',
     type: () => RankDto,
   })
-  @Post('updateRank')
+  @Patch('updateRank')
   async updateRank(@Body() doc: RankDto) {
     await this.categoriesService.updateRank(doc);
   }
