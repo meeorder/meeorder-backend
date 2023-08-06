@@ -97,6 +97,74 @@ export class SessionService {
     }
   }
 
+  async findTotalPrice(id: Types.ObjectId) {
+    const res = await this.sessionModel
+      .aggregate([
+        {
+          $lookup: {
+            from: 'orders',
+            localField: '_id',
+            foreignField: 'session',
+            as: 'orders',
+          },
+        },
+        {
+          $project: {
+            _id: 1,
+            table: 1,
+            orders: 1,
+          },
+        },
+        {
+          $lookup: {
+            from: 'menus',
+            localField: 'orders.menu',
+            foreignField: '_id',
+            as: 'menu',
+          },
+        },
+        {
+          $lookup: {
+            from: 'addons',
+            localField: 'orders.addons',
+            foreignField: '_id',
+            as: 'menu_addons',
+          },
+        },
+        {
+          $project: {
+            _id: 1,
+            menu: 1,
+            menu_addons: 1,
+          },
+        },
+        {
+          $project: {
+            menu_total: {
+              $sum: '$menu.price',
+            },
+            addons_total: {
+              $sum: '$menu_addons.price',
+            },
+          },
+        },
+        {
+          $project: {
+            totalprice: {
+              $add: ['$menu_total', '$addons_total'],
+            },
+          },
+        },
+        {
+          $match: {
+            _id: id,
+          },
+        },
+      ])
+      .exec();
+    return res[0].totalprice;
+  }
+
   async findMenuPrice(id: Types.ObjectId, addons?: Types.ObjectId[]) {
     const menu = await this.menusService.findOneMenu(id.toString());
     const total_price = menu.price;
@@ -114,10 +182,7 @@ export class SessionService {
     const res = new OrdersListDto();
     const orders = await this.ordersService.getOrdersBySession(id);
     const sessions = await this.getSessionById(id);
-    res.total_price = 0;
-    for (const item of orders) {
-      res.total_price += await this.findMenuPrice(item.menu, item.addons);
-    }
+    res.total_price = await this.findTotalPrice(id);
     res.discount_price = 0; // wait coupon
     res.net_price = res.total_price - res.discount_price;
     res.table = <number>sessions.table;
