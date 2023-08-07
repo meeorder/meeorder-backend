@@ -13,7 +13,7 @@ export class CategorySchema {
   title: string;
 
   @Prop({ default: [] })
-  @ApiProperty({ type: String })
+  @ApiProperty({ type: String, isArray: true })
   menus: Types.ObjectId[];
 
   @Prop({ default: -1 })
