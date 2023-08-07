@@ -114,7 +114,6 @@ export class CategoriesController {
   @ApiResponse({
     status: HttpStatus.NO_CONTENT,
     description: 'Change category rank',
-    type: () => RankDto,
   })
   @Patch('rank')
   async updateRank(@Body() doc: RankDto) {
