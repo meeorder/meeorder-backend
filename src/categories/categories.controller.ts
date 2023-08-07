@@ -48,7 +48,7 @@ export class CategoriesController {
 
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Get categoriey by ID',
+    description: 'Get category by ID',
     type: () => CategorySchema,
   })
   @ApiResponse({
