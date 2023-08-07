@@ -116,7 +116,7 @@ export class CategoriesController {
     description: 'Change category rank',
     type: () => RankDto,
   })
-  @Patch('updateRank')
+  @Patch('rank')
   async updateRank(@Body() doc: RankDto) {
     await this.categoriesService.updateRank(doc);
   }
