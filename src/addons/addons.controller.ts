@@ -15,7 +15,7 @@ import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { MongooseError } from 'mongoose';
 import { AddonsService } from './addons.service';
 
-@Controller('addons')
+@Controller({ path: 'addons', version: '1' })
 @ApiTags('addons')
 export class AddonsController {
   constructor(private readonly addonService: AddonsService) {}
