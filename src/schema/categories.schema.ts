@@ -12,7 +12,11 @@ export class CategorySchema {
   @ApiProperty()
   title: string;
 
-  @Prop({ required: true })
+  @Prop({ default: [] })
+  @ApiProperty({ type: String, isArray: true })
+  menus: Types.ObjectId[];
+
+  @Prop({ default: -1 })
   @ApiProperty()
-  description: string;
+  rank: number;
 }

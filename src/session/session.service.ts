@@ -1,14 +1,28 @@
+import { AddonsService } from '@/addons/addons.service';
+import { MenusService } from '@/menus/menus.service';
+import { OrdersService } from '@/orders/orders.service';
 import { SessionSchema } from '@/schema/session.schema';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  forwardRef,
+} from '@nestjs/common';
 import { DocumentType, ReturnModelType } from '@typegoose/typegoose';
 import { Types } from 'mongoose';
 import { InjectModel } from 'nest-typegoose';
+import { OrdersListDto } from './dto/listorders.dto';
 
 @Injectable()
 export class SessionService {
   constructor(
     @InjectModel(SessionSchema)
     private readonly sessionModel: ReturnModelType<typeof SessionSchema>,
+    private readonly menusService: MenusService,
+    private readonly addonsService: AddonsService,
+    @Inject(forwardRef(() => OrdersService))
+    private readonly ordersService: OrdersService,
   ) {}
 
   async createSession(table: number, uid?: string) {
@@ -81,5 +95,98 @@ export class SessionService {
         HttpStatus.BAD_REQUEST,
       );
     }
+  }
+
+  async findTotalPrice(id: Types.ObjectId): Promise<number> {
+    const res = await this.sessionModel
+      .aggregate([
+        {
+          $lookup: {
+            from: 'orders',
+            localField: '_id',
+            foreignField: 'session',
+            as: 'orders',
+          },
+        },
+        {
+          $project: {
+            _id: 1,
+            table: 1,
+            orders: 1,
+          },
+        },
+        {
+          $lookup: {
+            from: 'menus',
+            localField: 'orders.menu',
+            foreignField: '_id',
+            as: 'menu',
+          },
+        },
+        {
+          $lookup: {
+            from: 'addons',
+            localField: 'orders.addons',
+            foreignField: '_id',
+            as: 'menu_addons',
+          },
+        },
+        {
+          $project: {
+            _id: 1,
+            menu: 1,
+            menu_addons: 1,
+          },
+        },
+        {
+          $project: {
+            menu_total: {
+              $sum: '$menu.price',
+            },
+            addons_total: {
+              $sum: '$menu_addons.price',
+            },
+          },
+        },
+        {
+          $project: {
+            totalprice: {
+              $add: ['$menu_total', '$addons_total'],
+            },
+          },
+        },
+        {
+          $match: {
+            _id: id,
+          },
+        },
+      ])
+      .exec();
+    return res[0].totalprice;
+  }
+
+  async findMenuPrice(id: Types.ObjectId, addons?: Types.ObjectId[]) {
+    const menu = await this.menusService.findOneMenu(id.toString());
+    const total_price = menu.price;
+    let addonsPrice = 0;
+    if (addons) {
+      for (const item of addons) {
+        const addon = await this.addonsService.getAddonById(item.toString());
+        addonsPrice += addon.price;
+      }
+    }
+    return total_price + addonsPrice;
+  }
+
+  async listOrdersBySession(id: Types.ObjectId): Promise<OrdersListDto> {
+    const res = new OrdersListDto();
+    const orders = await this.ordersService.getOrdersBySession(id);
+    const sessions = await this.getSessionById(id);
+    res.total_price = await this.findTotalPrice(id);
+    res.discount_price = 0; // wait coupon
+    res.net_price = res.total_price - res.discount_price;
+    res.table = <number>sessions.table;
+    res.orders = orders;
+    return res;
   }
 }
