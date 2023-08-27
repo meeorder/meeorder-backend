@@ -6,7 +6,7 @@ export class CreateMenuDto {
   image: string;
 
   @ApiProperty()
-  name: string;
+  title: string;
 
   @ApiProperty()
   description: string;
