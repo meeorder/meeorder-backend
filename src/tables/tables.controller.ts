@@ -4,7 +4,7 @@ import { TablesService } from '@/tables/tables.service';
 import { Body, Controller, Get, HttpStatus, Post } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
-@Controller('tables')
+@Controller({ path: 'tables', version: '1' })
 @ApiTags('tables')
 export class TablesController {
   constructor(private readonly tablesService: TablesService) {}

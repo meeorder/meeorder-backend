@@ -16,7 +16,7 @@ import { ApiBody, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Types } from 'mongoose';
 import { OrdersService } from './orders.service';
 
-@Controller('orders')
+@Controller({ path: 'orders', version: '1' })
 @ApiTags('orders')
 export class OrdersController {
   constructor(private ordersService: OrdersService) {}
