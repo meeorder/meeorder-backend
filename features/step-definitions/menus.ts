@@ -21,7 +21,7 @@ export class MenuTest {
   givenMenu() {
     this.menuData = {
       image: 'https://via.placeholder.com/150',
-      name: 'Menu 1',
+      title: 'Menu 1',
       description: 'Menu 1 description',
       price: 100,
       category: new Types.ObjectId('5f9d88b9c3b9c3b9c3b9c3ba'),
@@ -58,23 +58,23 @@ export class MenuTest {
     );
   }
 
-  @then('update this menu with name {string}')
+  @then('update this menu with title {string}')
   async updateMenu(newName: string) {
     this.workspace.response = await this.workspace.axiosInstance.put(
       `/menus/${this.menuId}`,
       {
-        name: newName,
+        title: newName,
       },
     );
   }
 
-  @then('menu name should be {string} when get by the same id')
+  @then('menu title should be {string} when get by the same id')
   async shouldHaveName(newName: string) {
     this.workspace.response = await this.workspace.axiosInstance.get(
       `/menus/${this.menuId}`,
     );
 
-    expect(this.workspace.response.data.name).toBe(newName);
+    expect(this.workspace.response.data.title).toBe(newName);
   }
 
   @when('get this menu by the same id')
