@@ -2,7 +2,7 @@ import { AddonSchema } from '@/schema/addons.schema';
 import { ApiProperty } from '@nestjs/swagger';
 import { Types } from 'mongoose';
 export class GetMenuByIdResponseDto {
-  @ApiProperty()
+  @ApiProperty({ type: String, description: 'Menu ID' })
   _id: Types.ObjectId;
 
   @ApiProperty()
@@ -22,7 +22,7 @@ export class GetMenuByIdResponseDto {
   })
   category: Types.ObjectId;
 
-  @ApiProperty({ type: AddonSchema, isArray: true })
+  @ApiProperty({ type: () => AddonSchema, isArray: true })
   addons: AddonSchema[];
 
   @ApiProperty()
