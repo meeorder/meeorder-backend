@@ -2,6 +2,7 @@ import { AddonSchema } from '@/schema/addons.schema';
 import { ApiProperty } from '@nestjs/swagger';
 import { Types } from 'mongoose';
 export class GetMenuByIdResponseDto {
+  @ApiProperty()
   _id: Types.ObjectId;
 
   @ApiProperty()
