@@ -10,6 +10,7 @@ import { Types } from 'mongoose';
 @binding([Workspace])
 export class OrderStepDefination {
   private readonly sessionModel: ReturnModelType<typeof SessionSchema>;
+
   private readonly orderModel: ReturnModelType<typeof OrdersSchema>;
 
   constructor(private readonly workspace: Workspace) {
