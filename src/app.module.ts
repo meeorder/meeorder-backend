@@ -1,5 +1,6 @@
 import { AddonsModule } from '@/addons/addons.module';
 import { MenusModule } from '@/menus/menus.module';
+import { OrdersModule } from '@/orders/orders.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypegooseModule } from 'nest-typegoose';
@@ -23,6 +24,7 @@ import { TablesModule } from './tables/tables.module';
     TypegooseModule.forRootAsync({
       useClass: TypegooseConfigService,
     }),
+    OrdersModule,
     SessionModule,
     TablesModule,
   ],
