@@ -19,7 +19,7 @@ import { MongooseError } from 'mongoose';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/category.createCategory.dto';
 
-@Controller('categories')
+@Controller({ path: 'categories', version: '1' })
 @ApiTags('categories')
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}

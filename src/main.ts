@@ -1,4 +1,4 @@
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import {
@@ -15,7 +15,10 @@ async function bootstrap() {
     new FastifyAdapter(),
   );
 
-  app.setGlobalPrefix('api/v1');
+  app.enableVersioning({
+    type: VersioningType.URI,
+    prefix: 'api/v',
+  });
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
   app.enableCors({
     origin: '*',
