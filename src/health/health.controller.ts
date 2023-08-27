@@ -1,3 +1,4 @@
+import { HealthResponseDto } from '@/health/dto/health.response.dto';
 import { Controller, Get, HttpStatus } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
@@ -5,12 +6,14 @@ import { ApiResponse, ApiTags } from '@nestjs/swagger';
 @ApiTags('health')
 export class HealthController {
   @ApiResponse({
-    type: String,
     status: HttpStatus.OK,
-    description: 'Health status (Not connected to DB)',
+    description: 'Health status',
+    type: () => HealthResponseDto,
   })
   @Get('/ping')
-  getPing(): string {
-    return 'pong';
+  getPing() {
+    return {
+      msg: 'pong',
+    };
   }
 }

@@ -34,14 +34,21 @@ export class Workspace {
 
   public axiosInstance: AxiosInstance;
 
+  public baseURL: string;
+
+  public getAxiosInstance(version?: string) {
+    return axios.create({
+      baseURL: version ? `${this.baseURL}/api/v${version}` : this.baseURL,
+      validateStatus: () => true,
+    });
+  }
+
   @beforeAll()
   async beforeAll() {
     const configService = new ConfigService(configuration());
     const mongoUri = configService.get<string>(Config.MONGO_URI);
     const mongoDbName = configService.get<string>(Config.MONGO_DB_NAME);
-    const baseURL = configService
-      .get<string>(Config.BASE_URL)
-      .concat('/api/v1');
+    this.baseURL = configService.get<string>(Config.BASE_URL);
 
     const connection = mongoose.createConnection(mongoUri, {
       dbName: mongoDbName,
@@ -49,7 +56,7 @@ export class Workspace {
 
     this.datasource = await new Datasource(connection).connect();
 
-    this.axiosInstance = axios.create({ baseURL, validateStatus: () => true });
+    this.axiosInstance = this.getAxiosInstance('1');
   }
 
   @afterAll()
