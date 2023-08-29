@@ -18,7 +18,7 @@ import {
 import { ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { MongooseError, Types } from 'mongoose';
 
-@Controller('sessions')
+@Controller({ path: 'sessions', version: '1' })
 @ApiTags('sessions')
 export class SessionController {
   constructor(private readonly sessionService: SessionService) {}
@@ -130,5 +130,14 @@ export class SessionController {
         throw e;
       }
     }
+  }
+
+  @Get('/:id/orders')
+  @ApiParam({ name: 'id', type: String, description: 'Session ID (ObjectId)' })
+  @HttpCode(HttpStatus.OK)
+  async getOrdersBySession(
+    @Param('id', new ParseMongoIdPipe()) id: Types.ObjectId,
+  ) {
+    return await this.sessionService.listOrdersBySession(id);
   }
 }

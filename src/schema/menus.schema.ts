@@ -16,7 +16,7 @@ export class MenuSchema {
 
   @Prop()
   @ApiProperty()
-  name: string;
+  title: string;
 
   @Prop()
   @ApiProperty()

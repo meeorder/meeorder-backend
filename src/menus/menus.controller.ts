@@ -19,7 +19,7 @@ import {
 import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Types } from 'mongoose';
 import { MenusService } from './menus.service';
-@Controller('menus')
+@Controller({ path: 'menus', version: '1' })
 @ApiTags('menus')
 export class MenusController {
   constructor(private readonly menuservice: MenusService) {}

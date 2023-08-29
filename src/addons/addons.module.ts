@@ -8,5 +8,6 @@ import { AddonsService } from './addons.service';
   imports: [TypegooseModule.forFeature([AddonSchema])],
   providers: [AddonsService],
   controllers: [AddonsController],
+  exports: [AddonsService],
 })
 export class AddonsModule {}

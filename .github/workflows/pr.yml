@@ -65,7 +65,7 @@ jobs:
       - name: Waiting Service
         run: chmod +x ./.github/wait.sh && ./.github/wait.sh ${{env.TEST_URL}}
         env:
-          TEST_URL: http://127.0.0.1:4000/api/v1/health/ping
+          TEST_URL: http://127.0.0.1:4000/health/ping
       - name: Run Cucumber Test
         run: pnpm run test:cucumber
         env:
