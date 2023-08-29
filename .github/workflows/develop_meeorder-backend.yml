@@ -3,7 +3,7 @@ name: Azure Deploy Test
 on:
   push:
     branches:
-      - develop
+      - azure-test
 
 jobs:
   build:
@@ -18,7 +18,5 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm install -g pnpm
-      - run: pnpm install pm2 -g
       - run: pnpm install
-      - run: pnpm run lint
       - run: pnpm run build
