@@ -19,11 +19,15 @@ export class AddonsService {
   }
 
   async getAllAddons() {
-    return await this.addonModel.find({ deleted_at: null }).exec();
+    const doc = await this.addonModel.find({ deleted_at: null }).exec();
+    return doc;
   }
 
   async getAddonById(id: string) {
-    return await this.addonModel.findOne({ _id: id, deleted_at: null }).exec();
+    const doc = await this.addonModel
+      .findOne({ _id: id, deleted_at: null })
+      .exec();
+    return doc;
   }
 
   async updateAddon(id: string, updateAddon: CreateAddonDto) {
