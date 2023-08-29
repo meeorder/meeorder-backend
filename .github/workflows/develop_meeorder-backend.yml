@@ -3,7 +3,7 @@ name: Azure Deploy Test
 on:
   push:
     branches:
-      - azure-test
+      - develop
 
 jobs:
   build:
