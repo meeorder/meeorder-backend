@@ -1,4 +1,5 @@
 import { CreateAddonDto } from '@/addons/dto/addon.dto';
+import { AddonSchema } from '@/schema/addons.schema';
 import {
   Body,
   Controller,
@@ -34,7 +35,7 @@ export class AddonsController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Get all addons',
-    type: () => CreateAddonDto,
+    type: () => AddonSchema,
     isArray: true,
   })
   @Get()
@@ -45,7 +46,7 @@ export class AddonsController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Get addon by Id',
-    type: () => CreateAddonDto,
+    type: () => AddonSchema,
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
