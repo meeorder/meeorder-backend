@@ -1,0 +1,24 @@
+name: Azure Deploy Test
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm install -g pnpm
+      - run: pnpm install pm2 -g
+      - run: pnpm install
+      - run: pnpm run lint
+      - run: pnpm run build
