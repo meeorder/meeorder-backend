@@ -20,7 +20,7 @@ jobs:
           pnpm run build
           ls
           pwd
-          cp .env .
+          cp /home/vjumpkung/meeorder-backend/.env .
 
   deploy:
     runs-on: self-hosted
