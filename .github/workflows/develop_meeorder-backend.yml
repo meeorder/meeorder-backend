@@ -29,12 +29,14 @@ jobs:
           pnpm run build
 
       - name: Azure Login
-        uses: Azure/actions/login@V1
+        uses: azure/login@v1
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           enable-AzPSSession: true
+          no-subscriptions-allowed: true
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
