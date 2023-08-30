@@ -1,10 +1,10 @@
 import { RankDto } from '@/categories/dto/category.rank.dto';
+import { UpdateCategoryDto } from '@/categories/dto/category.updateCategory.dto';
 import { CategorySchema } from '@/schema/categories.schema';
 import { Injectable } from '@nestjs/common';
 import { ReturnModelType } from '@typegoose/typegoose';
 import { Types, mongo } from 'mongoose';
 import { InjectModel } from 'nest-typegoose';
-import { CreateCategoryDto } from './dto/category.createCategory.dto';
 
 @Injectable()
 export class CategoriesService {
@@ -34,7 +34,7 @@ export class CategoriesService {
     return doc;
   }
 
-  async updateCategory(id: string, updateCategory: CreateCategoryDto) {
+  async updateCategory(id: string, updateCategory: UpdateCategoryDto) {
     const doc = await this.categoryModel
       .findByIdAndUpdate(new Types.ObjectId(id), updateCategory, { new: true })
       .exec();
