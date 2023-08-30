@@ -10,7 +10,6 @@ on:
 jobs:
   build:
     runs-on: self-hosted
-
     steps:
       - uses: actions/checkout@v2
 
@@ -19,9 +18,13 @@ jobs:
           npm install -g pnpm
           pnpm install
           pnpm run build
+          ls
+          pwd
+          cp .env .
 
   deploy:
     runs-on: self-hosted
+    needs: build
     steps:
       - uses: actions/checkout@v2
       - name: deploy
