@@ -24,7 +24,7 @@ async function bootstrap() {
   new SwaggerBuilder(app).setup();
   const configService = app.get(ConfigService);
   app.enableCors({
-    origin: new RegExp('localhost'),
+    origin: new RegExp('(.*)'),
   });
   await app.listen(configService.get(Config.PORT), '0.0.0.0');
 }
