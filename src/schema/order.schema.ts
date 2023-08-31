@@ -1,8 +1,9 @@
 import { OrderStatus } from '@/orders/enums/orders.status';
+import { AddonSchema } from '@/schema/addons.schema';
+import { MenuSchema } from '@/schema/menus.schema';
 import { SessionSchema } from '@/schema/session.schema';
 import { ApiProperty } from '@nestjs/swagger';
 import { modelOptions, Prop, Ref } from '@typegoose/typegoose';
-import { Schema, Types } from 'mongoose';
 
 @modelOptions({
   schemaOptions: { collection: 'orders' },
@@ -20,13 +21,13 @@ export class OrdersSchema {
   @ApiProperty({ type: String, description: 'Session ID' })
   session: Ref<SessionSchema>;
 
-  @Prop()
+  @Prop({ ref: () => MenuSchema })
   @ApiProperty({ type: String, description: 'Menu ID' })
-  menu: Types.ObjectId;
+  menu: Ref<MenuSchema>;
 
-  @Prop({ type: Schema.Types.ObjectId, default: [] })
+  @Prop({ ref: () => AddonSchema, default: [] })
   @ApiProperty({ type: [String], description: 'Array of MenuID' })
-  addons: Types.ObjectId[];
+  addons: Ref<AddonSchema>[];
 
   @Prop({ default: '' })
   @ApiProperty({ type: String, description: 'Additional info' })
