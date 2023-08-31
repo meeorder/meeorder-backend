@@ -8,7 +8,7 @@ export class UpdateCategoryDto {
   @IsString()
   title: string;
 
-  @ApiProperty()
+  @ApiProperty({ type: String, isArray: true })
   @Transform(({ value }) => value.map((v) => new Types.ObjectId(v)))
   menus: Types.ObjectId[];
 

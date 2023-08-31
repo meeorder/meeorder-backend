@@ -20,13 +20,12 @@ async function bootstrap() {
     prefix: 'api/v',
   });
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
-  app.enableCors({
-    origin: '*',
-  });
 
   new SwaggerBuilder(app).setup();
-
   const configService = app.get(ConfigService);
+  app.enableCors({
+    origin: new RegExp('(.*)'),
+  });
   await app.listen(configService.get(Config.PORT), '0.0.0.0');
 }
 bootstrap();
