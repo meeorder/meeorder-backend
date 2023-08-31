@@ -165,20 +165,10 @@ export class SessionService {
     return res[0].totalprice;
   }
 
-  async findMenuPrice(id: Types.ObjectId, addons?: Types.ObjectId[]) {
-    const menu = await this.menusService.findOneMenu(id.toString());
-    const total_price = menu.price;
-    let addonsPrice = 0;
-    if (addons) {
-      for (const item of addons) {
-        const addon = await this.addonsService.getAddonById(item.toString());
-        addonsPrice += addon.price;
-      }
-    }
-    return total_price + addonsPrice;
-  }
-
   async listOrdersBySession(id: Types.ObjectId): Promise<OrdersListDto> {
+    if ((await this.getSessionById(id)) == null) {
+      throw new HttpException('Session not found', HttpStatus.NOT_FOUND);
+    }
     const res = new OrdersListDto();
     const orders = await this.ordersService.getOrdersBySession(id);
     const sessions = await this.getSessionById(id);
