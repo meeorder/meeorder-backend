@@ -11,6 +11,7 @@ export class UsersService {
     @InjectModel(UserSchema)
     private readonly userModel: ReturnModelType<typeof UserSchema>,
   ) {}
+
   async createUser(createUserDto: CreateUserDto) {
     const hashedPassword = await argon2.hash(createUserDto.password);
     return await this.userModel.create({
@@ -19,6 +20,7 @@ export class UsersService {
       role: UserRole[createUserDto.role],
     });
   }
+
   async getUsers(role: string = undefined) {
     if (!role) {
       return await this.userModel.find();

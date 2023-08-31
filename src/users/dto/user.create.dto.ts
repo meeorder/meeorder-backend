@@ -6,9 +6,11 @@ export class CreateUserDto {
   @ApiProperty({ type: String, description: 'username is string' })
   @IsString()
   username: string;
+
   @ApiProperty({ type: String, description: 'password is string' })
   @IsString()
   password: string;
+
   @ApiProperty({
     type: String,
     enum: UserRole,
