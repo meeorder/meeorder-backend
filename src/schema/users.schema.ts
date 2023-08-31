@@ -5,6 +5,7 @@ import { Types } from 'mongoose';
 
 export enum UserRole {
   Owner = 100,
+  Chef = 75,
   Cashier = 50,
   Employee = 25,
   Customer = 1,
@@ -35,4 +36,10 @@ export class UserSchema {
   @prop({ required: true, enum: UserRole })
   @ApiProperty({ enum: UserRole })
   role: UserRole;
+
+  @prop({ default: new Date() })
+  created_at: Date;
+
+  @prop({ default: null })
+  deleted_at: Date;
 }
