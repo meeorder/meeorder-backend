@@ -18,10 +18,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm install -g yarn
-      - run: yarn install
-      - run: yarn lint
-      - run: yarn build
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
 
   test:
     runs-on: ubuntu-latest
@@ -35,10 +34,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm install -g yarn
-      - run: yarn install
-      - run: yarn lint
-      - run: yarn test
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run test
 
   e2e:
     runs-on: ubuntu-latest
@@ -48,16 +46,15 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
-      - run: npm install -g yarn
-      - run: yarn install
+      - run: npm ci
       - name: Start MongoDB
         uses: supercharge/mongodb-github-action@1.8.0
         with:
           mongodb-version: '6.0'
       - name: Build Backend
-        run: yarn build
+        run: npm run build
       - name: Start Backend Server
-        run: yarn start:pm2
+        run: npm run start:pm2
         env:
           MONGO_URI: mongodb://127.0.0.1:27017
           MONGO_DB_NAME: meeorder
@@ -67,7 +64,7 @@ jobs:
         env:
           TEST_URL: http://127.0.0.1:4000/health/ping
       - name: Run Cucumber Test
-        run: yarn test:cucumber
+        run: npm run test:cucumber
         env:
           BASE_URL: http://127.0.0.1:4000
           MONGO_URI: mongodb://127.0.0.1:27017

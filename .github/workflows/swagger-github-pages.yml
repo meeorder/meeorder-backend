@@ -22,14 +22,13 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm install -g yarn
-      - run: yarn install
+      - run: npm ci
       - name: Start MongoDB
         uses: supercharge/mongodb-github-action@1.8.0
         with:
           mongodb-version: '6.0'
       - name: Generate Swaggon json
-        run: yarn test:e2e
+        run: npm run test:e2e
         env:
           BASE_URL: http://127.0.0.1:4000
           MONGO_URI: mongodb://127.0.0.1:27017
