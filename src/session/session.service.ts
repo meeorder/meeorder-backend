@@ -166,7 +166,7 @@ export class SessionService {
   }
 
   async listOrdersBySession(id: Types.ObjectId): Promise<OrdersListDto> {
-    if ((await this.getSessionById(id)) == null) {
+    if ((await this.getSessionById(id)) === null) {
       throw new HttpException('Session not found', HttpStatus.NOT_FOUND);
     }
     const res = new OrdersListDto();
