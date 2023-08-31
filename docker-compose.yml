@@ -12,3 +12,8 @@ services:
     image: mongo
     ports:
       - '27017:27017'
+    volumes:
+      - ${MONGO_VOLUME-mongo}:/data/db
+
+volumes:
+  mongo:
