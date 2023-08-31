@@ -1,6 +1,8 @@
 import { AddonsService } from '@/addons/addons.service';
 import { MenusService } from '@/menus/menus.service';
 import { OrdersService } from '@/orders/orders.service';
+import { AddonSchema } from '@/schema/addons.schema';
+import { MenuSchema } from '@/schema/menus.schema';
 import { SessionSchema } from '@/schema/session.schema';
 import {
   HttpException,
@@ -181,11 +183,23 @@ export class SessionService {
   async listOrdersBySession(id: Types.ObjectId): Promise<OrdersListDto> {
     const res = new OrdersListDto();
     const orders = await this.ordersService.getOrdersBySession(id);
-    const sessions = await this.getSessionById(id);
-    res.total_price = await this.findTotalPrice(id);
+    res.total_price = orders
+      .map(({ menu, addons }) => {
+        const addonPrice = addons?.reduce(
+          (prev, current) => prev + (<AddonSchema>current).price,
+          0,
+        );
+
+        return (
+          (<MenuSchema>menu).price + (Number.isNaN(addonPrice) ? 0 : addonPrice)
+        );
+      })
+      .reduce((prev, current) => prev + current, 0);
     res.discount_price = 0; // wait coupon
     res.net_price = res.total_price - res.discount_price;
-    res.table = <number>sessions.table;
+    res.table = await orders[0]
+      ?.populate('session', 'table')
+      .then((doc) => <number>(<SessionSchema>doc.session).table);
     res.orders = orders;
     return res;
   }

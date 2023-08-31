@@ -121,6 +121,9 @@ export class OrdersService {
   }
 
   async getOrdersBySession(session: Types.ObjectId) {
-    return await this.orderModel.find({ session }).exec();
+    return await this.orderModel
+      .find({ session })
+      .populate('menu addons')
+      .exec();
   }
 }
