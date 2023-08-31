@@ -30,10 +30,10 @@ git clone <meeorder_backend_git_url>
 ### Install dependencies
 
 ```bash
-# pnpm
-npm i -g pnpm
+# yarn
+npm i -g yarn
 # Install project's dependencies
-pnpm i
+yarn install
 ```
 
 ### Setting MongoDB URI
@@ -60,7 +60,7 @@ $ docker compose up -d mongo
 ## Run the project
 
 ```bash
-pnpm run start:dev # Development Mode (Hot-Reload Avaliable)
+yarn start:dev # Development Mode (Hot-Reload Avaliable)
 ```
 
 ## Guideline
