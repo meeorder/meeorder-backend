@@ -1,8 +1,8 @@
 import { TablesSchema } from '@/schema/tables.schema';
+import { UserSchema } from '@/schema/users.schema';
 import { ApiProperty } from '@nestjs/swagger';
 import { Prop, Ref, modelOptions } from '@typegoose/typegoose';
 import { Types } from 'mongoose';
-import { validate as isUUID } from 'uuid';
 
 @modelOptions({
   schemaOptions: {
@@ -26,17 +26,20 @@ export class SessionSchema {
   })
   finished_at: Date;
 
-  @Prop({ default: null, validate: (v: string) => (v ? isUUID(v) : true) })
+  @Prop({ default: null, ref: () => UserSchema })
   @ApiProperty({
-    type: String,
     description: 'User ID',
     nullable: true,
   })
-  uid: string;
+  user: Ref<UserSchema>;
 
-  @Prop({ required: true, ref: () => TablesSchema, type: Number })
-  @ApiProperty({ type: Number, description: 'Table ID' })
-  table: Ref<TablesSchema, number>;
+  @Prop({ default: 0 })
+  @ApiProperty({ description: 'User point' })
+  point: number;
+
+  @Prop({ required: true, ref: () => TablesSchema })
+  @ApiProperty({ description: 'Table ID' })
+  table: Ref<TablesSchema>;
 
   @Prop({ default: null })
   deleted_at: Date;

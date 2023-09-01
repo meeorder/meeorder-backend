@@ -83,7 +83,7 @@ export class SessionController {
   @HttpCode(HttpStatus.CREATED)
   async createSession(@Body() dto: CreateSessionDto) {
     await this.sessionService.validateTableHasSession(dto.table);
-    const doc = await this.sessionService.createSession(dto.table, dto.uid);
+    const doc = await this.sessionService.createSession(dto.table);
     return doc;
   }
 

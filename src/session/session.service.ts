@@ -30,7 +30,7 @@ export class SessionService {
   async createSession(table: number, uid?: string) {
     const session = await this.sessionModel.create({
       table,
-      uid,
+      user: uid,
     });
 
     return session;
@@ -165,19 +165,6 @@ export class SessionService {
       ])
       .exec();
     return res[0].totalprice;
-  }
-
-  async findMenuPrice(id: Types.ObjectId, addons?: Types.ObjectId[]) {
-    const menu = await this.menusService.findOneMenu(id.toString());
-    const total_price = menu.price;
-    let addonsPrice = 0;
-    if (addons) {
-      for (const item of addons) {
-        const addon = await this.addonsService.getAddonById(item.toString());
-        addonsPrice += addon.price;
-      }
-    }
-    return total_price + addonsPrice;
   }
 
   async listOrdersBySession(id: Types.ObjectId): Promise<OrdersListDto> {

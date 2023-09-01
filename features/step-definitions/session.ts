@@ -20,7 +20,7 @@ export class SessionStepDefination {
     for (const session of sessions) {
       const doc = await this.sessionModel.create({
         table: +session.table,
-        uid: session.uid ?? null,
+        user: session.uid ?? null,
         _id: new Types.ObjectId(session._id),
         finished_at: session.finished_at ? new Date(session.finished_at) : null,
       });
