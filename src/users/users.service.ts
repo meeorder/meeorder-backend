@@ -1,6 +1,6 @@
 import { UserRole, UserSchema } from '@/schema/users.schema';
 import { CreateUserDto } from '@/users/dto/user.create.dto';
-import { UserResponseDto } from '@/users/dto/user.response.dto';
+import { CreateUserResponseDto } from '@/users/dto/user.response.dto';
 import { Injectable } from '@nestjs/common';
 import { ReturnModelType } from '@typegoose/typegoose';
 import * as argon2 from 'argon2';
@@ -14,7 +14,9 @@ export class UsersService {
     private readonly userModel: ReturnModelType<typeof UserSchema>,
   ) {}
 
-  async createUser(createUserDto: CreateUserDto): Promise<UserResponseDto> {
+  async createUser(
+    createUserDto: CreateUserDto,
+  ): Promise<CreateUserResponseDto> {
     const hashedPassword = await argon2.hash(createUserDto.password);
     const createdUser = await this.userModel.create({
       username: createUserDto.username,
