@@ -20,8 +20,8 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:cucumber": "cucumber-js",
-    "start:pm2": "pm2 --name Backend start dist/main.js",
-    "stop:pm2": "pm2 delete 0"
+    "start:pm2": "pm2 --name meeorder-backend start dist/main.js",
+    "stop:pm2": "pm2 delete meeorder-backend"
   },
   "dependencies": {
     "@fastify/static": "6.10.2",
