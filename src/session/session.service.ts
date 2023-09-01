@@ -4,6 +4,8 @@ import { OrdersService } from '@/orders/orders.service';
 import { AddonSchema } from '@/schema/addons.schema';
 import { MenuSchema } from '@/schema/menus.schema';
 import { SessionSchema } from '@/schema/session.schema';
+import { UserSchema } from '@/schema/users.schema';
+import { SessionUserUpdateDto } from '@/session/dto/update-sessionUser.dto';
 import {
   HttpException,
   HttpStatus,
@@ -21,6 +23,7 @@ export class SessionService {
   constructor(
     @InjectModel(SessionSchema)
     private readonly sessionModel: ReturnModelType<typeof SessionSchema>,
+    private readonly userModel: ReturnModelType<typeof UserSchema>,
     private readonly menusService: MenusService,
     private readonly addonsService: AddonsService,
     @Inject(forwardRef(() => OrdersService))
@@ -189,5 +192,14 @@ export class SessionService {
       .then((doc) => <number>(<SessionSchema>doc.session).table);
     res.orders = orders;
     return res;
+  }
+
+  async updateSessionUser(id: Types.ObjectId, userbody: SessionUserUpdateDto) {
+    const new_user = userbody.user;
+    const new_point = (await this.userModel.findById(new_user)).point;
+    await this.sessionModel
+      .updateOne({ _id: id }, { user: new_user, point: new_point })
+      .orFail()
+      .exec();
   }
 }

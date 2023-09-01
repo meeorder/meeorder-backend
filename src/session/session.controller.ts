@@ -2,6 +2,7 @@ import { ParseMongoIdPipe } from '@/pipes/mongo-id.pipe';
 import { SessionSchema } from '@/schema/session.schema';
 import { CreateSessionDto } from '@/session/dto/create-session.dto';
 import { OrdersListDto } from '@/session/dto/listorders.dto';
+import { SessionUserUpdateDto } from '@/session/dto/update-sessionUser.dto';
 import { SessionService } from '@/session/session.service';
 import {
   Body,
@@ -144,5 +145,19 @@ export class SessionController {
     @Param('id', new ParseMongoIdPipe()) id: Types.ObjectId,
   ) {
     return await this.sessionService.listOrdersBySession(id);
+  }
+
+  @ApiResponse({
+    description: 'Updated session user',
+    type: () => SessionUserUpdateDto,
+    status: HttpStatus.OK,
+  })
+  @HttpCode(HttpStatus.OK)
+  @Patch(':id/updateuser')
+  async updateSessionUser(
+    @Param('id', new ParseMongoIdPipe()) id: Types.ObjectId,
+    @Body() doc: SessionUserUpdateDto,
+  ) {
+    return await this.sessionService.updateSessionUser(id, doc);
   }
 }
