@@ -10,6 +10,11 @@ import { TypegooseConfigService } from './config/typegoose.config.service';
 import { HealthModule } from './health/health.module';
 import { SessionModule } from './session/session.module';
 import { TablesModule } from './tables/tables.module';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
+import { UdersModule } from './uders/uders.module';
+import { UsersService } from './users/users.service';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -27,6 +32,10 @@ import { TablesModule } from './tables/tables.module';
     OrdersModule,
     SessionModule,
     TablesModule,
+    AuthModule,
+    UsersModule,
+    UdersModule,
   ],
+  providers: [UsersService],
 })
 export class AppModule {}
