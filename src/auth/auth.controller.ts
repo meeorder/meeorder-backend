@@ -1,5 +1,12 @@
 import { LoginDto } from '@/auth/dto/login.dto';
-import { Body, Controller, HttpCode, HttpStatus, Post, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Res,
+} from '@nestjs/common';
 import { FastifyReply } from 'fastify';
 import { AuthService } from './auth.service';
 
@@ -7,17 +14,22 @@ import { AuthService } from './auth.service';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @HttpCode(HttpStatus.OK)
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Post('login')
-  async signIn(@Body() signInDto: LoginDto, @Res({ passthrough: true}) response: FastifyReply) {
-    const token = await this.authService.signIn(signInDto.username, signInDto.password);
-    response.setCookie('jwt-meeorder', 'Bearer' + token)
+  async signIn(
+    @Body() signInDto: LoginDto,
+    @Res({ passthrough: true }) response: FastifyReply,
+  ) {
+    const token = await this.authService.signIn(
+      signInDto.username,
+      signInDto.password,
+    );
+    response.setCookie('jwt-meeorder', 'Bearer' + token);
   }
 
-  @HttpCode(HttpStatus.OK)
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Post('logout')
-  async signOut(@Res({ passthrough: true}) response: FastifyReply) {
-    response.clearCookie('jwt-meeorder')
+  signOut(@Res({ passthrough: true }) response: FastifyReply) {
+    response.clearCookie('jwt-meeorder');
   }
-  
 }
