@@ -1,6 +1,7 @@
 import { ParseMongoIdPipe } from '@/pipes/mongo-id.pipe';
 import { SessionSchema } from '@/schema/session.schema';
 import { CreateSessionDto } from '@/session/dto/create-session.dto';
+import { OrdersListDto } from '@/session/dto/listorders.dto';
 import { SessionService } from '@/session/session.service';
 import {
   Body,
@@ -134,6 +135,10 @@ export class SessionController {
 
   @Get('/:id/orders')
   @ApiParam({ name: 'id', type: String, description: 'Session ID (ObjectId)' })
+  @ApiResponse({
+    type: () => OrdersListDto,
+    status: HttpStatus.OK,
+  })
   @HttpCode(HttpStatus.OK)
   async getOrdersBySession(
     @Param('id', new ParseMongoIdPipe()) id: Types.ObjectId,
