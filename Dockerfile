@@ -6,10 +6,8 @@ WORKDIR /usr/src/app
 
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
 COPY package*.json ./
-COPY pnpm-lock.yaml ./
 # Install app dependencies
-RUN npm install -g pnpm
-RUN pnpm install 
+RUN npm ci 
 # Bundle app source
 COPY . .
 
