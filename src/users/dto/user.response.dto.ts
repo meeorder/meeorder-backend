@@ -7,9 +7,11 @@ export class UserResponseDto {
   @ApiProperty({ type: String, description: '_id is ObjectID' })
   @IsMongoId()
   _id: Types.ObjectId;
+
   @ApiProperty({ type: String, description: 'username is string' })
-  @IsString()
+  @IsMongoId()
   username: string;
+
   @ApiProperty({ type: String, description: 'role is string' })
   @IsString()
   @IsEnum(UserRole)

@@ -42,6 +42,5 @@ export class UserSchema {
   created_at: Date;
 
   @prop({ default: null })
-  @ApiProperty({ type: Date, default: null })
   deleted_at: Date;
 }

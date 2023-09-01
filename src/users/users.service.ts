@@ -30,10 +30,12 @@ export class UsersService {
 
   async getUsers(role: string = undefined) {
     if (!role) {
-      return await this.userModel.find({}, { password: false }).exec();
+      return await this.userModel
+        .find({ deleted_at: null }, { password: false })
+        .exec();
     }
     return await this.userModel
-      .find({ role: UserRole[role] }, { password: false })
+      .find({ role: UserRole[role], deleted_at: null }, { password: false })
       .exec();
   }
 
@@ -46,13 +48,12 @@ export class UsersService {
   }
 
   async resetPassword(id: Types.ObjectId) {
-    const newPassword = 'password';
+    const newPassword = '123456';
     const hashedPassword = await argon2.hash(newPassword);
     await this.userModel
       .findByIdAndUpdate(id, {
         password: hashedPassword,
       })
       .exec();
-    return newPassword;
   }
 }

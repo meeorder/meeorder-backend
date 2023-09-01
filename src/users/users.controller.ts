@@ -53,20 +53,26 @@ export class UsersController {
     description: 'User id (ObjectId)',
     required: true,
   })
+  @ApiResponse({
+    status: HttpStatus.NO_CONTENT,
+  })
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteUser(@Query('id', new ParseMongoIdPipe()) id: Types.ObjectId) {
     await this.usersService.deleteUser(id);
   }
 
-  @Post()
+  @Post('/reset_password')
   @ApiQuery({
     name: 'id',
     type: String,
     description: 'User id (ObjectId)',
     required: true,
   })
-  @HttpCode(HttpStatus.OK)
+  @ApiResponse({
+    status: HttpStatus.NO_CONTENT,
+  })
+  @HttpCode(HttpStatus.NO_CONTENT)
   async updateUser(@Query('id', new ParseMongoIdPipe()) id: Types.ObjectId) {
-    return await this.usersService.resetPassword(id);
+    await this.usersService.resetPassword(id);
   }
 }
