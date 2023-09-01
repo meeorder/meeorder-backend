@@ -24,7 +24,7 @@ export class OrderStepDefination {
   async createOrder() {
     await this.sessionModel.create({
       table: 1,
-      uid: null,
+      user: null,
       _id: new Types.ObjectId('64cfe636970bec4e46724a45'),
       finished_at: null,
     });

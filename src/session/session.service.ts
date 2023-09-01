@@ -27,10 +27,9 @@ export class SessionService {
     private readonly ordersService: OrdersService,
   ) {}
 
-  async createSession(table: number, uid?: string) {
+  async createSession(table: number) {
     const session = await this.sessionModel.create({
       table,
-      uid,
     });
 
     return session;
