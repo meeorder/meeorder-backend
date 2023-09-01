@@ -69,3 +69,5 @@ jobs:
           BASE_URL: http://127.0.0.1:4000
           MONGO_URI: mongodb://127.0.0.1:27017
           MONGO_DB_NAME: meeorder
+      - name: Stop Backend Server
+        run: npm run stop:pm2
