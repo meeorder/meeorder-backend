@@ -11,12 +11,13 @@ export class AuthController {
   @Post('login')
   async signIn(@Body() signInDto: LoginDto, @Res({ passthrough: true}) response: FastifyReply) {
     const token = await this.authService.signIn(signInDto.username, signInDto.password);
-    response.setCookie
+    response.setCookie('jwt-meeorder', 'Bearer ' + token)
+  }
 
   @HttpCode(HttpStatus.OK)
   @Post('logout')
   async signOut(@Res({ passthrough: true}) response: FastifyReply) {
-
-
+    response.clearCookie('jwt-meeorder')
+  }
   
 }
