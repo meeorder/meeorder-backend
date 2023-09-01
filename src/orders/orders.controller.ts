@@ -22,7 +22,7 @@ export class OrdersController {
   constructor(private ordersService: OrdersService) {}
 
   @Post()
-  @ApiBody({ type: CreateOrderDto })
+  @ApiBody({ type: () => CreateOrderDto })
   @ApiResponse({ status: HttpStatus.CREATED, description: 'Create order' })
   @HttpCode(HttpStatus.CREATED)
   async createOrder(@Body() createOrderDto: CreateOrderDto) {
