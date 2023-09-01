@@ -59,6 +59,8 @@ jobs:
           MONGO_URI: mongodb://127.0.0.1:27017
           MONGO_DB_NAME: meeorder
           PORT: 4000
+          MEEORDER_PRIVATE_KEY: ${{secrets.MEEORDER_PRIVATE_KEY}}
+          MEEORDER_PUBLIC_KEY: ${{secrets.MEEORDER_PUBLIC_KEY}}
       - name: Waiting Service
         run: chmod +x ./.github/wait.sh && ./.github/wait.sh ${{env.TEST_URL}}
         env:
