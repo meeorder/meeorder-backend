@@ -38,8 +38,10 @@ export class UserSchema {
   role: UserRole;
 
   @prop({ default: new Date() })
+  @ApiProperty({ type: Date, default: new Date() })
   created_at: Date;
 
   @prop({ default: null })
+  @ApiProperty({ type: Date, default: null })
   deleted_at: Date;
 }
