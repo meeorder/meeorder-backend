@@ -12,7 +12,6 @@ import { HealthModule } from './health/health.module';
 import { SessionModule } from './session/session.module';
 import { TablesModule } from './tables/tables.module';
 import { UsersModule } from './users/users.module';
-import { UsersService } from './users/users.service';
 
 @Module({
   imports: [
@@ -33,6 +32,5 @@ import { UsersService } from './users/users.service';
     AuthModule,
     UsersModule,
   ],
-  providers: [UsersService],
 })
 export class AppModule {}

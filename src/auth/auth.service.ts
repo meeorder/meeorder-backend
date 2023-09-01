@@ -15,14 +15,14 @@ export class AuthService {
   ) {}
 
   async signIn(username: string, password: string): Promise<string> {
-    const user = await this.usersService.findOne(username);
+    const user = await this.usersService.getUserByUsername(username);
 
     try {
       if (await argon2.verify(user.password, password)) {
         // password match
         return this.jwtService.signAsync({
           username: user.username,
-          id: user.userId,
+          id: user.id,
         });
       } else {
         // password did not match
