@@ -26,12 +26,12 @@ export class AuthController {
       signInDto.username,
       signInDto.password,
     );
-    response.setCookie('jwt-meeorder', 'Bearer ' + token);
+    response.setCookie('jwt-meeorder', 'Bearer ' + token, { path: '/' });
   }
 
   @HttpCode(HttpStatus.NO_CONTENT)
   @Post('logout')
   signOut(@Res({ passthrough: true }) response: FastifyReply) {
-    response.clearCookie('jwt-meeorder');
+    response.clearCookie('jwt-meeorder', { path: '/' });
   }
 }

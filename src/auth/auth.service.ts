@@ -1,3 +1,4 @@
+import { UserRole } from '@/schema/users.schema';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as argon2 from 'argon2';
@@ -12,16 +13,27 @@ export class AuthService {
 
   async signIn(username: string, password: string): Promise<string> {
     const user = await this.usersService.getUserByUsername(username);
-
-    if (await argon2.verify(user.password, password)) {
-      // password match
-      return this.jwtService.signAsync({
-        username: user.username,
-        id: user.id,
+    if (!user) {
+      throw new UnauthorizedException({
+        message: 'Username or password is incorrect',
       });
+    }
+    const isMatched = await argon2.verify(user.password, password);
+
+    if (isMatched) {
+      const token = await this.jwtService.signAsync(
+        {
+          username: user.username,
+          id: user.id,
+        },
+        { expiresIn: user.role > UserRole.Employee ? '30d' : '1d' },
+      );
+
+      return token;
     } else {
-      // password did not match
-      throw new UnauthorizedException();
+      throw new UnauthorizedException({
+        message: 'Username or password is incorrect',
+      });
     }
   }
 }
