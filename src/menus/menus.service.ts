@@ -84,14 +84,18 @@ export class MenusService {
             {
               menus: {
                 $map: {
-                  input: '$menus',
-                  as: 'menu',
+                  input: '$categoryInfo.menus',
+                  as: 'menuId',
                   in: {
                     $arrayElemAt: [
-                      '$menus',
                       {
-                        $indexOfArray: ['$categoryInfo.menus', '$$menu._id'],
+                        $filter: {
+                          input: '$menus',
+                          as: 'menu',
+                          cond: { $eq: ['$$menu._id', '$$menuId'] },
+                        },
                       },
+                      0,
                     ],
                   },
                 },
@@ -99,6 +103,11 @@ export class MenusService {
             },
           ],
         },
+      },
+    },
+    {
+      $sort: {
+        'categoryInfo.rank': 1 as any,
       },
     },
     {
@@ -123,7 +132,6 @@ export class MenusService {
       { $match: scriptForStatus },
       ...this.getAddonInfoScript,
       ...this.groupCategoryScript,
-      { $sort: { rank: 1 as any } },
     ];
 
     const result = await this.menuModel.aggregate(script).exec();
