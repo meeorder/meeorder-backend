@@ -76,7 +76,28 @@ export class MenusService {
     {
       $replaceRoot: {
         newRoot: {
-          $mergeObjects: [{ category: '$categoryInfo' }, { menus: '$menus' }],
+          // Merge the "categoryInfo" and "menus" objects
+          // Also sort the "menus" field that contain array of menu object which has "_id" by order from array of "_id" in "categoryInfo.menus" field
+          $mergeObjects: [
+            { rank: '$categoryInfo.rank' },
+            { categoryInfo: '$categoryInfo' },
+            {
+              menus: {
+                $map: {
+                  input: '$menus',
+                  as: 'menu',
+                  in: {
+                    $arrayElemAt: [
+                      '$menus',
+                      {
+                        $indexOfArray: ['$categoryInfo.menus', '$$menu._id'],
+                      },
+                    ],
+                  },
+                },
+              },
+            },
+          ],
         },
       },
     },
@@ -102,6 +123,7 @@ export class MenusService {
       { $match: scriptForStatus },
       ...this.getAddonInfoScript,
       ...this.groupCategoryScript,
+      { $sort: { rank: 1 as any } },
     ];
 
     const result = await this.menuModel.aggregate(script).exec();
