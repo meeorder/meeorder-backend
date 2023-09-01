@@ -11,11 +11,12 @@ export class SwaggerBuilder {
       .setVersion('1.0');
   }
 
+  createDocument() {
+    return SwaggerModule.createDocument(this.app, this.documentBuilder.build());
+  }
+
   setup() {
-    const docs = SwaggerModule.createDocument(
-      this.app,
-      this.documentBuilder.build(),
-    );
+    const docs = this.createDocument();
 
     SwaggerModule.setup('docs', this.app, docs);
   }
