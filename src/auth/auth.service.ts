@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  InternalServerErrorException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as argon2 from 'argon2';
 import { UsersService } from '../users/users.service';
@@ -17,20 +13,15 @@ export class AuthService {
   async signIn(username: string, password: string): Promise<string> {
     const user = await this.usersService.getUserByUsername(username);
 
-    try {
-      if (await argon2.verify(user.password, password)) {
-        // password match
-        return this.jwtService.signAsync({
-          username: user.username,
-          id: user.id,
-        });
-      } else {
-        // password did not match
-        throw new UnauthorizedException();
-      }
-    } catch (err) {
-      // internal failure
-      throw new InternalServerErrorException();
+    if (await argon2.verify(user.password, password)) {
+      // password match
+      return this.jwtService.signAsync({
+        username: user.username,
+        id: user.id,
+      });
+    } else {
+      // password did not match
+      throw new UnauthorizedException();
     }
   }
 }

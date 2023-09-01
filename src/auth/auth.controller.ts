@@ -7,10 +7,12 @@ import {
   Post,
   Res,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { FastifyReply } from 'fastify';
 import { AuthService } from './auth.service';
 
-@Controller('auth')
+@Controller({ path: 'auth', version: '1' })
+@ApiTags('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
@@ -24,7 +26,7 @@ export class AuthController {
       signInDto.username,
       signInDto.password,
     );
-    response.setCookie('jwt-meeorder', 'Bearer' + token);
+    response.setCookie('jwt-meeorder', 'Bearer ' + token);
   }
 
   @HttpCode(HttpStatus.NO_CONTENT)
