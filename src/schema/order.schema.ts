@@ -18,15 +18,19 @@ export class OrdersSchema {
   status: OrderStatus;
 
   @Prop({ ref: () => SessionSchema })
-  @ApiProperty({ type: SessionSchema, description: 'Session Schema' })
+  @ApiProperty({ type: () => SessionSchema, description: 'Session Schema' })
   session: Ref<SessionSchema>;
 
   @Prop({ ref: () => MenuSchema })
-  @ApiProperty({ type: MenuSchema, description: 'Menu Schema' })
+  @ApiProperty({ type: () => MenuSchema, description: 'Menu Schema' })
   menu: Ref<MenuSchema>;
 
   @Prop({ ref: () => AddonSchema, default: [] })
-  @ApiProperty({ type: [AddonSchema], description: 'Array of Addons Schema' })
+  @ApiProperty({
+    type: () => AddonSchema,
+    description: 'Array of Addons Schema',
+    isArray: true,
+  })
   addons: Ref<AddonSchema>[];
 
   @Prop({ default: '' })
