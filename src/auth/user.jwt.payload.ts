@@ -1,13 +1,13 @@
 import { UserRole } from '@/schema/users.schema';
 
-export class UserJwtPayload {
+export class UserJwt {
   id: string;
 
   username: string;
 
   role: UserRole;
 
-  constructor(base: UserJwtPayload) {
+  constructor(base: UserJwt) {
     this.id = base.id;
     this.username = base.username;
     this.role = base.role;
@@ -15,5 +15,9 @@ export class UserJwtPayload {
 
   isHavePermission(role: UserRole) {
     return this.role >= role;
+  }
+
+  static fromDecode(decoded: any): UserJwt {
+    return new UserJwt(decoded);
   }
 }

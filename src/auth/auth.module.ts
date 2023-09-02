@@ -10,6 +10,7 @@ import { AuthService } from './auth.service';
     UsersModule,
     JwtModule.registerAsync({
       useClass: JwtConfigService,
+      global: true,
     }),
   ],
   providers: [AuthService],
