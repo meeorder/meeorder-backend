@@ -19,7 +19,7 @@ export class CouponSchema {
   @ApiProperty({ type: String, description: 'Coupon Description' })
   description: string;
 
-  @Prop({ default: null, ref: () => MenuSchema })
+  @Prop({ default: [], ref: () => MenuSchema })
   @ApiProperty({
     type: String,
     isArray: true,
