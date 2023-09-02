@@ -235,3 +235,20 @@ export class HealthController {
 
 - Cucumber spec file: [https://cucumber.io/docs/gherkin/](https://cucumber.io/docs/gherkin/)
 - Cucumber step defination file: [https://github.com/timjroberts/cucumber-js-tsflow](https://github.com/timjroberts/cucumber-js-tsflow#create-the-support-files-to-support-the-feature)
+
+## JWT Public/Private key pair
+
+Backend use ES256 algorithm for signing and verifying JWT token. You can use ES256 key pairs and set it in .env file.
+
+```env
+MEEORDER_PUBLIC_KEY=
+MEEORDER_PRIVATE_KEY=
+```
+
+## ENV
+
+```env
+MONGO_URI=
+MEEORDER_PUBLIC_KEY=
+MEEORDER_PRIVATE_KEY=
+```
