@@ -43,9 +43,8 @@ export class SessionStepDefination {
 
   @when('get all sessions')
   async getAllSessions() {
-    this.workspace.response = await this.workspace.axiosInstance.get(
-      '/sessions',
-    );
+    this.workspace.response =
+      await this.workspace.axiosInstance.get('/sessions');
   }
 
   @when('finish session {string}')
