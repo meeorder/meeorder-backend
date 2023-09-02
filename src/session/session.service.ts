@@ -23,6 +23,7 @@ export class SessionService {
   constructor(
     @InjectModel(SessionSchema)
     private readonly sessionModel: ReturnModelType<typeof SessionSchema>,
+    @InjectModel(UserSchema)
     private readonly userModel: ReturnModelType<typeof UserSchema>,
     private readonly menusService: MenusService,
     private readonly addonsService: AddonsService,
@@ -49,6 +50,12 @@ export class SessionService {
       )
       .orFail()
       .exec();
+
+    const session = await this.sessionModel.findById({ _id: id });
+    await this.userModel.updateOne(
+      { _id: session.user, deleted_at: null },
+      { point: session.point },
+    );
 
     return result;
   }

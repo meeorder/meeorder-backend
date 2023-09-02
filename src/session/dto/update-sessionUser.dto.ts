@@ -4,6 +4,6 @@ import { Types } from 'mongoose';
 
 export class SessionUserUpdateDto {
   @ApiProperty()
-  @Transform(({ value }) => value.map((v) => new Types.ObjectId(v)))
+  @Transform(({ value }) => new Types.ObjectId(value))
   user: Types.ObjectId;
 }
