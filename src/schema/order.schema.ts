@@ -33,7 +33,7 @@ export class OrdersSchema {
 
   @Prop({ ref: () => AddonSchema, default: [] })
   @ApiProperty({
-    oneOf: [{ $ref: getSchemaPath(AddonSchema) }, { type: 'string' }],
+    type: () => AddonSchema,
     description: 'Array of Addons Schema',
     isArray: true,
   })
