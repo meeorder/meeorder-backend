@@ -1,7 +1,8 @@
 import { CouponSchema } from '@/schema/coupons.schema';
 import { DataTable } from '@cucumber/cucumber';
 import { ReturnModelType } from '@typegoose/typegoose';
-import { binding, given, then, when } from 'cucumber-tsflow';
+import { after, binding, given, then, when } from 'cucumber-tsflow';
+import expect from 'expect';
 import { Workspace } from 'features/step-definitions/workspace';
 import { Types } from 'mongoose';
 @binding([Workspace])
@@ -18,8 +19,8 @@ export class SessionStepDefination {
     for (const coupon of coupons) {
       const doc = await this.couponModel.create({
         title: coupon.title,
-        price: coupon.price,
-        required_points: coupon.required_points,
+        price: +coupon.price,
+        required_point: +coupon.required_point,
         _id: new Types.ObjectId(coupon._id),
       });
 
@@ -34,9 +35,8 @@ export class SessionStepDefination {
       '/coupons',
       {
         title: coupon.title,
-        price: coupon.price,
-        required_menus: coupon.required_menus,
-        required_points: coupon.required_points,
+        price: +coupon.price,
+        required_point: +coupon.required_point,
       },
     );
   }
@@ -58,8 +58,17 @@ export class SessionStepDefination {
 
   @when('get all coupons by owner')
   async getAllCouponsByOwner() {
-    this.workspace.response = await this.workspace.axiosInstance.get(
-      '/coupons/owner',
-    );
+    this.workspace.response =
+      await this.workspace.axiosInstance.get('/coupons');
+  }
+
+  @then('response size should equal to {int}')
+  responseSizeShouldEqualTo(size: number) {
+    expect(this.workspace.response.data.length).toBe(size);
+  }
+
+  @after()
+  async cleanUpDb() {
+    await this.couponModel.deleteMany({});
   }
 }

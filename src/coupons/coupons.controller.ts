@@ -30,17 +30,35 @@ export class CouponsController {
     return await this.couponsService.createCoupon(createCouponDto);
   }
 
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Get all coupons',
+    type: () => [CreateCouponDto],
+  })
   @Get()
+  @HttpCode(HttpStatus.OK)
   async findAll() {
     return await this.couponsService.getAllCouponByOwner();
   }
 
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Get all coupons',
+    type: () => CreateCouponDto,
+  })
   @Get(':id')
+  @HttpCode(HttpStatus.OK)
   async findOne(@Param('id') id: string) {
     return await this.couponsService.getCouponByIdByOwner(id);
   }
 
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Coupon updated',
+    type: () => CreateCouponDto,
+  })
   @Patch(':id')
+  @HttpCode(HttpStatus.OK)
   async update(
     @Param('id') id: string,
     @Body() updateCouponDto: UpdateCouponDto,
@@ -48,7 +66,12 @@ export class CouponsController {
     return await this.couponsService.updateCoupon(id, updateCouponDto);
   }
 
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Coupon deleted',
+  })
   @Delete(':id')
+  @HttpCode(HttpStatus.OK)
   async remove(@Param('id') id: string) {
     return await this.couponsService.deleteCoupon(id);
   }
