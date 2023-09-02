@@ -1,8 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString } from 'class-validator';
 
-export class CreateCategoryDto {
+export class RegisterDto {
   @ApiProperty()
   @IsString()
-  title: string;
+  username: string;
+
+  @ApiProperty()
+  @IsString()
+  password: string;
 }

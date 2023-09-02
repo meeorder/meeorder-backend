@@ -30,6 +30,10 @@ export class UsersService {
     };
   }
 
+  async getUserByUsername(username: string) {
+    return await this.userModel.findOne({ username }).exec();
+  }
+
   async getUsers(role: string = undefined) {
     if (!role) {
       return await this.userModel

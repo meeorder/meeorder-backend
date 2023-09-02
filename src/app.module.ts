@@ -4,6 +4,7 @@ import { OrdersModule } from '@/orders/orders.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypegooseModule } from 'nest-typegoose';
+import { AuthModule } from './auth/auth.module';
 import { CategoriesModule } from './categories/categories.module';
 import { configuration } from './config';
 import { TypegooseConfigService } from './config/typegoose.config.service';
@@ -28,6 +29,7 @@ import { UsersModule } from './users/users.module';
     OrdersModule,
     SessionModule,
     TablesModule,
+    AuthModule,
     UsersModule,
   ],
 })
