@@ -76,8 +76,37 @@ export class MenusService {
     {
       $replaceRoot: {
         newRoot: {
-          $mergeObjects: [{ category: '$categoryInfo' }, { menus: '$menus' }],
+          // Merge the "categoryInfo" and "menus" objects
+          // Also sort the "menus" field that contain array of menu object which has "_id" by order from array of "_id" in "categoryInfo.menus" field
+          $mergeObjects: [
+            { categoryInfo: '$categoryInfo' },
+            {
+              menus: {
+                $map: {
+                  input: '$categoryInfo.menus',
+                  as: 'menuId',
+                  in: {
+                    $arrayElemAt: [
+                      {
+                        $filter: {
+                          input: '$menus',
+                          as: 'menu',
+                          cond: { $eq: ['$$menu._id', '$$menuId'] },
+                        },
+                      },
+                      0,
+                    ],
+                  },
+                },
+              },
+            },
+          ],
         },
+      },
+    },
+    {
+      $sort: {
+        'categoryInfo.rank': 1 as any,
       },
     },
     {
