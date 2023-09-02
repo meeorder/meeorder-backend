@@ -1,5 +1,6 @@
+import { MenuSchema } from '@/schema/menus.schema';
 import { ApiProperty } from '@nestjs/swagger';
-import { Prop, modelOptions } from '@typegoose/typegoose';
+import { Prop, Ref, modelOptions } from '@typegoose/typegoose';
 import { Types } from 'mongoose';
 
 @modelOptions({
@@ -18,13 +19,13 @@ export class CouponSchema {
   @ApiProperty({ type: String, description: 'Coupon Description' })
   description: string;
 
-  @Prop({ default: null })
+  @Prop({ default: null, ref: () => MenuSchema, type: String })
   @ApiProperty({
     type: String,
     isArray: true,
     description: 'Coupon Required Menus',
   })
-  required_menus: Types.ObjectId[];
+  required_menus: Ref<MenuSchema, string>[];
 
   @Prop({ required: true })
   @ApiProperty({
@@ -47,7 +48,7 @@ export class CouponSchema {
   })
   activated: boolean;
 
-  @Prop({ default: null })
+  @Prop({ default: 0 })
   @ApiProperty({
     type: Number,
     description: 'Coupon Required Point',
