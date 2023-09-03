@@ -45,6 +45,17 @@ export class CategoriesService {
     return this.categoryModel.deleteOne({ _id: id }).exec();
   }
 
+  async pushMenuToCategory(categoryId: Types.ObjectId, menuId: Types.ObjectId) {
+    const doc = await this.categoryModel
+      .findByIdAndUpdate(
+        categoryId,
+        { $push: { menus: menuId } },
+        { new: true },
+      )
+      .exec();
+    return doc;
+  }
+
   async updateRank(rankBody: RankDto) {
     const doc = rankBody;
     const updates = doc.rank.map((id, index) => ({
