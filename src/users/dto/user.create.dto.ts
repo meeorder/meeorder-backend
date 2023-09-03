@@ -20,12 +20,11 @@ export class CreateUserDto {
     description:
       'select role from enum UserRole example: Owner, Chef, Cashier, Employee, Customer',
   })
-  @IsString()
   @Transform(({ value }) => {
-    const role: UserRole | undefined =
-      UserRole[
-        `${(<string>value)?.[0].toUpperCase()}${(<string>value)?.slice(1)}`
-      ];
+    const transformed = `${(<string>value)?.[0].toUpperCase()}${(<string>(
+      value
+    ))?.slice(1)}`;
+    const role: UserRole | undefined = UserRole[transformed];
 
     if (!role) {
       throw new BadRequestException({
