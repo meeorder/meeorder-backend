@@ -1,4 +1,5 @@
 import { LoginDto } from '@/auth/dto/login.dto';
+import { RegisterDto } from '@/auth/dto/register.dto';
 import {
   Body,
   Controller,
@@ -33,5 +34,11 @@ export class AuthController {
   @Post('logout')
   signOut(@Res({ passthrough: true }) response: FastifyReply) {
     response.clearCookie('jwt-meeorder', { path: '/' });
+  }
+
+  @HttpCode(HttpStatus.CREATED)
+  @Post('register')
+  async register(@Body() registerDto: RegisterDto) {
+    return await this.authService.register(registerDto);
   }
 }
