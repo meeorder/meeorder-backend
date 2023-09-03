@@ -1,8 +1,10 @@
 import { ParseMongoIdPipe } from '@/pipes/mongo-id.pipe';
 import { SessionSchema } from '@/schema/session.schema';
 import { CreateSessionDto } from '@/session/dto/create-session.dto';
+import { CouponDto } from '@/session/dto/getcoupon.dto';
 import { OrdersListDto } from '@/session/dto/listorders.dto';
 import { SessionUserUpdateDto } from '@/session/dto/update-sessionUser.dto';
+import { UpdateSessionCouponDto } from '@/session/dto/updatecoupon.dto';
 import { SessionService } from '@/session/session.service';
 import {
   Body,
@@ -159,5 +161,30 @@ export class SessionController {
     @Body() doc: SessionUserUpdateDto,
   ) {
     return await this.sessionService.updateSessionUser(id, doc);
+  }
+
+  @ApiResponse({
+    description: 'Get all useable coupon',
+    type: () => CouponDto,
+    status: HttpStatus.OK,
+  })
+  @HttpCode(HttpStatus.OK)
+  @Get(':id/coupons')
+  async getCoupons(@Param('id', new ParseMongoIdPipe()) id: Types.ObjectId) {
+    return await this.sessionService.getAllCoupon(id);
+  }
+
+  @ApiResponse({
+    description: 'Update coupon in session',
+    type: () => UpdateSessionCouponDto,
+    status: HttpStatus.OK,
+  })
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Patch(':id/updatecoupon')
+  async updateSessionCoupon(
+    @Param('id', new ParseMongoIdPipe()) id: Types.ObjectId,
+    @Body() doc: UpdateSessionCouponDto,
+  ) {
+    await this.sessionService.updateSessionCoupon(id, doc);
   }
 }

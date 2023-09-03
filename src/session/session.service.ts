@@ -2,10 +2,13 @@ import { AddonsService } from '@/addons/addons.service';
 import { MenusService } from '@/menus/menus.service';
 import { OrdersService } from '@/orders/orders.service';
 import { AddonSchema } from '@/schema/addons.schema';
+import { CouponSchema } from '@/schema/coupons.schema';
 import { MenuSchema } from '@/schema/menus.schema';
 import { SessionSchema } from '@/schema/session.schema';
 import { UserSchema } from '@/schema/users.schema';
+import { CouponDto } from '@/session/dto/getcoupon.dto';
 import { SessionUserUpdateDto } from '@/session/dto/update-sessionUser.dto';
+import { UpdateSessionCouponDto } from '@/session/dto/updatecoupon.dto';
 import {
   HttpException,
   HttpStatus,
@@ -25,6 +28,8 @@ export class SessionService {
     private readonly sessionModel: ReturnModelType<typeof SessionSchema>,
     @InjectModel(UserSchema)
     private readonly userModel: ReturnModelType<typeof UserSchema>,
+    @InjectModel(CouponSchema)
+    private readonly couponModel: ReturnModelType<typeof CouponSchema>,
     private readonly menusService: MenusService,
     private readonly addonsService: AddonsService,
     @Inject(forwardRef(() => OrdersService))
@@ -206,6 +211,54 @@ export class SessionService {
     const new_point = (await this.userModel.findById(new_user)).point;
     await this.sessionModel
       .updateOne({ _id: id }, { user: new_user, point: new_point })
+      .orFail()
+      .exec();
+  }
+
+  async getAllCoupon(id: Types.ObjectId): Promise<CouponDto[]> {
+    const all_res = new Array<CouponDto>();
+    const orders = await this.ordersService.getOrdersBySession(id);
+    const menu_arr = orders.map((order) => order.menu);
+    const coupon_arr = await this.couponModel.find({ activated: true });
+    for (let i = 0; i < menu_arr.length; i++) {
+      for (let j = 0; j < coupon_arr.length; i++) {
+        let isUseable = false;
+        const menus_ = coupon_arr[j].required_menus;
+        for (let k = 0; k < menus_.length; i++) {
+          if (menu_arr[i] === menus_[k]) {
+            isUseable = true;
+            break;
+          }
+        }
+        const res = new CouponDto(coupon_arr[j], isUseable);
+        all_res.push(res);
+      }
+    }
+    return all_res;
+  }
+
+  async updateSessionCoupon(
+    id: Types.ObjectId,
+    couponbody: UpdateSessionCouponDto,
+  ) {
+    const session = await this.sessionModel.findById(id);
+    const new_coupon = couponbody.coupon_id;
+    let new_point = 0;
+    if (new_coupon === null) {
+      const coupon_point = await this.couponModel.findById(session.coupon)
+        .required_point;
+      new_point = session.point + coupon_point;
+    } else if (new_coupon !== session.coupon) {
+      const old_coupon_point = session.coupon
+        ? await this.couponModel.findById(session.coupon).required_point
+        : 0;
+      const new_coupon_point =
+        await this.couponModel.findById(new_coupon).required_point;
+      new_point = session.point + old_coupon_point - new_coupon_point;
+    }
+    await this.couponModel.findById(new_coupon).required_point;
+    await this.sessionModel
+      .updateOne({ _id: id }, { coupon: new_coupon, point: new_point })
       .orFail()
       .exec();
   }

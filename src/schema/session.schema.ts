@@ -1,3 +1,4 @@
+import { CouponSchema } from '@/schema/coupons.schema';
 import { TablesSchema } from '@/schema/tables.schema';
 import { UserSchema } from '@/schema/users.schema';
 import { ApiProperty } from '@nestjs/swagger';
@@ -36,6 +37,13 @@ export class SessionSchema {
   @Prop({ default: 0 })
   @ApiProperty({ description: 'User point' })
   point: number;
+
+  @Prop({ default: null, ref: () => CouponSchema })
+  @ApiProperty({
+    description: 'Coupon ID',
+    isArray: true,
+  })
+  coupon: Ref<CouponSchema>;
 
   @Prop({ required: true, ref: () => TablesSchema })
   @ApiProperty({ description: 'Table ID' })
