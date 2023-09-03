@@ -79,7 +79,7 @@ export class MenusService {
           // Merge the "categoryInfo" and "menus" objects
           // Also sort the "menus" field that contain array of menu object which has "_id" by order from array of "_id" in "categoryInfo.menus" field
           $mergeObjects: [
-            { categoryInfo: '$categoryInfo' },
+            { category: '$categoryInfo' },
             {
               menus: {
                 $map: {
@@ -106,7 +106,7 @@ export class MenusService {
     },
     {
       $sort: {
-        'categoryInfo.rank': 1 as any,
+        'category.rank': 1 as any,
       },
     },
     {
