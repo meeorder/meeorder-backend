@@ -1,6 +1,7 @@
 import { AddonsService } from '@/addons/addons.service';
 import { MenusService } from '@/menus/menus.service';
 import { OrdersService } from '@/orders/orders.service';
+import { CouponSchema } from '@/schema/coupons.schema';
 import { SessionSchema } from '@/schema/session.schema';
 import { UserSchema } from '@/schema/users.schema';
 import { SessionService } from '@/session/session.service';
@@ -12,7 +13,7 @@ describe('SessionService', () => {
   let sessionService: SessionService;
   const sessionModel: Partial<ReturnModelType<typeof SessionSchema>> = {};
   const userModel: Partial<ReturnModelType<typeof UserSchema>> = {};
-  const couponModel: Partial<ReturnModelType<typeof UserSchema>> = {};
+  const couponModel: Partial<ReturnModelType<typeof CouponSchema>> = {};
   const menuService: Partial<MenusService> = {};
   const orderService: Partial<OrdersService> = {};
   const addonsService: Partial<AddonsService> = {};
@@ -27,6 +28,14 @@ describe('SessionService', () => {
         {
           provide: getModelToken(SessionSchema.name),
           useValue: sessionModel,
+        },
+        {
+          provide: getModelToken(UserSchema.name),
+          useValue: userModel,
+        },
+        {
+          provide: getModelToken(CouponSchema.name),
+          useValue: couponModel,
         },
       ],
     })
