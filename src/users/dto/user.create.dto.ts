@@ -1,6 +1,8 @@
 import { UserRole } from '@/schema/users.schema';
+import { BadRequestException } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsString } from 'class-validator';
+import { Transform } from 'class-transformer';
+import { IsString } from 'class-validator';
 
 export class CreateUserDto {
   @ApiProperty({ type: String, description: 'username is string' })
@@ -19,6 +21,19 @@ export class CreateUserDto {
       'select role from enum UserRole example: Owner, Chef, Cashier, Employee, Customer',
   })
   @IsString()
-  @IsEnum(UserRole)
+  @Transform(({ value }) => {
+    const role: UserRole | undefined =
+      UserRole[
+        `${(<string>value)?.[0].toUpperCase()}${(<string>value)?.slice(1)}`
+      ];
+
+    if (!role) {
+      throw new BadRequestException({
+        message: 'Invalid role',
+      });
+    }
+
+    return role;
+  })
   role: UserRole;
 }
