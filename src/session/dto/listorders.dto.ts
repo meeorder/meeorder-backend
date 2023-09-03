@@ -1,4 +1,4 @@
-import { OrdersSchema } from '@/schema/order.schema';
+import { OrdersResponseDto } from '@/orders/dto/orders.response.dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsArray, IsNumber, ValidateNested } from 'class-validator';
@@ -20,9 +20,9 @@ export class OrdersListDto {
   @IsNumber()
   net_price: number;
 
-  @ApiProperty({ type: () => OrdersSchema, isArray: true })
+  @ApiProperty({ type: () => OrdersResponseDto, isArray: true })
   @IsArray()
   @ValidateNested({ each: true })
-  @Type(() => OrdersSchema)
-  orders: OrdersSchema[];
+  @Type(() => OrdersResponseDto)
+  orders: OrdersResponseDto[];
 }
