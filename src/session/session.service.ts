@@ -220,19 +220,19 @@ export class SessionService {
     const orders = await this.ordersService.getOrdersBySession(id);
     const menu_arr = orders.map((order) => order.menu);
     const coupon_arr = await this.couponModel.find({ activated: true });
-    for (let i = 0; i < menu_arr.length; i++) {
-      for (let j = 0; j < coupon_arr.length; i++) {
-        let isUseable = false;
-        const menus_ = coupon_arr[j].required_menus;
-        for (let k = 0; k < menus_.length; i++) {
+    for (let j = 0; j < coupon_arr.length; j++) {
+      let isUseable = false;
+      const menus_ = coupon_arr[j].required_menus;
+      for (let k = 0; k < menus_.length; k++) {
+        for (let i = 0; i < menu_arr.length; i++) {
           if (menu_arr[i] === menus_[k]) {
             isUseable = true;
             break;
           }
         }
-        const res = new CouponDto(coupon_arr[j], isUseable);
-        all_res.push(res);
       }
+      const res = new CouponDto(coupon_arr[j].toObject(), isUseable);
+      all_res.push(res);
     }
     return all_res;
   }
@@ -242,21 +242,19 @@ export class SessionService {
     couponbody: UpdateSessionCouponDto,
   ) {
     const session = await this.sessionModel.findById(id);
+    const coupon = await this.couponModel.findById(session.coupon);
     const new_coupon = couponbody.coupon_id;
+    console.log(new_coupon);
     let new_point = 0;
     if (new_coupon === null) {
-      const coupon_point = await this.couponModel.findById(session.coupon)
-        .required_point;
+      const coupon_point = coupon.required_point;
       new_point = session.point + coupon_point;
     } else if (new_coupon !== session.coupon) {
-      const old_coupon_point = session.coupon
-        ? await this.couponModel.findById(session.coupon).required_point
-        : 0;
-      const new_coupon_point =
-        await this.couponModel.findById(new_coupon).required_point;
+      const old_coupon_point = session.coupon ? coupon.required_point : 0;
+      const new_coupon_point = (await this.couponModel.findById(new_coupon))
+        .required_point;
       new_point = session.point + old_coupon_point - new_coupon_point;
     }
-    await this.couponModel.findById(new_coupon).required_point;
     await this.sessionModel
       .updateOne({ _id: id }, { coupon: new_coupon, point: new_point })
       .orFail()
