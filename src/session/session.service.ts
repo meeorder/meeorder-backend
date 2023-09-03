@@ -5,8 +5,7 @@ import { AddonSchema } from '@/schema/addons.schema';
 import { MenuSchema } from '@/schema/menus.schema';
 import { SessionSchema } from '@/schema/session.schema';
 import {
-  HttpException,
-  HttpStatus,
+  ConflictException,
   Inject,
   Injectable,
   forwardRef,
@@ -92,10 +91,7 @@ export class SessionService {
   async validateTableHasSession(table: number) {
     const doc = await this.getSessionByTable(table);
     if (doc) {
-      throw new HttpException(
-        `Table ${table} has session ${doc._id}`,
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new ConflictException(`Table ${table} has session ${doc._id}`);
     }
   }
 
