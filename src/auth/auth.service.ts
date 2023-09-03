@@ -12,7 +12,7 @@ import { UsersService } from '../users/users.service';
 export class AuthService {
   constructor(
     @InjectModel(UserSchema)
-    private UserModel: ReturnModelType<typeof UserSchema>,
+    private userModel: ReturnModelType<typeof UserSchema>,
     private usersService: UsersService,
     private jwtService: JwtService,
   ) {}
@@ -46,7 +46,7 @@ export class AuthService {
 
   async register(registerDto: RegisterDto): Promise<RegisterResponseDto> {
     const hash = await argon2.hash(registerDto.password);
-    const registerUser = await this.UserModel.create({
+    const registerUser = await this.userModel.create({
       username: registerDto.username,
       password: hash,
       role: UserRole.Customer,

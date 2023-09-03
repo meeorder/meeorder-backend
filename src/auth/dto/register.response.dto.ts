@@ -12,8 +12,7 @@ export class RegisterResponseDto {
   @IsString()
   username: string;
 
-  @ApiProperty({ type: String, description: 'role is string' })
-  @IsString()
+  @ApiProperty({ type: Number, description: 'role is string' })
   @IsEnum(UserRole)
   role: UserRole;
 }
