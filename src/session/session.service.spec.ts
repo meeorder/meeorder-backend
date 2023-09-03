@@ -2,6 +2,7 @@ import { AddonsService } from '@/addons/addons.service';
 import { MenusService } from '@/menus/menus.service';
 import { OrdersService } from '@/orders/orders.service';
 import { SessionSchema } from '@/schema/session.schema';
+import { UserSchema } from '@/schema/users.schema';
 import { SessionService } from '@/session/session.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ReturnModelType } from '@typegoose/typegoose';
@@ -10,6 +11,8 @@ import { getModelToken } from 'nest-typegoose';
 describe('SessionService', () => {
   let sessionService: SessionService;
   const sessionModel: Partial<ReturnModelType<typeof SessionSchema>> = {};
+  const userModel: Partial<ReturnModelType<typeof UserSchema>> = {};
+  const couponModel: Partial<ReturnModelType<typeof UserSchema>> = {};
   const menuService: Partial<MenusService> = {};
   const orderService: Partial<OrdersService> = {};
   const addonsService: Partial<AddonsService> = {};
