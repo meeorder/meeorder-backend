@@ -32,7 +32,7 @@ export class CreateMenuDto {
     description: 'Category id',
     required: false,
   })
-  @Transform(({ value }) => new Types.ObjectId(value))
+  @Transform(({ value }) => (value ? new Types.ObjectId(value) : null))
   @IsOptional()
   category: Types.ObjectId;
 
@@ -41,7 +41,9 @@ export class CreateMenuDto {
     isArray: true,
     required: false,
   })
-  @Transform(({ value }) => value.map((v) => new Types.ObjectId(v)))
+  @Transform(({ value }) =>
+    value ? value.map((v) => new Types.ObjectId(v)) : [],
+  )
   @IsOptional()
   addons: Types.ObjectId[];
 }
