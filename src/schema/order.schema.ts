@@ -2,8 +2,8 @@ import { OrderStatus } from '@/orders/enums/orders.status';
 import { AddonSchema } from '@/schema/addons.schema';
 import { MenuSchema } from '@/schema/menus.schema';
 import { SessionSchema } from '@/schema/session.schema';
-import { ApiProperty } from '@nestjs/swagger';
-import { modelOptions, Prop, Ref } from '@typegoose/typegoose';
+import { ApiProperty, getSchemaPath } from '@nestjs/swagger';
+import { Prop, Ref, modelOptions } from '@typegoose/typegoose';
 
 @modelOptions({
   schemaOptions: { collection: 'orders' },
@@ -18,15 +18,26 @@ export class OrdersSchema {
   status: OrderStatus;
 
   @Prop({ ref: () => SessionSchema })
-  @ApiProperty({ type: String, description: 'Session ID' })
+  @ApiProperty({
+    oneOf: [{ $ref: getSchemaPath(SessionSchema) }, { type: 'string' }],
+    description: 'Session Schema',
+  })
   session: Ref<SessionSchema>;
 
   @Prop({ ref: () => MenuSchema })
-  @ApiProperty({ type: String, description: 'Menu ID' })
+  @ApiProperty({
+    oneOf: [{ $ref: getSchemaPath(MenuSchema) }, { type: 'string' }],
+    description: 'Menu Schema',
+  })
   menu: Ref<MenuSchema>;
 
   @Prop({ ref: () => AddonSchema, default: [] })
-  @ApiProperty({ type: [String], description: 'Array of MenuID' })
+  @ApiProperty({
+    type: 'array',
+    items: {
+      oneOf: [{ type: 'string' }, { $ref: getSchemaPath(AddonSchema) }],
+    },
+  })
   addons: Ref<AddonSchema>[];
 
   @Prop({ default: '' })

@@ -10,6 +10,7 @@ import { AuthModule } from './auth/auth.module';
 import { CategoriesModule } from './categories/categories.module';
 import { configuration } from './config';
 import { TypegooseConfigService } from './config/typegoose.config.service';
+import { CouponsModule } from './coupons/coupons.module';
 import { HealthModule } from './health/health.module';
 import { SessionModule } from './session/session.module';
 import { TablesModule } from './tables/tables.module';
@@ -33,6 +34,13 @@ import { UsersModule } from './users/users.module';
     TablesModule,
     AuthModule,
     UsersModule,
+    CouponsModule,
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
   ],
   providers: [
     {
