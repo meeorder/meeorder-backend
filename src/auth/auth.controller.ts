@@ -1,3 +1,4 @@
+import { AuthGuard } from '@/auth/auth.guard';
 import { LoginDto } from '@/auth/dto/login.dto';
 import {
   Body,
@@ -6,6 +7,7 @@ import {
   HttpStatus,
   Post,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { FastifyReply } from 'fastify';

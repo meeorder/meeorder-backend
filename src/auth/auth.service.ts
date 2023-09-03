@@ -25,6 +25,7 @@ export class AuthService {
         {
           username: user.username,
           id: user.id,
+          role: user.role,
         },
         { expiresIn: user.role > UserRole.Employee ? '30d' : '1d' },
       );
