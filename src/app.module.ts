@@ -42,11 +42,5 @@ import { UsersModule } from './users/users.module';
       useClass: AuthGuard,
     },
   ],
-  providers: [
-    {
-      provide: APP_GUARD,
-      useClass: AuthGuard,
-    },
-  ],
 })
 export class AppModule {}
