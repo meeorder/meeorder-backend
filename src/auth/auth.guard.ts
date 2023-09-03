@@ -23,16 +23,8 @@ export class AuthGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.switchToHttp().getRequest<FastifyRequest>();
-    const token = /Bearer (.*)/.exec(req.headers.authorization)?.[1];
     const role = this.reflector.get(Role, context.getHandler());
-    let decoded: UserJwt;
-    try {
-      decoded = await this.jwtService
-        .verifyAsync(token)
-        .then(UserJwt.fromDecode);
-    } catch (e) {
-      this.logger.error(e);
-    }
+    const decoded = await this.extractJwtFromRequest(req);
 
     new FastifyContext(req).set('user', decoded);
 
@@ -44,5 +36,18 @@ export class AuthGuard implements CanActivate {
     }
 
     return decoded.isHavePermission(role);
+  }
+
+  private async extractJwtFromRequest(req: FastifyRequest): Promise<UserJwt> {
+    const token = /Bearer (.*)/.exec(req.headers.authorization)?.[1];
+    if (!token) {
+      return null;
+    }
+    try {
+      return await this.jwtService.verifyAsync(token).then(UserJwt.fromDecode);
+    } catch (e) {
+      this.logger.error('Decrypt token failed', e);
+      return null;
+    }
   }
 }
