@@ -217,25 +217,44 @@ export class SessionService {
   }
 
   async getAllCoupon(id: Types.ObjectId): Promise<CouponDto[]> {
-    const all_res = new Array<CouponDto>();
     const orders = await this.ordersService.getOrdersBySession(id);
+    const session = await this.getSessionById(id);
     const menu_arr = orders.map((order) => order.menu);
-    const coupon_arr = await this.couponModel.find({ activated: true });
-    for (let j = 0; j < coupon_arr.length; j++) {
-      let isUseable = false;
-      const menus_ = coupon_arr[j].required_menus;
-      for (let k = 0; k < menus_.length; k++) {
-        for (let i = 0; i < menu_arr.length; i++) {
-          if (menu_arr[i] === menus_[k]) {
-            isUseable = true;
-            break;
-          }
+    const coupon_arr = await this.couponModel.find({ activated: true }).exec();
+
+    return coupon_arr.map(
+      (coupon) =>
+        new CouponDto(
+          coupon.toObject(),
+          this.isUsableCoupon(session, coupon, menu_arr),
+        ),
+    );
+  }
+
+  isUsableCoupon(
+    session: Pick<SessionSchema, 'point'>,
+    coupon: Pick<CouponSchema, 'required_point' | 'required_menus'>,
+    menus: Pick<MenuSchema, '_id'>[],
+  ) {
+    const menus_ = <Types.ObjectId[]>coupon.required_menus;
+
+    if (coupon.required_point > session.point) {
+      return false;
+    }
+
+    if (menus_.length === 0) {
+      return true;
+    }
+
+    for (let k = 0; k < menus_.length; k++) {
+      for (let i = 0; i < menus.length; i++) {
+        if (menus[i]._id.equals(menus_[k])) {
+          return true;
         }
       }
-      const res = new CouponDto(coupon_arr[j].toObject(), isUseable);
-      all_res.push(res);
     }
-    return all_res;
+
+    return false;
   }
 
   async updateSessionCoupon(

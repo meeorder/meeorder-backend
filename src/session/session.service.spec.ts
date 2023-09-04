@@ -2,11 +2,13 @@ import { AddonsService } from '@/addons/addons.service';
 import { MenusService } from '@/menus/menus.service';
 import { OrdersService } from '@/orders/orders.service';
 import { CouponSchema } from '@/schema/coupons.schema';
+import { MenuSchema } from '@/schema/menus.schema';
 import { SessionSchema } from '@/schema/session.schema';
 import { UserSchema } from '@/schema/users.schema';
 import { SessionService } from '@/session/session.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ReturnModelType } from '@typegoose/typegoose';
+import { Types } from 'mongoose';
 import { getModelToken } from 'nest-typegoose';
 
 describe('SessionService', () => {
@@ -52,6 +54,75 @@ describe('SessionService', () => {
 
   it('should be defined', () => {
     expect(sessionService).toBeDefined();
+  });
+
+  describe('isUsableCoupon', () => {
+    it('should usable if menu in required menu', () => {
+      const menuIds = [
+        new Types.ObjectId('64f598e7cecc358bef29d2f3'),
+        new Types.ObjectId('64f598e7cecc358bef29d2f4'),
+      ];
+      const menus: Pick<MenuSchema, '_id'>[] = menuIds.map((id) => ({
+        _id: id,
+      }));
+      const coupon: Pick<CouponSchema, 'required_menus' | 'required_point'> = {
+        required_menus: [menuIds[0]],
+        required_point: 100,
+      };
+      const session: Pick<SessionSchema, 'point'> = {
+        point: coupon.required_point,
+      };
+
+      expect(
+        sessionService.isUsableCoupon(session, coupon, menus),
+      ).toBeTruthy();
+    });
+
+    it('should unusable if menu not in required menu', () => {
+      const menuIds = [
+        new Types.ObjectId('64f598e7cecc358bef29d2f3'),
+        new Types.ObjectId('64f598e7cecc358bef29d2f4'),
+      ];
+      const menus: Pick<MenuSchema, '_id'>[] = menuIds.map((id) => ({
+        _id: id,
+      }));
+      const coupon: Pick<CouponSchema, 'required_menus' | 'required_point'> = {
+        required_menus: [
+          {
+            _id: new Types.ObjectId('64f5d4a272bce55a73fa639a'),
+          },
+        ] as any,
+        required_point: 100,
+      };
+      const session: Pick<SessionSchema, 'point'> = {
+        point: coupon.required_point,
+      };
+
+      expect(sessionService.isUsableCoupon(session, coupon, menus)).toBeFalsy();
+    });
+
+    it('should unusable if point not enough', () => {
+      const menuIds = [
+        new Types.ObjectId('64f598e7cecc358bef29d2f3'),
+        new Types.ObjectId('64f598e7cecc358bef29d2f4'),
+      ];
+      const menus: Pick<MenuSchema, '_id'>[] = menuIds.map((id) => ({
+        _id: id,
+      }));
+      const coupon: Pick<CouponSchema, 'required_menus' | 'required_point'> = {
+        required_menus: [
+          {
+            _id: menuIds[0],
+          },
+        ] as any,
+        required_point: 100,
+      };
+      const session: Pick<SessionSchema, 'point'> = {
+        point: coupon.required_point - 1,
+      };
+
+      expect(sessionService.isUsableCoupon(session, coupon, menus)).toBeFalsy();
+    });
   });
 
   describe('getSessions', () => {

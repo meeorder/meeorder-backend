@@ -23,6 +23,7 @@ export class SessionStepDefination {
         user: session.uid ?? null,
         _id: new Types.ObjectId(session._id),
         finished_at: session.finished_at ? new Date(session.finished_at) : null,
+        point: session.point ?? 0,
       });
 
       expect(doc._id.toHexString()).toBe(session._id);
