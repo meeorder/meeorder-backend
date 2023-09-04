@@ -1,7 +1,7 @@
 import { ParseMongoIdPipe } from '@/pipes/mongo-id.pipe';
 import { SessionSchema } from '@/schema/session.schema';
 import { CreateSessionDto } from '@/session/dto/create-session.dto';
-import { CouponDto } from '@/session/dto/getcoupon.dto';
+import { ExampleCouponDto } from '@/session/dto/example-coupon.dto';
 import { OrdersListDto } from '@/session/dto/listorders.dto';
 import { SessionUserUpdateDto } from '@/session/dto/update-sessionUser.dto';
 import { UpdateSessionCouponDto } from '@/session/dto/updatecoupon.dto';
@@ -201,7 +201,7 @@ export class SessionController {
 
   @ApiResponse({
     description: 'Get all useable coupon',
-    type: () => CouponDto,
+    type: () => ExampleCouponDto,
     status: HttpStatus.OK,
   })
   @HttpCode(HttpStatus.OK)
