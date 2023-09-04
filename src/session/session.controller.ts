@@ -191,7 +191,7 @@ export class SessionController {
     status: HttpStatus.OK,
   })
   @HttpCode(HttpStatus.OK)
-  @Patch(':id/updateuser')
+  @Patch(':id/user')
   async updateSessionUser(
     @Param('id', new ParseMongoIdPipe()) id: Types.ObjectId,
     @Body() doc: SessionUserUpdateDto,
@@ -205,7 +205,7 @@ export class SessionController {
     status: HttpStatus.OK,
   })
   @HttpCode(HttpStatus.OK)
-  @Get(':id/coupons')
+  @Get(':id/allcoupons')
   async getCoupons(@Param('id', new ParseMongoIdPipe()) id: Types.ObjectId) {
     return await this.sessionService.getAllCoupon(id);
   }
@@ -216,7 +216,7 @@ export class SessionController {
     status: HttpStatus.OK,
   })
   @HttpCode(HttpStatus.NO_CONTENT)
-  @Patch(':id/updatecoupon')
+  @Patch(':id/coupon')
   async updateSessionCoupon(
     @Param('id', new ParseMongoIdPipe()) id: Types.ObjectId,
     @Body() doc: UpdateSessionCouponDto,

@@ -3,11 +3,11 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class CouponDto extends CouponSchema {
   @ApiProperty({ type: Boolean, description: 'isUseable', required: true })
-  isUseable: boolean;
+  isuseable: boolean;
 
   constructor(coupon: CouponSchema, isUseable: boolean) {
     super();
     Object.assign(this, coupon);
-    this.isUseable = isUseable;
+    this.isuseable = isUseable;
   }
 }
