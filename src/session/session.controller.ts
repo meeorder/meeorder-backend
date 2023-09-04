@@ -190,6 +190,9 @@ export class SessionController {
     type: () => SessionUserUpdateDto,
     status: HttpStatus.OK,
   })
+  @ApiOperation({
+    summary: 'Updated session user',
+  })
   @HttpCode(HttpStatus.OK)
   @Patch(':id/user')
   async updateSessionUser(
@@ -204,6 +207,9 @@ export class SessionController {
     type: () => ExampleCouponDto,
     status: HttpStatus.OK,
   })
+  @ApiOperation({
+    summary: 'Get all useable coupon',
+  })
   @HttpCode(HttpStatus.OK)
   @Get(':id/allcoupons')
   async getCoupons(@Param('id', new ParseMongoIdPipe()) id: Types.ObjectId) {
@@ -214,6 +220,9 @@ export class SessionController {
     description: 'Update coupon in session',
     type: () => UpdateSessionCouponDto,
     status: HttpStatus.OK,
+  })
+  @ApiOperation({
+    summary: 'Update coupon in session',
   })
   @HttpCode(HttpStatus.NO_CONTENT)
   @Patch(':id/coupon')
