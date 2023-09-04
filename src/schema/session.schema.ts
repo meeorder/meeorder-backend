@@ -34,9 +34,9 @@ export class SessionSchema {
   })
   uid: string;
 
-  @Prop({ required: true, ref: () => TablesSchema, type: Number })
-  @ApiProperty({ type: Number, description: 'Table ID' })
-  table: Ref<TablesSchema, number>;
+  @Prop({ required: true, ref: () => TablesSchema })
+  @ApiProperty({ type: String, description: 'Table ID' })
+  table: Ref<TablesSchema>;
 
   @Prop({ default: null })
   deleted_at: Date;

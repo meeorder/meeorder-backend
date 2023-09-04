@@ -1,5 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsOptional, IsUUID } from 'class-validator';
+import { Transform } from 'class-transformer';
+import { IsOptional, IsUUID } from 'class-validator';
+import { Types } from 'mongoose';
 
 export class CreateSessionDto {
   @ApiProperty({ type: String, description: 'User ID', required: false })
@@ -7,7 +9,7 @@ export class CreateSessionDto {
   @IsUUID()
   uid?: string;
 
-  @ApiProperty({ type: Number, description: 'Table ID', required: true })
-  @IsNumber()
-  table: number;
+  @ApiProperty({ type: String, description: 'Table ID', required: true })
+  @Transform(({ value }) => (value ? new Types.ObjectId(value) : null))
+  table: Types.ObjectId;
 }
