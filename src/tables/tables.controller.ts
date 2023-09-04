@@ -2,7 +2,7 @@ import { TablesSchema } from '@/schema/tables.schema';
 import { TablesDto } from '@/tables/dto/tables.dto';
 import { TablesService } from '@/tables/tables.service';
 import { Body, Controller, Get, HttpStatus, Post } from '@nestjs/common';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @Controller({ path: 'tables', version: '1' })
 @ApiTags('tables')
@@ -12,6 +12,9 @@ export class TablesController {
   @ApiResponse({
     status: HttpStatus.CREATED,
     description: 'Create table',
+  })
+  @ApiOperation({
+    summary: 'Create a table',
   })
   @Post()
   createTable(@Body() { table_number }: TablesDto) {
@@ -23,6 +26,9 @@ export class TablesController {
     description: 'Get tables',
     type: () => TablesSchema,
     isArray: true,
+  })
+  @ApiOperation({
+    summary: 'Get all tables',
   })
   @Get()
   getTables() {

@@ -10,8 +10,7 @@ import { CouponDto } from '@/session/dto/getcoupon.dto';
 import { SessionUserUpdateDto } from '@/session/dto/update-sessionUser.dto';
 import { UpdateSessionCouponDto } from '@/session/dto/updatecoupon.dto';
 import {
-  HttpException,
-  HttpStatus,
+  ConflictException,
   Inject,
   Injectable,
   forwardRef,
@@ -108,10 +107,7 @@ export class SessionService {
   async validateTableHasSession(table: Types.ObjectId) {
     const doc = await this.getSessionByTable(table);
     if (doc) {
-      throw new HttpException(
-        `Table ${table} has session ${doc._id}`,
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new ConflictException(`Table ${table} has session ${doc._id}`);
     }
   }
 

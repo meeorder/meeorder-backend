@@ -19,7 +19,13 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { MongooseError, Types } from 'mongoose';
 
 @Controller({ path: 'sessions', version: '1' })
@@ -30,9 +36,11 @@ export class SessionController {
   @ApiQuery({ name: 'finished', type: Boolean, required: false })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Sessions list',
     type: () => SessionSchema,
     isArray: true,
+  })
+  @ApiOperation({
+    summary: 'Get all sessions',
   })
   @Get()
   getSessions(@Query('finished') finished?: boolean) {
@@ -44,6 +52,13 @@ export class SessionController {
     status: HttpStatus.OK,
     description: 'Session',
     type: () => SessionSchema,
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Session not found',
+  })
+  @ApiOperation({
+    summary: 'Get a session by id',
   })
   @Get(':id')
   async getSession(@Param('id', new ParseMongoIdPipe()) id: Types.ObjectId) {
@@ -63,7 +78,10 @@ export class SessionController {
     status: HttpStatus.NOT_FOUND,
     description: 'No session found in the table',
   })
-  @ApiParam({ name: 'id', type: String, description: 'Table ID' })
+  @ApiOperation({
+    summary: 'Get a session by table id',
+  })
+  @ApiParam({ name: 'id', type: Number, description: 'Table ID' })
   @Get('table/:id')
   async getSessionByTable(
     @Param('id', new ParseMongoIdPipe()) id: Types.ObjectId,
@@ -84,6 +102,13 @@ export class SessionController {
     description: 'Session created',
     type: () => SessionSchema,
   })
+  @ApiResponse({
+    status: HttpStatus.CONFLICT,
+    description: 'Session already exists',
+  })
+  @ApiOperation({
+    summary: 'Create a session',
+  })
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async createSession(@Body() dto: CreateSessionDto) {
@@ -101,6 +126,9 @@ export class SessionController {
     description: 'Session not found',
   })
   @ApiParam({ name: 'id', type: String, description: 'Session ID (ObjectId)' })
+  @ApiOperation({
+    summary: 'Finish a session',
+  })
   @Patch(':id/finish')
   @HttpCode(HttpStatus.NO_CONTENT)
   async finishSession(@Param('id', new ParseMongoIdPipe()) id: Types.ObjectId) {
@@ -124,6 +152,9 @@ export class SessionController {
     description: 'Session not found',
   })
   @ApiParam({ name: 'id', type: String, description: 'Session ID (ObjectId)' })
+  @ApiOperation({
+    summary: 'Delete a session by id',
+  })
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteSession(@Param('id', new ParseMongoIdPipe()) id: Types.ObjectId) {
@@ -143,6 +174,9 @@ export class SessionController {
   @ApiResponse({
     type: () => OrdersListDto,
     status: HttpStatus.OK,
+  })
+  @ApiOperation({
+    summary: 'Get orders by session',
   })
   @HttpCode(HttpStatus.OK)
   async getOrdersBySession(

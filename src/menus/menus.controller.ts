@@ -16,7 +16,7 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Types } from 'mongoose';
 import { MenusService } from './menus.service';
 @Controller({ path: 'menus', version: '1' })
@@ -40,12 +40,14 @@ export class MenusController {
 
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Get menu by id',
     type: () => GetMenuByIdResponseDto,
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
     description: 'No menu found',
+  })
+  @ApiOperation({
+    summary: 'Get a menu by id',
   })
   @Get(':id')
   async getMenuById(@Param('id') id: string): Promise<GetMenuByIdResponseDto> {
@@ -61,6 +63,9 @@ export class MenusController {
     description: 'The menu has been successfully created.',
     type: () => MenuSchema,
   })
+  @ApiOperation({
+    summary: 'Create a menu',
+  })
   @Post()
   async createMenu(@Body() foodData: CreateMenuDto): Promise<MenuSchema> {
     const createdMenu = await this.menuservice.createMenu(foodData);
@@ -74,6 +79,9 @@ export class MenusController {
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
     description: 'No menu found',
+  })
+  @ApiOperation({
+    summary: 'Replace a menu by id',
   })
   @Put(':id')
   async updateMenuById(
@@ -91,6 +99,9 @@ export class MenusController {
     status: HttpStatus.NO_CONTENT,
     description: 'No menu found',
   })
+  @ApiOperation({
+    summary: 'Delete a menu by id',
+  })
   @Delete(':id')
   async removeMenuById(@Param('id') id: string) {
     await this.menuservice.deleteOneMenu(id);
@@ -103,6 +114,10 @@ export class MenusController {
   @ApiResponse({
     status: HttpStatus.NO_CONTENT,
     description: 'No menu found',
+  })
+  @ApiOperation({
+    summary: 'Delete menus by ids',
+    description: 'Delete many menus',
   })
   @Delete()
   async removeMenus(
@@ -119,6 +134,9 @@ export class MenusController {
     status: HttpStatus.NOT_FOUND,
     description: 'No menu found',
   })
+  @ApiOperation({
+    summary: 'Publish a menu by id',
+  })
   @Patch(':id/publish')
   async publishMenuById(@Param('id') id: string) {
     await this.menuservice.publishMenu(id);
@@ -131,6 +149,9 @@ export class MenusController {
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
     description: 'No menu found',
+  })
+  @ApiOperation({
+    summary: 'Unpublish a menu by id',
   })
   @Patch(':id/unpublish')
   async unpublishMenuById(@Param('id') id: string) {

@@ -8,7 +8,7 @@ import {
   Post,
   Res,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { FastifyReply } from 'fastify';
 import { AuthService } from './auth.service';
 
@@ -19,6 +19,7 @@ export class AuthController {
 
   @HttpCode(HttpStatus.NO_CONTENT)
   @Post('login')
+  @ApiOperation({ summary: 'Login' })
   async signIn(
     @Body() signInDto: LoginDto,
     @Res({ passthrough: true }) response: FastifyReply,
@@ -32,12 +33,14 @@ export class AuthController {
 
   @HttpCode(HttpStatus.NO_CONTENT)
   @Post('logout')
+  @ApiOperation({ summary: 'Logout' })
   signOut(@Res({ passthrough: true }) response: FastifyReply) {
     response.clearCookie('jwt-meeorder', { path: '/' });
   }
 
   @HttpCode(HttpStatus.CREATED)
   @Post('register')
+  @ApiOperation({ summary: "Customer's registraion" })
   async register(@Body() registerDto: RegisterDto) {
     return await this.authService.register(registerDto);
   }
