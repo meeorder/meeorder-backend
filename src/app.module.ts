@@ -1,14 +1,10 @@
 import { AddonsModule } from '@/addons/addons.module';
-import { AuthMiddleware } from '@/auth/auth.middleware';
+import { AuthGuard } from '@/auth/auth.guard';
 import { MenusModule } from '@/menus/menus.module';
 import { OrdersModule } from '@/orders/orders.module';
-import {
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-  RequestMethod,
-} from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
 import { TypegooseModule } from 'nest-typegoose';
 import { AuthModule } from './auth/auth.module';
 import { CategoriesModule } from './categories/categories.module';
@@ -40,12 +36,11 @@ import { UsersModule } from './users/users.module';
     UsersModule,
     CouponsModule,
   ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+  ],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(AuthMiddleware).forRoutes({
-      path: '(.*)',
-      method: RequestMethod.ALL,
-    });
-  }
-}
+export class AppModule {}

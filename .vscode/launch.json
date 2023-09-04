@@ -27,6 +27,25 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "Launch (without nvm)",
+      "skipFiles": ["<node_internals>/**"],
+      "cwd": "${workspaceRoot}",
+      "program": "${workspaceRoot}/node_modules/@nestjs/cli/bin/nest.js",
+      "args": ["start", "--watch"],
+      "console": "integratedTerminal",
+      "env": {
+        "NODE_ENV": "development",
+        "PORT": "4000",
+        "MONGO_URI": "mongodb://localhost:27017",
+        "MONGO_DB_NAME": "meeorder",
+        "MEEORDER_PRIVATE_KEY": "-----BEGIN EC PARAMETERS-----\nBggqhkjOPQMBBw==\n-----END EC PARAMETERS-----\n-----BEGIN EC PRIVATE KEY-----\nMHcCAQEEIJLdEnQOssaVeoDOR+F+L5TFfYWkCgxkv5fqMsOQbLYpoAoGCCqGSM49\nAwEHoUQDQgAEgSZ90gdltEHCGEelvcfc5KAZJrBJ25skRaOloMdi43Y3BJDFxvfD\nxBrItXlZ2+UYPIOTbCiPLv5qMwwM/2SRgQ==\n-----END EC PRIVATE KEY-----",
+        "MEEORDER_PUBLIC_KEY": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEgSZ90gdltEHCGEelvcfc5KAZJrBJ\n25skRaOloMdi43Y3BJDFxvfDxBrItXlZ2+UYPIOTbCiPLv5qMwwM/2SRgQ==\n-----END PUBLIC KEY-----"
+      },
+      "envFile": "${workspaceFolder}/.env"
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "Debug E2E (Cucumber)",
       "skipFiles": ["<node_internals>/**"],
       "cwd": "${workspaceRoot}",
@@ -34,6 +53,23 @@
       "args": [],
       "console": "integratedTerminal",
       "runtimeVersion": "18",
+      "env": {
+        "NODE_ENV": "development",
+        "MONGO_URI": "mongodb://localhost:27017/meeorder",
+        "BASE_URL": "http://127.0.0.1:4000",
+        "MONGO_DB_NAME": "meeorder"
+      },
+      "envFile": "${workspaceFolder}/.env"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug E2E (Cucumber) (without nvm)",
+      "skipFiles": ["<node_internals>/**"],
+      "cwd": "${workspaceRoot}",
+      "program": "${workspaceRoot}/node_modules/@cucumber/cucumber/bin/cucumber.js",
+      "args": [],
+      "console": "integratedTerminal",
       "env": {
         "NODE_ENV": "development",
         "MONGO_URI": "mongodb://localhost:27017/meeorder",
