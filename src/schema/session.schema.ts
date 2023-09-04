@@ -47,6 +47,8 @@ export class SessionSchema {
 
   @Prop({ required: true, ref: () => TablesSchema })
   @ApiProperty({ description: 'Table ID' })
+  @Prop({ required: true, ref: () => TablesSchema })
+  @ApiProperty({ type: String, description: 'Table ID' })
   table: Ref<TablesSchema>;
 
   @Prop({ default: null })

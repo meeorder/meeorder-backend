@@ -1,10 +1,15 @@
 @session
 Feature: Session
+  Background:
+    Given tables
+      | _id                      | table_number |
+      | 64f55c53561fa6a99fc45b29 | 1            |
+      | 64f55c65561fa6a99fc45b2a | 2            |
 
   Scenario: Create a session
     When create session
-      | table | uid                                  |
-      | 1     | 4209c41a-e506-474a-9c50-8071300ca3c7 |
+      | table                    | uid                                  |
+      | 64f55c53561fa6a99fc45b29 | 4209c41a-e506-474a-9c50-8071300ca3c7 |
     Then should return status code 201
     Then should session appear in database
 

@@ -63,9 +63,11 @@ export class SessionController {
     status: HttpStatus.NOT_FOUND,
     description: 'No session found in the table',
   })
-  @ApiParam({ name: 'id', type: Number, description: 'Table ID' })
+  @ApiParam({ name: 'id', type: String, description: 'Table ID' })
   @Get('table/:id')
-  async getSessionByTable(@Param('id') id: number) {
+  async getSessionByTable(
+    @Param('id', new ParseMongoIdPipe()) id: Types.ObjectId,
+  ) {
     const doc = await this.sessionService.getSessionByTable(id);
     if (!doc) {
       throw new HttpException(

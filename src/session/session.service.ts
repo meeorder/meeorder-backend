@@ -36,7 +36,7 @@ export class SessionService {
     private readonly ordersService: OrdersService,
   ) {}
 
-  async createSession(table: number, uid?: string) {
+  async createSession(table: Types.ObjectId, uid?: string) {
     const session = await this.sessionModel.create({
       table,
       user: uid,
@@ -65,7 +65,9 @@ export class SessionService {
     return result;
   }
 
-  async getSessionByTable(table: number): Promise<DocumentType<SessionSchema>> {
+  async getSessionByTable(
+    table: Types.ObjectId,
+  ): Promise<DocumentType<SessionSchema>> {
     const session = await this.sessionModel
       .findOne({
         table,
@@ -104,7 +106,7 @@ export class SessionService {
       .exec();
   }
 
-  async validateTableHasSession(table: number) {
+  async validateTableHasSession(table: Types.ObjectId) {
     const doc = await this.getSessionByTable(table);
     if (doc) {
       throw new HttpException(
@@ -201,7 +203,7 @@ export class SessionService {
     res.net_price = res.total_price - res.discount_price;
     res.table = await orders[0]
       ?.populate('session', 'table')
-      .then((doc) => <number>(<SessionSchema>doc.session).table);
+      .then((doc) => <Types.ObjectId>(<SessionSchema>doc.session).table);
     res.orders = orders;
     return res;
   }

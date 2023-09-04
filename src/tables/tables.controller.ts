@@ -14,8 +14,8 @@ export class TablesController {
     description: 'Create table',
   })
   @Post()
-  createTable(@Body() tables: TablesDto) {
-    return this.tablesService.createTable(tables._id);
+  createTable(@Body() { table_number }: TablesDto) {
+    return this.tablesService.createTable(table_number);
   }
 
   @ApiResponse({
