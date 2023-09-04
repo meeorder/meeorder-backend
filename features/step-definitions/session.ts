@@ -19,7 +19,7 @@ export class SessionStepDefination {
     const sessions = dt.hashes();
     for (const session of sessions) {
       const doc = await this.sessionModel.create({
-        table: +session.table,
+        table: new Types.ObjectId(session.table),
         user: session.uid ?? null,
         _id: new Types.ObjectId(session._id),
         finished_at: session.finished_at ? new Date(session.finished_at) : null,
@@ -35,8 +35,7 @@ export class SessionStepDefination {
     this.workspace.response = await this.workspace.axiosInstance.post(
       '/sessions',
       {
-        table: +session.table,
-        uid: session.uid,
+        table: session.table,
       },
     );
   }
@@ -61,8 +60,8 @@ export class SessionStepDefination {
     );
   }
 
-  @when('get session by table {int}')
-  async getSession(id: number) {
+  @when('get session by table {string}')
+  async getSession(id: string) {
     this.workspace.response = await this.workspace.axiosInstance.get(
       `/sessions/table/${id}`,
     );

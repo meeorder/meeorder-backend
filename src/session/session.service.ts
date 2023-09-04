@@ -36,10 +36,9 @@ export class SessionService {
     private readonly ordersService: OrdersService,
   ) {}
 
-  async createSession(table: Types.ObjectId, uid?: string) {
+  async createSession(table: Types.ObjectId) {
     const session = await this.sessionModel.create({
       table,
-      user: uid,
     });
 
     return session;

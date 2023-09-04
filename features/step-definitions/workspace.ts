@@ -89,4 +89,10 @@ export class Workspace {
       expect(this.response.data[expectItem.key]).toEqual(expectItem.value);
     }
   }
+
+  @then('should response should be length {int}')
+  responseLength(length: number) {
+    expect(Array.isArray(this.response.data)).toBeTruthy();
+    expect(this.response.data).toHaveLength(length);
+  }
 }
