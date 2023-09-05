@@ -14,7 +14,7 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { MongooseError } from 'mongoose';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/category.createCategory.dto';
@@ -30,6 +30,9 @@ export class CategoriesController {
     description: 'Created new category',
     type: () => CreateCategoryDto,
   })
+  @ApiOperation({
+    summary: 'Create a category',
+  })
   @Post()
   createCategory(@Body() doc: CreateCategoryDto) {
     return this.categoriesService.createCategory(doc.title);
@@ -37,9 +40,11 @@ export class CategoriesController {
 
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Get all categories',
     type: () => CategorySchema,
     isArray: true,
+  })
+  @ApiOperation({
+    summary: 'Get all categories',
   })
   @Get()
   getAllCategories() {
@@ -48,12 +53,14 @@ export class CategoriesController {
 
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Get category by ID',
     type: () => CategorySchema,
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
     description: 'Category not found',
+  })
+  @ApiOperation({
+    summary: 'Get a category by id',
   })
   @Get(':id')
   getCategory(@Param('id') id: string) {
@@ -72,6 +79,9 @@ export class CategoriesController {
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
     description: 'Category not found',
+  })
+  @ApiOperation({
+    summary: 'Replace a category by id',
   })
   @Put(':id')
   async updateCategory(
@@ -92,11 +102,13 @@ export class CategoriesController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiResponse({
     status: HttpStatus.NO_CONTENT,
-    description: 'Deleted category',
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
     description: 'Category not found',
+  })
+  @ApiOperation({
+    summary: 'Delete a category by id',
   })
   @Delete(':id')
   async deleteCategory(@Param('id') id: string) {
@@ -114,6 +126,9 @@ export class CategoriesController {
   @ApiResponse({
     status: HttpStatus.NO_CONTENT,
     description: 'Change category rank',
+  })
+  @ApiOperation({
+    summary: "order the categories' rank",
   })
   @Patch('rank')
   async updateRank(@Body() doc: RankDto) {

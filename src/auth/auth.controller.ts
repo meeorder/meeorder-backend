@@ -1,4 +1,6 @@
 import { LoginDto } from '@/auth/dto/login.dto';
+import { LoginResponseDto } from '@/auth/dto/login.response.dto';
+import { RegisterDto } from '@/auth/dto/register.dto';
 import {
   Body,
   Controller,
@@ -7,17 +9,19 @@ import {
   Post,
   Res,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { FastifyReply } from 'fastify';
 import { AuthService } from './auth.service';
 
 @Controller({ path: 'auth', version: '1' })
 @ApiTags('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private readonly authService: AuthService) {}
 
-  @HttpCode(HttpStatus.NO_CONTENT)
+  @HttpCode(HttpStatus.OK)
   @Post('login')
+  @ApiOperation({ summary: 'Login' })
+  @ApiResponse({ type: () => LoginResponseDto })
   async signIn(
     @Body() signInDto: LoginDto,
     @Res({ passthrough: true }) response: FastifyReply,
@@ -26,12 +30,21 @@ export class AuthController {
       signInDto.username,
       signInDto.password,
     );
-    response.setCookie('jwt-meeorder', 'Bearer ' + token, { path: '/' });
+    response.setCookie('jwt-meeorder', token, { path: '/' });
+    return new LoginResponseDto(token);
   }
 
   @HttpCode(HttpStatus.NO_CONTENT)
   @Post('logout')
+  @ApiOperation({ summary: 'Logout' })
   signOut(@Res({ passthrough: true }) response: FastifyReply) {
     response.clearCookie('jwt-meeorder', { path: '/' });
+  }
+
+  @HttpCode(HttpStatus.CREATED)
+  @Post('register')
+  @ApiOperation({ summary: "Customer's registraion" })
+  async register(@Body() registerDto: RegisterDto) {
+    return await this.authService.register(registerDto);
   }
 }
