@@ -1,6 +1,5 @@
 import { AddonSchema } from '@/schema/addons.schema';
 import { ApiProperty } from '@nestjs/swagger';
-import { Ref } from '@typegoose/typegoose';
 import { Types } from 'mongoose';
 
 export class MenuDtoForAllMenu {
@@ -24,11 +23,11 @@ export class MenuDtoForAllMenu {
   price: number;
 
   @ApiProperty({
-    type: () => AddonSchema,
+    type: AddonSchema,
     isArray: true,
     description: 'Menu Addons',
   })
-  addons: Ref<AddonSchema>[];
+  addons: AddonSchema[];
 
   @ApiProperty({ type: Date, description: 'Menu Published Date' })
   published_at: Date;
