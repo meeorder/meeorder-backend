@@ -25,7 +25,7 @@ export class CouponSchema {
     isArray: true,
     description: 'Coupon Required Menus',
   })
-  required_menus: Ref<MenuSchema, string>[];
+  required_menus: Ref<MenuSchema>[];
 
   @Prop({ required: true })
   @ApiProperty({

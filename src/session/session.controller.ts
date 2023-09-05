@@ -1,7 +1,10 @@
 import { ParseMongoIdPipe } from '@/pipes/mongo-id.pipe';
 import { SessionSchema } from '@/schema/session.schema';
 import { CreateSessionDto } from '@/session/dto/create-session.dto';
+import { ExampleCouponDto } from '@/session/dto/example-coupon.dto';
 import { OrdersListDto } from '@/session/dto/listorders.dto';
+import { SessionUserUpdateDto } from '@/session/dto/update-sessionUser.dto';
+import { UpdateSessionCouponDto } from '@/session/dto/updatecoupon.dto';
 import { SessionService } from '@/session/session.service';
 import {
   Body,
@@ -80,7 +83,9 @@ export class SessionController {
   })
   @ApiParam({ name: 'id', type: Number, description: 'Table ID' })
   @Get('table/:id')
-  async getSessionByTable(@Param('id') id: number) {
+  async getSessionByTable(
+    @Param('id', new ParseMongoIdPipe()) id: Types.ObjectId,
+  ) {
     const doc = await this.sessionService.getSessionByTable(id);
     if (!doc) {
       throw new HttpException(
@@ -108,7 +113,7 @@ export class SessionController {
   @HttpCode(HttpStatus.CREATED)
   async createSession(@Body() dto: CreateSessionDto) {
     await this.sessionService.validateTableHasSession(dto.table);
-    const doc = await this.sessionService.createSession(dto.table, dto.uid);
+    const doc = await this.sessionService.createSession(dto.table);
     return doc;
   }
 
@@ -178,5 +183,53 @@ export class SessionController {
     @Param('id', new ParseMongoIdPipe()) id: Types.ObjectId,
   ) {
     return await this.sessionService.listOrdersBySession(id);
+  }
+
+  @ApiResponse({
+    description: 'Updated session user',
+    type: () => SessionUserUpdateDto,
+    status: HttpStatus.OK,
+  })
+  @ApiOperation({
+    summary: 'Updated session user',
+  })
+  @HttpCode(HttpStatus.OK)
+  @Patch(':id/user')
+  async updateSessionUser(
+    @Param('id', new ParseMongoIdPipe()) id: Types.ObjectId,
+    @Body() doc: SessionUserUpdateDto,
+  ) {
+    return await this.sessionService.updateSessionUser(id, doc);
+  }
+
+  @ApiResponse({
+    description: 'Get all useable coupon',
+    type: () => ExampleCouponDto,
+    status: HttpStatus.OK,
+  })
+  @ApiOperation({
+    summary: 'Get all useable coupon',
+  })
+  @HttpCode(HttpStatus.OK)
+  @Get(':id/coupon/all')
+  async getCoupons(@Param('id', new ParseMongoIdPipe()) id: Types.ObjectId) {
+    return await this.sessionService.getAllCoupon(id);
+  }
+
+  @ApiResponse({
+    description: 'Update coupon in session',
+    type: () => UpdateSessionCouponDto,
+    status: HttpStatus.OK,
+  })
+  @ApiOperation({
+    summary: 'Update coupon in session',
+  })
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Patch(':id/coupon')
+  async updateSessionCoupon(
+    @Param('id', new ParseMongoIdPipe()) id: Types.ObjectId,
+    @Body() doc: UpdateSessionCouponDto,
+  ) {
+    await this.sessionService.updateSessionCoupon(id, doc);
   }
 }
