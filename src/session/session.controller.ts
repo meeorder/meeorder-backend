@@ -211,7 +211,7 @@ export class SessionController {
     summary: 'Get all useable coupon',
   })
   @HttpCode(HttpStatus.OK)
-  @Get(':id/allcoupons')
+  @Get(':id/coupon/all')
   async getCoupons(@Param('id', new ParseMongoIdPipe()) id: Types.ObjectId) {
     return await this.sessionService.getAllCoupon(id);
   }
