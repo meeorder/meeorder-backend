@@ -62,11 +62,6 @@ export class SessionStepDefination {
       await this.workspace.axiosInstance.get('/coupons');
   }
 
-  @then('response size should equal to {int}')
-  responseSizeShouldEqualTo(size: number) {
-    expect(this.workspace.response.data.length).toBe(size);
-  }
-
   @after()
   async cleanUpDb() {
     await this.couponModel.deleteMany({});

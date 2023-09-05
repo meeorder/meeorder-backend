@@ -89,4 +89,9 @@ export class Workspace {
       expect(this.response.data[expectItem.key]).toEqual(expectItem.value);
     }
   }
+
+  @then('response size should equal to {int}')
+  responseSizeShouldEqualTo(size: number) {
+    expect(this.response.data.length).toBe(size);
+  }
 }
