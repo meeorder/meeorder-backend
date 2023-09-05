@@ -45,6 +45,10 @@ export class MenuSchema {
   published_at: Date;
 
   @Prop({ default: null })
-  @ApiProperty({ type: Date, nullable: true, description: 'Menu deletion date' })
+  @ApiProperty({
+    type: Date,
+    nullable: true,
+    description: 'Menu deletion date',
+  })
   deleted_at: Date;
 }
