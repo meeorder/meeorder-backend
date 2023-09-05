@@ -9,7 +9,7 @@ import {
   Post,
   Res,
 } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { FastifyReply } from 'fastify';
 import { AuthService } from './auth.service';
 
@@ -21,6 +21,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('login')
   @ApiOperation({ summary: 'Login' })
+  @ApiResponse({ type: () => LoginResponseDto })
   async signIn(
     @Body() signInDto: LoginDto,
     @Res({ passthrough: true }) response: FastifyReply,
