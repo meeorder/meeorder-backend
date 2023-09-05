@@ -7,10 +7,10 @@ import { Types } from 'mongoose';
 })
 export class TablesSchema {
   @Prop({ auto: true })
-  @ApiProperty()
+  @ApiProperty({ type: String, description: 'Table ID' })
   _id: Types.ObjectId;
 
   @Prop({ required: true })
-  @ApiProperty()
+  @ApiProperty({ type: Number, description: 'Table Number' })
   table_number: number;
 }

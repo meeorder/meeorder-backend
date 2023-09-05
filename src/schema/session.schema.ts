@@ -46,8 +46,6 @@ export class SessionSchema {
   coupon: Ref<CouponSchema>;
 
   @Prop({ required: true, ref: () => TablesSchema })
-  @ApiProperty({ description: 'Table ID' })
-  @Prop({ required: true, ref: () => TablesSchema })
   @ApiProperty({ type: String, description: 'Table ID' })
   table: Ref<TablesSchema>;
 

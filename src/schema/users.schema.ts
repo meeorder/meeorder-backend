@@ -18,11 +18,11 @@ export enum UserRole {
 })
 export class UserSchema {
   @prop({ auto: true })
-  @ApiProperty({ type: String })
+  @ApiProperty({ type: String, description: 'User ID' })
   _id: Types.ObjectId;
 
   @prop({ required: true })
-  @ApiProperty()
+  @ApiProperty({ type: String, description: 'User Name' })
   username: string;
 
   @prop({ required: true })
@@ -30,17 +30,22 @@ export class UserSchema {
   password: string;
 
   @prop({ default: 0 })
-  @ApiProperty()
+  @ApiProperty({ type: Number, description: 'User Point' })
   point: number;
 
   @prop({ required: true, enum: UserRole })
-  @ApiProperty({ enum: UserRole })
+  @ApiProperty({ enum: UserRole, description: 'User Role' })
   role: UserRole;
 
   @prop({ default: new Date() })
-  @ApiProperty({ type: Date, default: new Date() })
+  @ApiProperty({
+    type: Date,
+    default: new Date(),
+    description: 'User Created Date',
+  })
   created_at: Date;
 
   @prop({ default: null })
+  @ApiProperty({ type: Date, nullable: true, description: 'User Deleted Date' })
   deleted_at: Date;
 }
