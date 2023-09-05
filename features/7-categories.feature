@@ -33,18 +33,17 @@ Feature: Categories
 
   Scenario: Update category
     Given categories
-      | _id                      | title | rank |
-      | 64f5ec463ec7999abb9b6f0f | Cat4  | 2    |
+      | _id                      | title |
+      | 64f5ec463ec7999abb9b6f0f | Cat4  |
     When update category at id "64f5ec463ec7999abb9b6f0f"
-      | title     | rank |
-      | New_Cat4  | 69   |
+      | title     |
+      | New_Cat4  |
     Then should return status code 200
     When get category by id "64f5ec463ec7999abb9b6f0f"
     Then should response data be
       | key   | value                    | type   |
       | _id   | 64f5ec463ec7999abb9b6f0f | string |
       | title | New_Cat4                 | string |
-      | rank  | 69                       | number |
 
   Scenario: Update category rank
     Given categories
