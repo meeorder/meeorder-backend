@@ -1,4 +1,3 @@
-import { RankDto } from '@/categories/dto/category.rank.dto';
 import { UpdateCategoryDto } from '@/categories/dto/category.updateCategory.dto';
 import { CategorySchema } from '@/schema/categories.schema';
 import {
@@ -12,13 +11,11 @@ import {
   Param,
   Patch,
   Post,
-  Put,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { MongooseError } from 'mongoose';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/category.createCategory.dto';
-
 @Controller({ path: 'categories', version: '1' })
 @ApiTags('categories')
 export class CategoriesController {
@@ -83,7 +80,7 @@ export class CategoriesController {
   @ApiOperation({
     summary: 'Replace a category by id',
   })
-  @Put(':id')
+  @Patch(':id')
   async updateCategory(
     @Param('id') id: string,
     @Body() doc: UpdateCategoryDto,
@@ -121,17 +118,5 @@ export class CategoriesController {
         throw e;
       }
     }
-  }
-
-  @ApiResponse({
-    status: HttpStatus.NO_CONTENT,
-    description: 'Change category rank',
-  })
-  @ApiOperation({
-    summary: "order the categories' rank",
-  })
-  @Patch('rank')
-  async updateRank(@Body() doc: RankDto) {
-    await this.categoriesService.updateRank(doc);
   }
 }
