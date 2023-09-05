@@ -7,7 +7,7 @@ Feature: Coupons
 		Then should return status code 201
 		Then should coupon appear in database
 
-		Scenario: Get coupon by id
+	Scenario: Get coupon by id
 		Given coupons
 			| _id											 | title 		| price | required_point |
 			| 64c5485a510698e8c9e7bdc0 | Coupon1	| 22		| 100						 |
@@ -19,7 +19,7 @@ Feature: Coupons
 			| _id 					| 64c5485a510698e8c9e7bdc0 	| string |
 			|	title 				| Coupon1 								  | string |
 
-		Scenario: Get all coupons by owner
+	Scenario: Get all coupons by owner
 		Given coupons
 			| _id											 | title 		| price | required_point |
 			| 64f09e7476b02c5ea04be8ea | Coupon1	| 100		| 100						 |
