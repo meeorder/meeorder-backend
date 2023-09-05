@@ -46,6 +46,6 @@ export class OrdersSchema {
   additional_info: string;
 
   @Prop({ default: null })
-  @ApiProperty({ type: Date, description: 'Order cancelation date' })
+  @ApiProperty({ type: Date, description: 'Order cancellation date' })
   cancelled_at: Date;
 }
