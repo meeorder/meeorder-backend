@@ -90,8 +90,9 @@ export class Workspace {
     }
   }
 
-  @then('response size should equal to {int}')
-  responseSizeShouldEqualTo(size: number) {
-    expect(this.response.data.length).toBe(size);
+  @then('should response be length {int}')
+  responseLength(length: number) {
+    expect(Array.isArray(this.response.data)).toBeTruthy();
+    expect(this.response.data).toHaveLength(length);
   }
 }

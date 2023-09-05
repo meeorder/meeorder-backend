@@ -35,7 +35,8 @@ export class CouponsController {
 
   @ApiResponse({
     status: HttpStatus.OK,
-    type: () => [CreateCouponDto],
+    type: () => CreateCouponDto,
+    isArray: true,
   })
   @ApiOperation({
     summary: 'Get all coupons (Owner)',

@@ -1,7 +1,9 @@
 import { AddonsModule } from '@/addons/addons.module';
 import { MenusModule } from '@/menus/menus.module';
 import { OrdersModule } from '@/orders/orders.module';
+import { CouponSchema } from '@/schema/coupons.schema';
 import { SessionSchema } from '@/schema/session.schema';
+import { UserSchema } from '@/schema/users.schema';
 import { Module, forwardRef } from '@nestjs/common';
 import { TypegooseModule } from 'nest-typegoose';
 import { SessionController } from './session.controller';
@@ -9,7 +11,7 @@ import { SessionService } from './session.service';
 
 @Module({
   imports: [
-    TypegooseModule.forFeature([SessionSchema]),
+    TypegooseModule.forFeature([SessionSchema, UserSchema, CouponSchema]),
     forwardRef(() => OrdersModule),
     MenusModule,
     AddonsModule,

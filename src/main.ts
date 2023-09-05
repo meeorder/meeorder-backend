@@ -32,6 +32,7 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   app.enableCors({
     origin: new RegExp('(.*)'),
+    credentials: true,
   });
   await app.listen(configService.get(Config.PORT), '0.0.0.0');
 }

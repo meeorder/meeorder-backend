@@ -1,4 +1,5 @@
 import { LoginDto } from '@/auth/dto/login.dto';
+import { LoginResponseDto } from '@/auth/dto/login.response.dto';
 import { RegisterDto } from '@/auth/dto/register.dto';
 import {
   Body,
@@ -8,18 +9,19 @@ import {
   Post,
   Res,
 } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { FastifyReply } from 'fastify';
 import { AuthService } from './auth.service';
 
 @Controller({ path: 'auth', version: '1' })
 @ApiTags('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private readonly authService: AuthService) {}
 
-  @HttpCode(HttpStatus.NO_CONTENT)
+  @HttpCode(HttpStatus.OK)
   @Post('login')
   @ApiOperation({ summary: 'Login' })
+  @ApiResponse({ type: () => LoginResponseDto })
   async signIn(
     @Body() signInDto: LoginDto,
     @Res({ passthrough: true }) response: FastifyReply,
@@ -28,7 +30,8 @@ export class AuthController {
       signInDto.username,
       signInDto.password,
     );
-    response.setCookie('jwt-meeorder', 'Bearer ' + token, { path: '/' });
+    response.setCookie('jwt-meeorder', token, { path: '/' });
+    return new LoginResponseDto(token);
   }
 
   @HttpCode(HttpStatus.NO_CONTENT)
