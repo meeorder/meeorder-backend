@@ -10,24 +10,24 @@ import { Prop, Ref, modelOptions } from '@typegoose/typegoose';
 })
 export class OrdersSchema {
   @Prop({ name: 'created_at', default: new Date() })
-  @ApiProperty({ type: Date })
+  @ApiProperty({ type: Date, description: 'Order creation date' })
   created_at: Date;
 
   @Prop({ default: OrderStatus.InQueue })
-  @ApiProperty({ type: String, enum: OrderStatus })
+  @ApiProperty({ type: String, enum: OrderStatus, description: 'Order status' })
   status: OrderStatus;
 
   @Prop({ ref: () => SessionSchema })
   @ApiProperty({
     oneOf: [{ $ref: getSchemaPath(SessionSchema) }, { type: 'string' }],
-    description: 'Session Schema',
+    description: 'Session of the order',
   })
   session: Ref<SessionSchema>;
 
   @Prop({ ref: () => MenuSchema })
   @ApiProperty({
     oneOf: [{ $ref: getSchemaPath(MenuSchema) }, { type: 'string' }],
-    description: 'Menu Schema',
+    description: 'Menu of the order',
   })
   menu: Ref<MenuSchema>;
 
@@ -37,14 +37,15 @@ export class OrdersSchema {
     items: {
       oneOf: [{ type: 'string' }, { $ref: getSchemaPath(AddonSchema) }],
     },
+    description: 'Addons of the order',
   })
   addons: Ref<AddonSchema>[];
 
-  @Prop({ default: '' })
+  @Prop({ default: null })
   @ApiProperty({ type: String, description: 'Additional info' })
   additional_info: string;
 
   @Prop({ default: null })
-  @ApiProperty({ type: Date, description: 'for cancel status' })
+  @ApiProperty({ type: Date, description: 'Order cancellation date' })
   cancelled_at: Date;
 }

@@ -46,11 +46,10 @@ export class SessionSchema {
   coupon: Ref<CouponSchema>;
 
   @Prop({ required: true, ref: () => TablesSchema })
-  @ApiProperty({ description: 'Table ID' })
-  @Prop({ required: true, ref: () => TablesSchema })
   @ApiProperty({ type: String, description: 'Table ID' })
   table: Ref<TablesSchema>;
 
   @Prop({ default: null })
+  @ApiProperty({ type: Date, description: 'Session deletion date' })
   deleted_at: Date;
 }

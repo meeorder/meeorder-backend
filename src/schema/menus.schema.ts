@@ -13,38 +13,42 @@ export class MenuSchema {
   _id: Types.ObjectId;
 
   @Prop({ default: null })
-  @ApiProperty({ type: String, nullable: true, description: 'Menu Image' })
+  @ApiProperty({ type: String, nullable: true, description: 'Menu image' })
   image: string;
 
   @Prop({ required: true })
-  @ApiProperty({ type: String, description: 'Menu Title' })
+  @ApiProperty({ type: String, description: 'Menu title' })
   title: string;
 
   @Prop({ default: null })
   @ApiProperty({
     type: String,
     nullable: true,
-    description: 'Menu Description',
+    description: 'Menu description',
   })
   description: string;
 
   @Prop({ required: true })
-  @ApiProperty({ type: Number, description: 'Menu Price' })
+  @ApiProperty({ type: Number, description: 'Menu price' })
   price: number;
 
   @Prop({ required: true, ref: () => CategorySchema })
-  @ApiProperty({ description: 'Menu Category' })
+  @ApiProperty({ description: 'Menu category' })
   category: Ref<CategorySchema>;
 
   @Prop({ required: true, ref: () => AddonSchema, default: [] })
-  @ApiProperty({ description: 'Menu Addons' })
+  @ApiProperty({ description: 'Menu addons' })
   addons: Ref<AddonSchema>[];
 
   @Prop({ required: true, default: new Date() })
-  @ApiProperty({ type: Date, description: 'Menu Published Date' })
+  @ApiProperty({ type: Date, description: 'Menu publication date' })
   published_at: Date;
 
   @Prop({ default: null })
-  @ApiProperty({ type: Date, nullable: true, description: 'Menu Deleted Date' })
+  @ApiProperty({
+    type: Date,
+    nullable: true,
+    description: 'Menu deletion date',
+  })
   deleted_at: Date;
 }

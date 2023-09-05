@@ -5,11 +5,11 @@ import { Transform } from 'class-transformer';
 import { IsString } from 'class-validator';
 
 export class CreateUserDto {
-  @ApiProperty({ type: String, description: 'username is string' })
+  @ApiProperty({ type: String, description: 'Username' })
   @IsString()
   username: string;
 
-  @ApiProperty({ type: String, description: 'password is string' })
+  @ApiProperty({ type: String, description: 'Password' })
   @IsString()
   password: string;
 
