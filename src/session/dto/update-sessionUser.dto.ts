@@ -3,7 +3,7 @@ import { Transform } from 'class-transformer';
 import { Types } from 'mongoose';
 
 export class SessionUserUpdateDto {
-  @ApiProperty()
+  @ApiProperty({ type: String, description: 'User ID', required: true })
   @Transform(({ value }) => new Types.ObjectId(value))
   user: Types.ObjectId;
 }
