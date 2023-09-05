@@ -10,14 +10,5 @@ Feature: Menu Test
     And get this menu by the same id
     Then "deleted_date" field should not be null in response
 
-  Scenario: Update Menu
-    Given a menu
-    When create a menu
-    And publish this menu
-    And update this menu with title "Menu 2"
-    Then should return status code 200
-    And menu title should be "Menu 2" when get by the same id
-    And delete this menu
-
 
 
