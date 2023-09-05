@@ -50,5 +50,6 @@ export class SessionSchema {
   table: Ref<TablesSchema>;
 
   @Prop({ default: null })
+  @ApiProperty({ type: Date, description: 'Session deletion date' })
   deleted_at: Date;
 }
