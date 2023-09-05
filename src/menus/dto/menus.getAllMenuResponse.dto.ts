@@ -1,10 +1,11 @@
-import { GetMenuByIdResponseDto } from '@/menus/dto/menus.getMenuByIdReponse.dto';
+import { MenuDtoForAllMenu } from '@/menus/dto/menus.togetallMenu.dto';
 import { CategorySchema } from '@/schema/categories.schema';
 import { ApiProperty } from '@nestjs/swagger';
+import { Ref } from '@typegoose/typegoose';
 export class GetAllMenuResponseDto {
   @ApiProperty({ type: () => CategorySchema })
-  category: CategorySchema;
+  category: Ref<CategorySchema>;
 
-  @ApiProperty({ type: () => GetMenuByIdResponseDto, isArray: true })
-  menus: GetMenuByIdResponseDto[];
+  @ApiProperty({ type: () => MenuDtoForAllMenu, isArray: true })
+  menus: MenuDtoForAllMenu[];
 }

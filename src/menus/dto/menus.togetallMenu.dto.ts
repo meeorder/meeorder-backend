@@ -1,9 +1,9 @@
 import { AddonSchema } from '@/schema/addons.schema';
-import { CategorySchema } from '@/schema/categories.schema';
 import { ApiProperty } from '@nestjs/swagger';
 import { Ref } from '@typegoose/typegoose';
 import { Types } from 'mongoose';
-export class GetMenuByIdResponseDto {
+
+export class MenuDtoForAllMenu {
   @ApiProperty({ type: String, description: 'Menu ID' })
   _id: Types.ObjectId;
 
@@ -18,9 +18,6 @@ export class GetMenuByIdResponseDto {
 
   @ApiProperty({ type: Number })
   price: number;
-
-  @ApiProperty({ type: () => CategorySchema })
-  category: Ref<CategorySchema>;
 
   @ApiProperty({ type: () => AddonSchema, isArray: true })
   addons: Ref<AddonSchema>[];
