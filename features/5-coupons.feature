@@ -26,7 +26,7 @@ Feature: Coupons
       | 64f09e7476b02c5ea04be8eb | Coupon2 | 200   | 200            |
     When get all coupons by owner
     Then should return status code 200
-    Then response size should equal to 2
+    Then should response be length 2
 
   Scenario: Get all coupons by session
     Given coupons

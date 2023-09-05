@@ -12,13 +12,11 @@ import {
   Param,
   Patch,
   Post,
-  Put,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { MongooseError } from 'mongoose';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/category.createCategory.dto';
-
 @Controller({ path: 'categories', version: '1' })
 @ApiTags('categories')
 export class CategoriesController {
@@ -83,13 +81,13 @@ export class CategoriesController {
   @ApiOperation({
     summary: 'Replace a category by id',
   })
-  @Put(':id')
+  @Patch(':id')
   async updateCategory(
     @Param('id') id: string,
     @Body() doc: UpdateCategoryDto,
   ) {
     try {
-      await this.categoriesService.updateCategory(id, doc);
+      return await this.categoriesService.updateCategory(id, doc);
     } catch (e) {
       if (e instanceof MongooseError) {
         throw new HttpException('Category not found', HttpStatus.NOT_FOUND);

@@ -90,7 +90,7 @@ export class Workspace {
     }
   }
 
-  @then('should response should be length {int}')
+  @then('should response be length {int}')
   responseLength(length: number) {
     expect(Array.isArray(this.response.data)).toBeTruthy();
     expect(this.response.data).toHaveLength(length);
