@@ -10,7 +10,7 @@ import { Prop, Ref, modelOptions } from '@typegoose/typegoose';
 })
 export class OrdersSchema {
   @Prop({ name: 'created_at', default: new Date() })
-  @ApiProperty({ type: Date, description: 'Order created date' })
+  @ApiProperty({ type: Date, description: 'Order creation date' })
   created_at: Date;
 
   @Prop({ default: OrderStatus.InQueue })
@@ -20,14 +20,14 @@ export class OrdersSchema {
   @Prop({ ref: () => SessionSchema })
   @ApiProperty({
     oneOf: [{ $ref: getSchemaPath(SessionSchema) }, { type: 'string' }],
-    description: 'Session of Order',
+    description: 'Session of the order',
   })
   session: Ref<SessionSchema>;
 
   @Prop({ ref: () => MenuSchema })
   @ApiProperty({
     oneOf: [{ $ref: getSchemaPath(MenuSchema) }, { type: 'string' }],
-    description: 'Menu in Order',
+    description: 'Menu of the order',
   })
   menu: Ref<MenuSchema>;
 
@@ -37,7 +37,7 @@ export class OrdersSchema {
     items: {
       oneOf: [{ type: 'string' }, { $ref: getSchemaPath(AddonSchema) }],
     },
-    description: 'Addons in Order',
+    description: 'Addons of the order',
   })
   addons: Ref<AddonSchema>[];
 
@@ -46,6 +46,6 @@ export class OrdersSchema {
   additional_info: string;
 
   @Prop({ default: null })
-  @ApiProperty({ type: Date, description: 'Order cancelled' })
+  @ApiProperty({ type: Date, description: 'Order cancelation date' })
   cancelled_at: Date;
 }
