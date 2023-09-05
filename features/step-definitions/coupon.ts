@@ -67,7 +67,7 @@ export class SessionStepDefination {
   @when('get all coupons by session {string}')
   async getAllCouponsBySessionUser(session: string) {
     this.workspace.response = await this.workspace.axiosInstance.get(
-      `/sessions/${session}/coupons`,
+      `/sessions/${session}/coupon/all`,
     );
     console.log(this.workspace.response.data);
   }
