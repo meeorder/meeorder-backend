@@ -1,6 +1,7 @@
 import { ParseMongoIdPipe } from '@/pipes/mongo-id.pipe';
 import { UserSchema } from '@/schema/users.schema';
 import { CreateUserDto } from '@/users/dto/user.create.dto';
+import { UserResponseDto } from '@/users/dto/user.response.dto';
 import { UsersService } from '@/users/users.service';
 import {
   Body,
@@ -34,7 +35,9 @@ export class UsersController {
   })
   @HttpCode(HttpStatus.CREATED)
   async createUser(@Body() createUserDto: CreateUserDto) {
-    return await this.usersService.createUser(createUserDto);
+    const doc = await this.usersService.createUser(createUserDto);
+
+    return UserResponseDto.fromDocument(doc);
   }
 
   @Get()

@@ -1,19 +1,24 @@
-import { UserRole } from '@/schema/users.schema';
+import { UserRole, UserSchema } from '@/schema/users.schema';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsMongoId, IsString } from 'class-validator';
+import { DocumentType } from '@typegoose/typegoose';
 import { Types } from 'mongoose';
 
-export class CreateUserResponseDto {
-  @ApiProperty({ type: String, description: '_id is ObjectID' })
-  @IsMongoId()
+export class UserResponseDto {
+  @ApiProperty({ type: String })
   _id: Types.ObjectId;
 
-  @ApiProperty({ type: String, description: 'username is string' })
-  @IsString()
+  @ApiProperty({ type: String })
   username: string;
 
-  @ApiProperty({ type: String, description: 'role is string' })
-  @IsString()
-  @IsEnum(UserRole)
+  @ApiProperty({ type: Number })
   role: UserRole;
+
+  @ApiProperty({ type: Number })
+  point: number;
+
+  static fromDocument(doc: DocumentType<UserSchema>) {
+    const dto = new UserResponseDto();
+    Object.assign(dto, doc.toObject());
+    return dto;
+  }
 }
