@@ -182,6 +182,7 @@ export class SessionService {
   async listOrdersBySession(id: Types.ObjectId): Promise<OrdersListDto> {
     const res = new OrdersListDto();
     const orders = await this.ordersService.getOrdersBySession(id);
+    // find total price
     res.total_price = orders
       .map(({ menu, addons }) => {
         const addonPrice = addons?.reduce(
@@ -194,7 +195,10 @@ export class SessionService {
         );
       })
       .reduce((prev, current) => prev + current, 0);
-    res.discount_price = 0; // wait coupon
+    // find total disount price
+    const session = await this.getSessionById(id);
+    const coupon = await this.couponModel.findById(session.coupon).exec();
+    res.discount_price = coupon.price;
     res.net_price = res.total_price - res.discount_price;
     res.table = await orders[0]
       ?.populate('session', 'table')
@@ -260,7 +264,6 @@ export class SessionService {
     const session = await this.sessionModel.findById(id);
     const coupon = await this.couponModel.findById(session.coupon);
     const new_coupon = couponbody.coupon_id;
-    console.log(new_coupon);
     let new_point = 0;
     if (new_coupon === null) {
       const coupon_point = coupon.required_point;
