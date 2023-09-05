@@ -22,7 +22,7 @@ Feature: Orders
     Then should return status code 201
     When get all orders
     Then should return status code 200
-    Then should response should be length 2
+    Then should response be length 2
     When update order "64f5707f6d126db5cc098a36" to preparing
     Then should return status code 204
     When update order "64f5707f6d126db5cc098a36" to ready to serve
