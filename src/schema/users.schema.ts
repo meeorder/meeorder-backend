@@ -22,7 +22,7 @@ export class UserSchema {
   _id: Types.ObjectId;
 
   @prop({ required: true })
-  @ApiProperty({ type: String, description: 'User Name' })
+  @ApiProperty({ type: String, description: 'User name' })
   username: string;
 
   @prop({ required: true })
@@ -30,22 +30,22 @@ export class UserSchema {
   password: string;
 
   @prop({ default: 0 })
-  @ApiProperty({ type: Number, description: 'User Point' })
+  @ApiProperty({ type: Number, description: 'User point' })
   point: number;
 
   @prop({ required: true, enum: UserRole })
-  @ApiProperty({ enum: UserRole, description: 'User Role' })
+  @ApiProperty({ enum: UserRole, description: 'User role' })
   role: UserRole;
 
   @prop({ default: new Date() })
   @ApiProperty({
     type: Date,
     default: new Date(),
-    description: 'User Created Date',
+    description: 'User creation date',
   })
   created_at: Date;
 
   @prop({ default: null })
-  @ApiProperty({ type: Date, nullable: true, description: 'User Deleted Date' })
+  @ApiProperty({ type: Date, nullable: true, description: 'User deletion date' })
   deleted_at: Date;
 }

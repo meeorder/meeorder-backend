@@ -12,32 +12,32 @@ export class CouponSchema {
   _id: Types.ObjectId;
 
   @Prop({ required: true })
-  @ApiProperty({ type: String, description: 'Coupon Code' })
+  @ApiProperty({ type: String, description: 'Coupon title' })
   title: string;
 
   @Prop({ default: null })
-  @ApiProperty({ type: String, description: 'Coupon Description' })
+  @ApiProperty({ type: String, description: 'Coupon description' })
   description: string;
 
   @Prop({ default: [], ref: () => MenuSchema })
   @ApiProperty({
     type: String,
     isArray: true,
-    description: 'Coupon Required Menus',
+    description: 'Coupon required menus',
   })
   required_menus: Ref<MenuSchema>[];
 
   @Prop({ required: true })
   @ApiProperty({
     type: Number,
-    description: 'Discount Price of Coupon',
+    description: 'Discount price of the coupon',
   })
   price: number;
 
   @Prop({ default: null })
   @ApiProperty({
     type: Number,
-    description: 'Amount of Coupon',
+    description: 'Amount of coupon',
   })
   amount: number;
 
@@ -51,7 +51,7 @@ export class CouponSchema {
   @Prop({ default: 0 })
   @ApiProperty({
     type: Number,
-    description: 'Coupon Required Point',
+    description: 'Coupon required point',
   })
   required_point: number;
 }
