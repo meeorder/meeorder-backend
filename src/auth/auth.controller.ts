@@ -46,6 +46,7 @@ export class AuthController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @Post('logout')
   @ApiOperation({ summary: 'Logout' })
+  @ApiResponse({ status: HttpStatus.NO_CONTENT })
   signOut(@Res({ passthrough: true }) response: FastifyReply) {
     response.clearCookie('jwt-meeorder', { path: '/' });
   }
@@ -53,6 +54,7 @@ export class AuthController {
   @HttpCode(HttpStatus.CREATED)
   @Post('register')
   @ApiOperation({ summary: "Customer's registraion" })
+  @ApiResponse({ type: () => RegisterDto, status: HttpStatus.CREATED })
   async register(@Body() registerDto: RegisterDto) {
     return await this.authService.register(registerDto);
   }
