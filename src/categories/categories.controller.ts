@@ -1,3 +1,4 @@
+import { RankDto } from '@/categories/dto/category.rank.dto';
 import { UpdateCategoryDto } from '@/categories/dto/category.updateCategory.dto';
 import { CategorySchema } from '@/schema/categories.schema';
 import {
@@ -86,7 +87,7 @@ export class CategoriesController {
     @Body() doc: UpdateCategoryDto,
   ) {
     try {
-      await this.categoriesService.updateCategory(id, doc);
+      return await this.categoriesService.updateCategory(id, doc);
     } catch (e) {
       if (e instanceof MongooseError) {
         throw new HttpException('Category not found', HttpStatus.NOT_FOUND);
@@ -118,5 +119,17 @@ export class CategoriesController {
         throw e;
       }
     }
+  }
+
+  @ApiResponse({
+    status: HttpStatus.NO_CONTENT,
+    description: 'Change category rank',
+  })
+  @ApiOperation({
+    summary: "order the categories' rank",
+  })
+  @Patch('rank')
+  async updateRank(@Body() doc: RankDto) {
+    await this.categoriesService.updateRank(doc);
   }
 }

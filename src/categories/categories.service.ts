@@ -1,3 +1,4 @@
+import { RankDto } from '@/categories/dto/category.rank.dto';
 import { UpdateCategoryDto } from '@/categories/dto/category.updateCategory.dto';
 import { CategorySchema } from '@/schema/categories.schema';
 import { Injectable } from '@nestjs/common';
@@ -39,8 +40,19 @@ export class CategoriesService {
     return doc;
   }
 
-  deleteCategory(id: string): Promise<mongo.DeleteResult> {
-    return this.categoryModel.deleteOne({ _id: id }).exec();
+  async deleteCategory(id: string): Promise<mongo.DeleteResult> {
+    return await this.categoryModel.deleteOne({ _id: id }).exec();
+  }
+
+  async updateRank(rankBody: RankDto) {
+    const doc = rankBody;
+    const updates = doc.rank.map((id, index) => ({
+      updateOne: {
+        filter: { _id: new Types.ObjectId(id) },
+        update: { $set: { rank: index } },
+      },
+    }));
+    await this.categoryModel.bulkWrite(updates);
   }
 
   async pushMenuToCategory(categoryId: Types.ObjectId, menuId: Types.ObjectId) {

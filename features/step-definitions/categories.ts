@@ -72,6 +72,17 @@ export class CategoriesStepDefination {
       await this.workspace.axiosInstance.get('/categories');
   }
 
+  @when('update cateogries rank')
+  async updateCategoriesRank(dt: DataTable) {
+    const ranks = dt.hashes()[0];
+    this.workspace.response = await this.workspace.axiosInstance.patch(
+      '/categories/rank',
+      {
+        rank: ranks.rank.split(','),
+      },
+    );
+  }
+
   @after()
   async cleanUpDb() {
     await this.categoryModel.deleteMany({});
