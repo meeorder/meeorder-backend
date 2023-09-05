@@ -30,7 +30,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('login')
   @ApiOperation({ summary: 'Login' })
-  @ApiResponse({ type: () => LoginResponseDto })
+  @ApiResponse({ type: () => LoginResponseDto, status: HttpStatus.OK })
   async signIn(
     @Body() signInDto: LoginDto,
     @Res({ passthrough: true }) response: FastifyReply,
@@ -60,6 +60,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Get('me')
   @ApiOperation({ summary: 'Get current user' })
+  @ApiResponse({ type: () => UserResponseDto, status: HttpStatus.OK })
   async getMe(@User() { id }: UserJwt) {
     const user = await this.userService.getUserById(new Types.ObjectId(id));
 
