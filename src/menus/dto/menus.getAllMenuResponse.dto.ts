@@ -3,9 +3,13 @@ import { CategorySchema } from '@/schema/categories.schema';
 import { ApiProperty } from '@nestjs/swagger';
 import { Ref } from '@typegoose/typegoose';
 export class GetAllMenuResponseDto {
-  @ApiProperty({ type: () => CategorySchema })
+  @ApiProperty({ type: () => CategorySchema, description: "Menu's Category" })
   category: Ref<CategorySchema>;
 
-  @ApiProperty({ type: () => MenuDtoForAllMenu, isArray: true })
+  @ApiProperty({
+    type: () => MenuDtoForAllMenu,
+    isArray: true,
+    description: 'Array of all menu in category',
+  })
   menus: MenuDtoForAllMenu[];
 }
