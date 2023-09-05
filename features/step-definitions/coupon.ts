@@ -84,7 +84,7 @@ export class SessionStepDefination {
     expect(Array.isArray(data)).toBeTruthy();
     const coupon = data.find((coupon) => `${coupon._id}` === id);
     expect(coupon).toBeDefined();
-    expect(coupon.isUseable).toEqual(isUsable);
+    expect(coupon.is_useable).toEqual(isUsable);
   }
 
   @after()
