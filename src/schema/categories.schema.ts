@@ -14,7 +14,7 @@ export class CategorySchema {
 
   @Prop({ default: [], ref: () => MenuSchema })
   @ApiProperty({ type: String, description: 'List of Menu', isArray: true })
-  menus: Ref<MenuSchema, string>[];
+  menus: Ref<MenuSchema>[];
 
   @Prop({ default: null })
   @ApiProperty({
