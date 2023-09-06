@@ -1,12 +1,13 @@
 import { OrdersResponseDto } from '@/orders/dto/orders.response.dto';
+import { TablesSchema } from '@/schema/tables.schema';
 import { ApiProperty } from '@nestjs/swagger';
+import { Ref } from '@typegoose/typegoose';
 import { Type } from 'class-transformer';
 import { IsArray, IsNumber, ValidateNested } from 'class-validator';
-import { Types } from 'mongoose';
 
 export class OrdersListDto {
   @ApiProperty({ type: String, description: 'table id' })
-  table: Types.ObjectId;
+  table: Ref<TablesSchema>;
 
   @ApiProperty({ type: Number, description: 'total price' })
   @IsNumber()
