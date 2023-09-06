@@ -1,16 +1,21 @@
 import { UserRole, UserSchema } from '@/schema/users.schema';
 import { ApiProperty } from '@nestjs/swagger';
 import { DocumentType } from '@typegoose/typegoose';
+import { IsEnum, IsMongoId, IsString } from 'class-validator';
 import { Types } from 'mongoose';
 
 export class UserResponseDto {
-  @ApiProperty({ type: String })
+  @ApiProperty({ type: String, description: 'User ID' })
+  @IsMongoId()
   _id: Types.ObjectId;
 
-  @ApiProperty({ type: String })
+  @ApiProperty({ type: String, description: 'Username' })
+  @IsString()
   username: string;
 
-  @ApiProperty({ type: Number })
+  @ApiProperty({ type: String, description: 'Role of user' })
+  @IsString()
+  @IsEnum(UserRole)
   role: UserRole;
 
   @ApiProperty({ type: Number })
