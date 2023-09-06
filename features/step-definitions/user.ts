@@ -23,7 +23,7 @@ export class UserSteps {
     const users = dt.hashes();
     for (const user of users) {
       await this.userModel.create({
-        _id: new Types.ObjectId(),
+        _id: new Types.ObjectId(user._id),
         username: user.username,
         password: await this.hashPassword(user.password),
         role: +user.role ?? UserRole.Owner,
