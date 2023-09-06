@@ -4,7 +4,6 @@ import { Types } from 'mongoose';
 
 export enum UserRole {
   Owner = 100,
-  Chef = 75,
   Cashier = 50,
   Employee = 25,
   Customer = 1,
