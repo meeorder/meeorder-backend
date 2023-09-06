@@ -266,5 +266,12 @@ $ npm run generate:token --id=<user_id> --username=<username> --role=<role> --fi
 - `--role` is user role [default:`100`]
 - `--file` is where to store key file [default: `./scripts/meeorder-dev.key`]
 
-All of these options are optional, it will replace with default value if you don't provide it.
+#### Role
 
+- `100` is Owner (default)
+- `75` is Chef
+- `50` is Cashier
+- `25` is Employee
+- `1` is Customer
+
+All of these options are optional, it will replace with default value if you don't provide it.
