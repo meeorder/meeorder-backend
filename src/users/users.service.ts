@@ -26,21 +26,22 @@ export class UsersService {
   }
 
   async getUserByUsername(username: string) {
-    return await this.userModel.findOne({ username }).exec();
+    return await this.userModel
+      .findOne({ username })
+      .select('+password')
+      .exec();
   }
 
   getUserById(id: Types.ObjectId) {
-    return this.userModel.findById(id).select('_id username point role').exec();
+    return this.userModel.findById(id).exec();
   }
 
   async getUsers(role: string = undefined) {
     if (!role) {
-      return await this.userModel
-        .find({ deleted_at: null }, { password: false })
-        .exec();
+      return await this.userModel.find({ deleted_at: null }).exec();
     }
     return await this.userModel
-      .find({ role: UserRole[role], deleted_at: null }, { password: false })
+      .find({ role: UserRole[role], deleted_at: null })
       .exec();
   }
 

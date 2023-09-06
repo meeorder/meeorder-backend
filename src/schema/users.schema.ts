@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { modelOptions, prop } from '@typegoose/typegoose';
-import { Exclude } from 'class-transformer';
 import { Types } from 'mongoose';
 
 export enum UserRole {
@@ -25,8 +24,7 @@ export class UserSchema {
   @ApiProperty({ type: String, description: 'User name' })
   username: string;
 
-  @prop({ required: true })
-  @Exclude()
+  @prop({ required: true, select: false })
   password: string;
 
   @prop({ default: 0 })

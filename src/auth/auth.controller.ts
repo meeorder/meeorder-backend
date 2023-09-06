@@ -6,6 +6,7 @@ import { User } from '@/decorator/user.decorator';
 import { UserResponseDto } from '@/users/dto/user.response.dto';
 import { UsersService } from '@/users/users.service';
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
@@ -65,7 +66,11 @@ export class AuthController {
   @ApiResponse({ type: () => UserResponseDto, status: HttpStatus.OK })
   async getMe(@User() { id }: UserJwt) {
     const user = await this.userService.getUserById(new Types.ObjectId(id));
-
+    if (!user) {
+      throw new BadRequestException({
+        message: 'Incorrect user',
+      });
+    }
     return UserResponseDto.fromDocument(user);
   }
 }
