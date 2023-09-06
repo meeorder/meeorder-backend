@@ -29,6 +29,7 @@ export class SessionSchema {
 
   @Prop({ default: null, ref: () => UserSchema })
   @ApiProperty({
+    type: String,
     description: 'User ID',
     nullable: true,
   })
