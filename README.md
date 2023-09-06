@@ -252,3 +252,12 @@ MONGO_URI=
 MEEORDER_PUBLIC_KEY=
 MEEORDER_PRIVATE_KEY=
 ```
+
+## Generate Access Token (JWT Token)
+```bash
+$ npm run generate:token --id=<user_id> --username=<username> --role=<role> --file=<where_to_key_file>
+```
+### Explanation
+- `--id` is user id [default: `new Types.ObjectId().toHexString()`]
+- `--username` is username [default: ]
+- `--role` is user role
