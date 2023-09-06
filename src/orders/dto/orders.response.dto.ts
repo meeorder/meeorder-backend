@@ -1,9 +1,7 @@
+import { MenusResponseDto } from '@/menus/dto/menus.response.dto';
 import { OrderStatus } from '@/orders/enums/orders.status';
 import { AddonSchema } from '@/schema/addons.schema';
-import { MenuSchema } from '@/schema/menus.schema';
-import { SessionSchema } from '@/schema/session.schema';
 import { ApiProperty } from '@nestjs/swagger';
-import { Ref } from '@typegoose/typegoose';
 import { Types } from 'mongoose';
 
 export class OrdersResponseDto {
@@ -16,20 +14,20 @@ export class OrdersResponseDto {
   @ApiProperty({ type: String, enum: OrderStatus })
   status: OrderStatus;
 
-  @ApiProperty({ type: () => SessionSchema, description: 'Session Schema' })
-  session: Ref<SessionSchema>;
+  @ApiProperty({ type: String, description: 'Session ID' })
+  session: Types.ObjectId;
 
-  @ApiProperty({ type: () => MenuSchema, description: 'Menu Schema' })
-  menu: Ref<MenuSchema>;
+  @ApiProperty({ type: () => MenusResponseDto, description: 'Menu Schema' })
+  menu: MenusResponseDto;
 
   @ApiProperty({
     type: () => AddonSchema,
     description: 'Array of Addons Schema',
     isArray: true,
   })
-  addons: Ref<AddonSchema>[];
+  addons: AddonSchema[];
 
-  @ApiProperty({ type: String, description: 'Additional info' })
+  @ApiProperty({ type: String, nullable: true, description: 'Additional info' })
   additional_info: string;
 
   @ApiProperty({ type: Date, description: 'for cancel status' })

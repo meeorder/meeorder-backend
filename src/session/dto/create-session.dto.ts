@@ -7,7 +7,7 @@ export class CreateSessionDto {
   @ApiProperty({ type: String, description: 'User ID', required: false })
   @IsOptional()
   @IsUUID()
-  uid?: string;
+  user?: string;
 
   @ApiProperty({ type: String, description: 'Table ID', required: true })
   @Transform(({ value }) => (value ? new Types.ObjectId(value) : null))

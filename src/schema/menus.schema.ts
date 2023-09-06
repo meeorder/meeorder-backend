@@ -32,8 +32,12 @@ export class MenuSchema {
   @ApiProperty({ type: Number, description: 'Menu price' })
   price: number;
 
-  @Prop({ required: true, ref: () => CategorySchema })
-  @ApiProperty({ description: 'Menu category' })
+  @Prop({ default: null, ref: () => CategorySchema })
+  @ApiProperty({
+    type: () => CategorySchema,
+    nullable: true,
+    description: 'Menu category',
+  })
   category: Ref<CategorySchema>;
 
   @Prop({ required: true, ref: () => AddonSchema, default: [] })

@@ -29,6 +29,7 @@ export class SessionSchema {
 
   @Prop({ default: null, ref: () => UserSchema })
   @ApiProperty({
+    type: String,
     description: 'User ID',
     nullable: true,
   })
@@ -40,8 +41,9 @@ export class SessionSchema {
 
   @Prop({ default: null, ref: () => CouponSchema })
   @ApiProperty({
+    type: String,
+    nullable: true,
     description: 'Coupon ID',
-    isArray: true,
   })
   coupon: Ref<CouponSchema>;
 
@@ -50,6 +52,10 @@ export class SessionSchema {
   table: Ref<TablesSchema>;
 
   @Prop({ default: null })
-  @ApiProperty({ type: Date, description: 'Session deletion date' })
+  @ApiProperty({
+    type: Date,
+    nullable: true,
+    description: 'Session deletion date',
+  })
   deleted_at: Date;
 }

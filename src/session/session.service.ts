@@ -1,5 +1,6 @@
 import { AddonsService } from '@/addons/addons.service';
 import { MenusService } from '@/menus/menus.service';
+import { OrdersResponseDto } from '@/orders/dto/orders.response.dto';
 import { OrdersService } from '@/orders/orders.service';
 import { AddonSchema } from '@/schema/addons.schema';
 import { CouponSchema } from '@/schema/coupons.schema';
@@ -181,7 +182,9 @@ export class SessionService {
 
   async listOrdersBySession(id: Types.ObjectId): Promise<OrdersListDto> {
     const res = new OrdersListDto();
-    const orders = await this.ordersService.getOrdersBySession(id);
+    const orders = <OrdersResponseDto[]>(
+      await this.ordersService.getOrdersBySession(id)
+    );
     // find total price
     res.total_price = orders
       .map(({ menu, addons }) => {
@@ -198,11 +201,9 @@ export class SessionService {
     // find total disount price
     const session = await this.getSessionById(id);
     const coupon = await this.couponModel.findById(session.coupon).exec();
-    res.discount_price = coupon.price;
+    res.discount_price = coupon ? coupon.price : 0;
     res.net_price = res.total_price - res.discount_price;
-    res.table = await orders[0]
-      ?.populate('session', 'table')
-      .then((doc) => <Types.ObjectId>(<SessionSchema>doc.session).table);
+    res.table = session.table._id;
     res.orders = orders;
     return res;
   }
