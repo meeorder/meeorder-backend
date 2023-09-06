@@ -7,7 +7,7 @@ export class UserJwt {
 
   role: UserRole;
 
-  constructor(base: UserJwt) {
+  constructor(base: Partial<UserJwt>) {
     this.id = base.id;
     this.username = base.username;
     this.role = base.role;
