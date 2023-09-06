@@ -40,6 +40,7 @@ export class SessionSchema {
 
   @Prop({ default: null, ref: () => CouponSchema })
   @ApiProperty({
+    type: String,
     description: 'Coupon ID',
     isArray: true,
   })
