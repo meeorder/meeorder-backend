@@ -1,5 +1,6 @@
 import { AddonsService } from '@/addons/addons.service';
 import { MenusService } from '@/menus/menus.service';
+import { OrdersResponseDto } from '@/orders/dto/orders.response.dto';
 import { OrdersService } from '@/orders/orders.service';
 import { AddonSchema } from '@/schema/addons.schema';
 import { CouponSchema } from '@/schema/coupons.schema';
@@ -181,7 +182,9 @@ export class SessionService {
 
   async listOrdersBySession(id: Types.ObjectId): Promise<OrdersListDto> {
     const res = new OrdersListDto();
-    const orders = await this.ordersService.getOrdersBySession(id);
+    const orders = <OrdersResponseDto[]>(
+      await this.ordersService.getOrdersBySession(id)
+    );
     // find total price
     res.total_price = orders
       .map(({ menu, addons }) => {

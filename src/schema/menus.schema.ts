@@ -33,7 +33,7 @@ export class MenuSchema {
   price: number;
 
   @Prop({ required: true, ref: () => CategorySchema })
-  @ApiProperty({ description: 'Menu category' })
+  @ApiProperty({ type: () => CategorySchema, description: 'Menu category' })
   category: Ref<CategorySchema>;
 
   @Prop({ required: true, ref: () => AddonSchema, default: [] })
