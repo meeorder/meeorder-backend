@@ -8,5 +8,6 @@ import { CategoriesService } from './categories.service';
   imports: [TypegooseModule.forFeature([CategorySchema])],
   providers: [CategoriesService],
   controllers: [CategoriesController],
+  exports: [CategoriesService],
 })
 export class CategoriesModule {}
