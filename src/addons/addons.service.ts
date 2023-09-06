@@ -1,7 +1,7 @@
 import { CreateAddonDto } from '@/addons/dto/addon.dto';
 import { AddonSchema } from '@/schema/addons.schema';
 import { Injectable } from '@nestjs/common';
-import { ReturnModelType } from '@typegoose/typegoose';
+import { Ref, ReturnModelType } from '@typegoose/typegoose';
 import { InjectModel } from 'nest-typegoose';
 
 @Injectable()
@@ -32,6 +32,13 @@ export class AddonsService {
         new: true,
       })
       .exec();
+  }
+
+  async disableAddon(disableAddonsList: Ref<AddonSchema>[]) {
+    await this.addonModel.updateMany(
+      { _id: { $in: disableAddonsList } },
+      { available: false },
+    );
   }
 
   deleteAddon(id: string) {

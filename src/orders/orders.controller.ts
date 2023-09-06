@@ -109,4 +109,20 @@ export class OrdersController {
   async cancel(@Param('id', new ParseMongoIdPipe()) id: Types.ObjectId) {
     await this.ordersService.cancel(new Types.ObjectId(id));
   }
+
+  @Patch('/:id/cancel/addons')
+  @ApiParam({ name: 'id', type: String, description: 'Session ID (ObjectId)' })
+  @ApiResponse({
+    status: HttpStatus.NO_CONTENT,
+    description: 'Cancel order with addons disable',
+  })
+  @ApiOperation({
+    summary: 'Cancel order and disable addons',
+  })
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async cancelByAddons(
+    @Param('id', new ParseMongoIdPipe()) id: Types.ObjectId,
+  ) {
+    await this.ordersService.cancelByAddons(new Types.ObjectId(id));
+  }
 }
