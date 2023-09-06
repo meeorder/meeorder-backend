@@ -198,11 +198,9 @@ export class SessionService {
     // find total disount price
     const session = await this.getSessionById(id);
     const coupon = await this.couponModel.findById(session.coupon).exec();
-    res.discount_price = coupon.price;
+    res.discount_price = coupon ? coupon.price : 0;
     res.net_price = res.total_price - res.discount_price;
-    res.table = await orders[0]
-      ?.populate('session', 'table')
-      .then((doc) => <Types.ObjectId>(<SessionSchema>doc.session).table);
+    res.table = session.table;
     res.orders = orders;
     return res;
   }
