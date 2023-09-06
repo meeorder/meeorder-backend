@@ -200,7 +200,7 @@ export class SessionService {
     const coupon = await this.couponModel.findById(session.coupon).exec();
     res.discount_price = coupon ? coupon.price : 0;
     res.net_price = res.total_price - res.discount_price;
-    res.table = session.table;
+    res.table = session.table._id;
     res.orders = orders;
     return res;
   }
