@@ -31,7 +31,6 @@ export class AddonsController {
   @ApiOperation({ summary: 'Create a addon' })
   @Post()
   async createAddon(@Body() doc: CreateAddonDto) {
-    console.log(doc);
     return await this.addonService.createAddon(doc.title, doc.price);
   }
 
