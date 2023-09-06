@@ -11,8 +11,9 @@ import {
   Param,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { MongooseError } from 'mongoose';
 import { AddonsService } from './addons.service';
 
@@ -29,8 +30,9 @@ export class AddonsController {
   })
   @ApiOperation({ summary: 'Create a addon' })
   @Post()
-  createAddon(@Body() doc: CreateAddonDto) {
-    return this.addonService.createAddon(doc.title, doc.price);
+  async createAddon(@Body() doc: CreateAddonDto) {
+    console.log(doc);
+    return await this.addonService.createAddon(doc.title, doc.price);
   }
 
   @ApiResponse({
@@ -39,9 +41,10 @@ export class AddonsController {
     isArray: true,
   })
   @Get()
+  @ApiQuery({ name: 'status', enum: ['active', 'all'] })
   @ApiOperation({ summary: 'Get all addons' })
-  getAllAddons() {
-    return this.addonService.getAllAddons();
+  async getAllAddons(@Query('status') status: string = 'active') {
+    return await this.addonService.getAllAddons(status);
   }
 
   @ApiResponse({
@@ -56,8 +59,8 @@ export class AddonsController {
     summary: 'Get a addon by id',
   })
   @Get(':id')
-  getAddon(@Param('id') id: string) {
-    const doc = this.addonService.getAddonById(id);
+  async getAddon(@Param('id') id: string) {
+    const doc = await this.addonService.getAddonById(id);
     if (!doc) {
       throw new HttpException('No addon found', HttpStatus.NOT_FOUND);
     }
