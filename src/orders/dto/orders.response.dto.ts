@@ -27,7 +27,7 @@ export class OrdersResponseDto {
   })
   addons: AddonSchema[];
 
-  @ApiProperty({ type: String, description: 'Additional info' })
+  @ApiProperty({ type: String, nullable: true, description: 'Additional info' })
   additional_info: string;
 
   @ApiProperty({ type: Date, description: 'for cancel status' })
