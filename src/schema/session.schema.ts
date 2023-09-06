@@ -42,7 +42,6 @@ export class SessionSchema {
   @ApiProperty({
     type: String,
     description: 'Coupon ID',
-    isArray: true,
   })
   coupon: Ref<CouponSchema>;
 
