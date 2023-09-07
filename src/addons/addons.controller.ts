@@ -13,7 +13,13 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { MongooseError } from 'mongoose';
 import { AddonsService } from './addons.service';
 
@@ -26,7 +32,7 @@ export class AddonsController {
   @ApiResponse({
     status: HttpStatus.CREATED,
     description: 'Created addon',
-    type: () => CreateAddonDto,
+    type: () => AddonSchema,
   })
   @ApiOperation({ summary: 'Create a addon' })
   @Post()
@@ -46,6 +52,7 @@ export class AddonsController {
     return await this.addonService.getAllAddons(status);
   }
 
+  @HttpCode(HttpStatus.OK)
   @ApiResponse({
     status: HttpStatus.OK,
     type: () => AddonSchema,
@@ -57,6 +64,7 @@ export class AddonsController {
   @ApiOperation({
     summary: 'Get a addon by id',
   })
+  @ApiParam({ name: 'id', type: String, description: 'Addon ID (ObjectID)' })
   @Get(':id')
   async getAddon(@Param('id') id: string) {
     const doc = await this.addonService.getAddonById(id);
@@ -66,10 +74,11 @@ export class AddonsController {
     return doc;
   }
 
+  @HttpCode(HttpStatus.OK)
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Updated addon',
-    type: () => CreateAddonDto,
+    type: () => AddonSchema,
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
@@ -78,6 +87,7 @@ export class AddonsController {
   @ApiOperation({
     summary: 'Replace a addon by id',
   })
+  @ApiParam({ name: 'id', type: String, description: 'Addon ID (ObjectID)' })
   @Put(':id')
   async updateAddon(@Param('id') id: string, @Body() doc: CreateAddonDto) {
     try {
@@ -102,6 +112,7 @@ export class AddonsController {
   @ApiOperation({
     summary: 'Delete a addon by id',
   })
+  @ApiParam({ name: 'id', type: String, description: 'Addon ID (ObjectID)' })
   @Delete(':id')
   async deleteAddon(@Param('id') id: string) {
     try {

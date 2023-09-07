@@ -1,3 +1,4 @@
+import { CouponSchema } from '@/schema/coupons.schema';
 import {
   Body,
   Controller,
@@ -35,7 +36,7 @@ export class CouponsController {
 
   @ApiResponse({
     status: HttpStatus.OK,
-    type: () => CreateCouponDto,
+    type: () => CouponSchema,
     isArray: true,
   })
   @ApiOperation({
@@ -49,7 +50,7 @@ export class CouponsController {
 
   @ApiResponse({
     status: HttpStatus.OK,
-    type: () => CreateCouponDto,
+    type: () => CouponSchema,
   })
   @ApiOperation({
     summary: 'Get a coupon by id',
@@ -63,7 +64,7 @@ export class CouponsController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Coupon updated',
-    type: () => CreateCouponDto,
+    type: () => CouponSchema,
   })
   @ApiOperation({
     summary: 'Update a coupon by id',
