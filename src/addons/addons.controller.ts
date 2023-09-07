@@ -46,6 +46,7 @@ export class AddonsController {
     return await this.addonService.getAllAddons(status);
   }
 
+  @HttpCode(HttpStatus.OK)
   @ApiResponse({
     status: HttpStatus.OK,
     type: () => AddonSchema,
@@ -66,6 +67,7 @@ export class AddonsController {
     return doc;
   }
 
+  @HttpCode(HttpStatus.OK)
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Updated addon',
