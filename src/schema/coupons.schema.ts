@@ -19,6 +19,10 @@ export class CouponSchema {
   @ApiProperty({ type: String, description: 'Coupon description' })
   description: string;
 
+  @Prop({ default: null })
+  @ApiProperty({ type: String, description: 'Coupon image' })
+  image: string;
+
   @Prop({ default: [], ref: () => MenuSchema })
   @ApiProperty({
     type: String,
@@ -30,16 +34,23 @@ export class CouponSchema {
   @Prop({ required: true })
   @ApiProperty({
     type: Number,
-    description: 'Discount price of the coupon',
+    description: 'Discount price of the Coupon',
   })
-  price: number;
+  discount: number;
 
-  @Prop({ default: null })
+  @Prop({ required: true })
   @ApiProperty({
     type: Number,
-    description: 'Amount of coupon',
+    description: 'Quota of the coupon',
   })
-  amount: number;
+  quota: number;
+
+  @Prop({ default: 0 })
+  @ApiProperty({
+    type: Number,
+    description: 'Number of coupons that have been used',
+  })
+  used: number;
 
   @Prop({ default: false })
   @ApiProperty({

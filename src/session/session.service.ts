@@ -201,7 +201,7 @@ export class SessionService {
     // find total disount price
     const session = await this.getSessionById(id);
     const coupon = await this.couponModel.findById(session.coupon).exec();
-    res.discount_price = coupon ? coupon.price : 0;
+    res.discount_price = coupon ? coupon.discount : 0;
     res.net_price = res.total_price - res.discount_price;
     res.table = session.table._id;
     res.orders = orders;

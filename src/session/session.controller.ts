@@ -204,12 +204,12 @@ export class SessionController {
   }
 
   @ApiResponse({
-    description: 'Get all useable coupon',
+    description: 'Get all redeemable coupon',
     type: () => ExampleCouponDto,
     status: HttpStatus.OK,
   })
   @ApiOperation({
-    summary: 'Get all useable coupon',
+    summary: 'Get all redeemable coupon',
   })
   @HttpCode(HttpStatus.OK)
   @ApiParam({ name: 'id', type: String, description: 'Session ID (ObjectId)' })
