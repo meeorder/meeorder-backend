@@ -12,6 +12,7 @@ export class TablesController {
   @ApiResponse({
     status: HttpStatus.CREATED,
     description: 'Create table',
+    type: () => TablesSchema,
   })
   @ApiOperation({
     summary: 'Create a table',
