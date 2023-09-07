@@ -40,7 +40,7 @@ export class AddonsService {
       .exec();
   }
 
-  async disableAddon(disableAddonsList: DisableAddonsDto) {
+  async disableAddons(disableAddonsList: DisableAddonsDto) {
     await this.addonModel
       .updateMany(
         {

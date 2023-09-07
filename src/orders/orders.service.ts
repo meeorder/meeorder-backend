@@ -128,7 +128,7 @@ export class OrdersService {
     await this.orderModel
       .findOneAndUpdate({ _id: id }, { cancelled_at: new Date() })
       .exec();
-    await this.addonsService.disableAddon(disableAddons);
+    await this.addonsService.disableAddons(disableAddons);
   }
 
   async getOrdersBySession(session: Types.ObjectId) {
