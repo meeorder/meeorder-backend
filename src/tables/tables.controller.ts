@@ -18,8 +18,8 @@ export class TablesController {
     summary: 'Create a table',
   })
   @Post()
-  createTable(@Body() { table_number }: TablesDto) {
-    return this.tablesService.createTable(table_number);
+  createTable(@Body() { title }: TablesDto) {
+    return this.tablesService.createTable(title);
   }
 
   @ApiResponse({

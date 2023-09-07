@@ -12,5 +12,5 @@ export class TablesSchema {
 
   @Prop({ required: true })
   @ApiProperty({ type: String, description: 'Table number' })
-  table_number: string;
+  title: string;
 }
