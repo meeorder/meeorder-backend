@@ -194,6 +194,7 @@ export class SessionController {
     summary: 'Updated session user',
   })
   @HttpCode(HttpStatus.OK)
+  @ApiParam({ name: 'id', type: String, description: 'Session ID (ObjectId)' })
   @Patch(':id/user')
   async updateSessionUser(
     @Param('id', new ParseMongoIdPipe()) id: Types.ObjectId,
@@ -211,6 +212,7 @@ export class SessionController {
     summary: 'Get all useable coupon',
   })
   @HttpCode(HttpStatus.OK)
+  @ApiParam({ name: 'id', type: String, description: 'Session ID (ObjectId)' })
   @Get(':id/coupon/all')
   async getCoupons(@Param('id', new ParseMongoIdPipe()) id: Types.ObjectId) {
     return await this.sessionService.getAllCoupon(id);
@@ -225,6 +227,7 @@ export class SessionController {
     summary: 'Update coupon in session',
   })
   @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiParam({ name: 'id', type: String, description: 'Session ID (ObjectId)' })
   @Patch(':id/coupon')
   async updateSessionCoupon(
     @Param('id', new ParseMongoIdPipe()) id: Types.ObjectId,
