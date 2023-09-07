@@ -48,9 +48,9 @@ export class CouponSchema {
   @Prop({ default: 0 })
   @ApiProperty({
     type: Number,
-    description: 'Number of coupons that have been used',
+    description: 'Number of coupons that have been redeemed',
   })
-  used: number;
+  redeemed: number;
 
   @Prop({ default: false })
   @ApiProperty({

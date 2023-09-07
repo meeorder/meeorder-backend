@@ -271,16 +271,16 @@ export class SessionService {
       const couponPoint = currentCoupon.required_point;
       newPoint = session.point + couponPoint;
 
-      currentCoupon.used -= 1;
+      currentCoupon.redeemed -= 1;
       await currentCoupon.save();
     } else if (session.coupon === null || newCouponId !== session.coupon._id) {
       const newCoupon = await this.couponModel.findById(newCouponId);
 
-      if (newCoupon.quota === newCoupon.used) {
+      if (newCoupon.quota === newCoupon.redeemed) {
         throw new ConflictException('Coupon quota has been reached');
       }
 
-      newCoupon.used += 1;
+      newCoupon.redeemed += 1;
       await newCoupon.save();
 
       const oldCouponPoint = session.coupon ? currentCoupon.required_point : 0;

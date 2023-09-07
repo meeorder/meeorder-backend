@@ -48,11 +48,11 @@ export class CreateCouponDto {
 
   @ApiProperty({
     type: Number,
-    description: 'Number of coupons that have been used',
+    description: 'Number of coupons that have been redeemed',
     required: false,
   })
   @IsOptional()
-  used?: number;
+  redeemed?: number;
 
   @ApiProperty({
     type: Boolean,
