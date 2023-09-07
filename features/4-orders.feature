@@ -2,9 +2,9 @@
 Feature: Orders
   Background:
     Given tables
-      | _id                      | table_number |
-      | 64f55c53561fa6a99fc45b29 | 1            |
-      | 64f55c65561fa6a99fc45b2a | 2            |
+      | _id                      | title |
+      | 64f55c53561fa6a99fc45b29 | 1     |
+      | 64f55c65561fa6a99fc45b2a | 2     |
     Given sessions
       | _id                      | finished_at | table                    |
       | 64c5485a510698e8c9e7bdb5 | 2016-01-01  | 64f55c53561fa6a99fc45b29 |
