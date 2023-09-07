@@ -82,7 +82,7 @@ export class SessionController {
   @ApiOperation({
     summary: 'Get a session by table id',
   })
-  @ApiParam({ name: 'id', type: Number, description: 'Table ID' })
+  @ApiParam({ name: 'id', type: String, description: 'Table ID' })
   @Get('table/:id')
   async getSessionByTable(
     @Param('id', new ParseMongoIdPipe()) id: Types.ObjectId,

@@ -252,3 +252,26 @@ MONGO_URI=
 MEEORDER_PUBLIC_KEY=
 MEEORDER_PRIVATE_KEY=
 ```
+
+## Generate Access Token (JWT Token)
+
+```bash
+$ npm run generate:token -- --id=<user_id> --username=<username> --role=<role> --file=<where_to_key_file>
+```
+
+### Explanation
+
+- `--id` is user id [default: generate a new object id at runtime]
+- `--username` is username [default: `meeorder-dev`]
+- `--role` is user role [default:`100`]
+- `--file` is where to store key file [default: `./scripts/meeorder-dev.key`]
+
+#### Role
+
+- `100` is Owner (default)
+- `75` is Chef
+- `50` is Cashier
+- `25` is Employee
+- `1` is Customer
+
+All of these options are optional, it will replace with default value if you don't provide it.
