@@ -1,9 +1,10 @@
+import { MongoTransform } from '@/utils/mongo-transform';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { Types } from 'mongoose';
 
 export class UpdateSessionCouponDto {
   @ApiProperty({ type: String, description: 'Coupon ID', nullable: true })
-  @Transform(({ value }) => (value ? new Types.ObjectId(value) : null))
+  @Transform(new MongoTransform(true).value())
   coupon_id: Types.ObjectId;
 }

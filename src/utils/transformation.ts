@@ -1,7 +1,7 @@
 import { BadRequestException } from '@nestjs/common';
 import { TransformFnParams } from 'class-transformer';
 
-export class CustomTransform<T> {
+export class Transformation<T> {
   constructor(
     private readonly transformFunction: (value: any) => T,
     private readonly nullable = true,
@@ -17,7 +17,7 @@ export class CustomTransform<T> {
         return value ? this.transformFunction(value) : null;
       } catch (e) {
         throw new BadRequestException({
-          message: `${key} is invalid type`,
+          message: e?.message ?? `${key} is invalid type`,
           expected: this.protoName,
         });
       }
@@ -42,6 +42,7 @@ export class CustomTransform<T> {
             } catch (e) {
               throw new BadRequestException({
                 message: `${key} is invalid type @ index ${i}`,
+                ogMessage: e?.message,
                 expected: this.protoName,
               });
             }

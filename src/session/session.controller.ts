@@ -1,9 +1,12 @@
+import { UserJwt } from '@/auth/user.jwt.payload';
+import { Role } from '@/decorator/roles.decorator';
+import { User } from '@/decorator/user.decorator';
 import { ParseMongoIdPipe } from '@/pipes/mongo-id.pipe';
 import { SessionSchema } from '@/schema/session.schema';
+import { UserRole } from '@/schema/users.schema';
 import { CreateSessionDto } from '@/session/dto/create-session.dto';
 import { ExampleCouponDto } from '@/session/dto/example-coupon.dto';
 import { OrdersListDto } from '@/session/dto/listorders.dto';
-import { SessionUserUpdateDto } from '@/session/dto/update-sessionUser.dto';
 import { UpdateSessionCouponDto } from '@/session/dto/updatecoupon.dto';
 import { SessionService } from '@/session/session.service';
 import {
@@ -21,6 +24,7 @@ import {
   Query,
 } from '@nestjs/common';
 import {
+  ApiBearerAuth,
   ApiOperation,
   ApiParam,
   ApiQuery,
@@ -43,6 +47,8 @@ export class SessionController {
   @ApiOperation({
     summary: 'Get all sessions',
   })
+  @ApiBearerAuth()
+  @Role(UserRole.Employee)
   @Get()
   getSessions(@Query('finished') finished?: boolean) {
     return this.sessionService.getSessions(finished);
@@ -110,6 +116,8 @@ export class SessionController {
   @ApiOperation({
     summary: 'Create a session',
   })
+  @ApiBearerAuth()
+  @Role(UserRole.Employee)
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async createSession(@Body() dto: CreateSessionDto) {
@@ -130,6 +138,8 @@ export class SessionController {
   @ApiOperation({
     summary: 'Finish a session',
   })
+  @ApiBearerAuth()
+  @Role(UserRole.Employee)
   @Patch(':id/finish')
   @HttpCode(HttpStatus.NO_CONTENT)
   async finishSession(@Param('id', new ParseMongoIdPipe()) id: Types.ObjectId) {
@@ -157,6 +167,8 @@ export class SessionController {
     summary: 'Delete a session by id',
   })
   @Delete(':id')
+  @ApiBearerAuth()
+  @Role(UserRole.Employee)
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteSession(@Param('id', new ParseMongoIdPipe()) id: Types.ObjectId) {
     try {
@@ -188,8 +200,7 @@ export class SessionController {
 
   @ApiResponse({
     description: 'Updated session user',
-    type: () => SessionUserUpdateDto,
-    status: HttpStatus.OK,
+    status: HttpStatus.NO_CONTENT,
   })
   @ApiOperation({
     summary: 'Updated session user',
@@ -199,9 +210,9 @@ export class SessionController {
   @Patch(':id/user')
   async updateSessionUser(
     @Param('id', new ParseMongoIdPipe()) id: Types.ObjectId,
-    @Body() doc: SessionUserUpdateDto,
+    @User() user: UserJwt,
   ) {
-    return await this.sessionService.updateSessionUser(id, doc);
+    await this.sessionService.updateSessionUser(id, user);
   }
 
   @ApiResponse({

@@ -1,4 +1,5 @@
 import { AddonsService } from '@/addons/addons.service';
+import { UserJwt } from '@/auth/user.jwt.payload';
 import { MenusService } from '@/menus/menus.service';
 import { OrdersResponseDto } from '@/orders/dto/orders.response.dto';
 import { OrdersService } from '@/orders/orders.service';
@@ -8,7 +9,6 @@ import { MenuSchema } from '@/schema/menus.schema';
 import { SessionSchema } from '@/schema/session.schema';
 import { UserSchema } from '@/schema/users.schema';
 import { CouponDto } from '@/session/dto/getcoupon.dto';
-import { SessionUserUpdateDto } from '@/session/dto/update-sessionUser.dto';
 import { UpdateSessionCouponDto } from '@/session/dto/updatecoupon.dto';
 import {
   ConflictException,
@@ -208,11 +208,14 @@ export class SessionService {
     return res;
   }
 
-  async updateSessionUser(id: Types.ObjectId, userbody: SessionUserUpdateDto) {
-    const new_user = userbody.user;
-    const new_point = (await this.userModel.findById(new_user)).point;
+  async updateSessionUser(id: Types.ObjectId, user: UserJwt) {
+    const { point } = await this.userModel
+      .findById(user.id)
+      .select('point')
+      .lean()
+      .exec();
     await this.sessionModel
-      .updateOne({ _id: id }, { user: new_user, point: new_point })
+      .updateOne({ _id: id }, { user: user.id, point })
       .orFail()
       .exec();
   }
