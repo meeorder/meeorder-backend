@@ -132,6 +132,6 @@ export class OrdersController {
     @Param('id', new ParseMongoIdPipe()) id: Types.ObjectId,
     @Body() addonsList: DisableAddonsDto,
   ) {
-    await this.ordersService.cancelByAddons(new Types.ObjectId(id), addonsList);
+    await this.ordersService.cancelByAddons(id, addonsList);
   }
 }
