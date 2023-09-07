@@ -39,5 +39,5 @@ Feature: Coupons
 
     When get all coupons by session "64c5485a510698e8c9e7bdc0"
     Then should return status code 200
-    And coupon response id "64f09e7476b02c5ea04be8ea" usable should be "true"
-    And coupon response id "64f09e7476b02c5ea04be8eb" usable should be "false"
+    And coupon response id "64f09e7476b02c5ea04be8ea" redeemable should be "true"
+    And coupon response id "64f09e7476b02c5ea04be8eb" redeemable should be "false"

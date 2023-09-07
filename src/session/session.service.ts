@@ -227,12 +227,12 @@ export class SessionService {
       (coupon) =>
         new CouponDto(
           coupon.toObject(),
-          this.isUsableCoupon(session, coupon, menu_arr),
+          this.isRedeemableCoupon(session, coupon, menu_arr),
         ),
     );
   }
 
-  isUsableCoupon(
+  isRedeemableCoupon(
     session: Pick<SessionSchema, 'point'>,
     coupon: Pick<CouponSchema, 'required_point' | 'required_menus'>,
     menus: Pick<MenuSchema, '_id'>[],
