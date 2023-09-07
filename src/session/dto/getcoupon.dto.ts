@@ -2,12 +2,16 @@ import { CouponSchema } from '@/schema/coupons.schema';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CouponDto extends CouponSchema {
-  @ApiProperty({ type: Boolean, description: 'isUseable', required: true })
-  is_useable: boolean;
+  @ApiProperty({
+    type: Boolean,
+    description: 'The coupon is redeemable or not',
+    required: true,
+  })
+  redeemable: boolean;
 
-  constructor(coupon: CouponSchema, isUseable: boolean) {
+  constructor(coupon: CouponSchema, redeemable: boolean) {
     super();
     Object.assign(this, coupon);
-    this.is_useable = isUseable;
+    this.redeemable = redeemable;
   }
 }

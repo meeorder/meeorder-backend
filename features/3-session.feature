@@ -2,9 +2,9 @@
 Feature: Session
   Background:
     Given tables
-      | _id                      | table_number |
-      | 64f55c53561fa6a99fc45b29 | 1            |
-      | 64f55c65561fa6a99fc45b2a | 2            |
+      | _id                      | title |
+      | 64f55c53561fa6a99fc45b29 | 1     |
+      | 64f55c65561fa6a99fc45b2a | 2     |
 
   Scenario: Create a session
     When create session

@@ -11,6 +11,6 @@ export class TablesSchema {
   _id: Types.ObjectId;
 
   @Prop({ required: true })
-  @ApiProperty({ type: Number, description: 'Table number' })
-  table_number: number;
+  @ApiProperty({ type: String, description: 'Table number' })
+  title: string;
 }

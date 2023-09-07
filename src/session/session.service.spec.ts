@@ -56,8 +56,8 @@ describe('SessionService', () => {
     expect(sessionService).toBeDefined();
   });
 
-  describe('isUsableCoupon', () => {
-    it('should usable if menu in required menu', () => {
+  describe('isRedeemableCoupon', () => {
+    it('should redeemable if menu in required menu', () => {
       const menuIds = [
         new Types.ObjectId('64f598e7cecc358bef29d2f3'),
         new Types.ObjectId('64f598e7cecc358bef29d2f4'),
@@ -74,11 +74,11 @@ describe('SessionService', () => {
       };
 
       expect(
-        sessionService.isUsableCoupon(session, coupon, menus),
+        sessionService.isRedeemableCoupon(session, coupon, menus),
       ).toBeTruthy();
     });
 
-    it('should unusable if menu not in required menu', () => {
+    it('should unredeemable if menu not in required menu', () => {
       const menuIds = [
         new Types.ObjectId('64f598e7cecc358bef29d2f3'),
         new Types.ObjectId('64f598e7cecc358bef29d2f4'),
@@ -98,10 +98,12 @@ describe('SessionService', () => {
         point: coupon.required_point,
       };
 
-      expect(sessionService.isUsableCoupon(session, coupon, menus)).toBeFalsy();
+      expect(
+        sessionService.isRedeemableCoupon(session, coupon, menus),
+      ).toBeFalsy();
     });
 
-    it('should unusable if point not enough', () => {
+    it('should unredeemable if point not enough', () => {
       const menuIds = [
         new Types.ObjectId('64f598e7cecc358bef29d2f3'),
         new Types.ObjectId('64f598e7cecc358bef29d2f4'),
@@ -121,7 +123,9 @@ describe('SessionService', () => {
         point: coupon.required_point - 1,
       };
 
-      expect(sessionService.isUsableCoupon(session, coupon, menus)).toBeFalsy();
+      expect(
+        sessionService.isRedeemableCoupon(session, coupon, menus),
+      ).toBeFalsy();
     });
   });
 

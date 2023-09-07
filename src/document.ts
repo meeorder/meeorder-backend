@@ -8,7 +8,8 @@ export class SwaggerBuilder {
     this.documentBuilder = new DocumentBuilder()
       .setTitle('MeeOrder')
       .setDescription('The MeeOrder API description')
-      .setVersion('1.0');
+      .setVersion('1.0')
+      .addBearerAuth();
   }
 
   createDocument() {
