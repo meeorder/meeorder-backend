@@ -79,9 +79,9 @@ export class SessionStepDefination {
     expect(this.workspace.response.data.length).toBe(size);
   }
 
-  @then('coupon response id {string} usable should be {string}')
-  couponResponseShouldBe(id: string, usable: string) {
-    const isUsable = usable === 'true';
+  @then('coupon response id {string} redeemable should be {string}')
+  couponResponseShouldBe(id: string, redeemable: string) {
+    const isRedeemable = redeemable === 'true';
     const data: CouponDto[] = this.workspace.response.data;
     expect(Array.isArray(data)).toBeTruthy();
     const coupon = data.find((coupon) => `${coupon._id}` === id);
