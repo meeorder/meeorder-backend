@@ -23,7 +23,7 @@ export class CouponsController {
   @ApiResponse({
     status: HttpStatus.CREATED,
     description: 'Coupon created',
-    type: () => CreateCouponDto,
+    type: () => CouponSchema,
   })
   @ApiOperation({
     summary: 'Create a coupon',
