@@ -20,7 +20,7 @@ export class SessionStepDefination {
     for (const coupon of coupons) {
       const doc = await this.couponModel.create({
         title: coupon.title,
-        discount: +coupon.price,
+        discount: +coupon.discount,
         required_point: +coupon.required_point,
         quota: +coupon.quota,
         _id: new Types.ObjectId(coupon._id),
@@ -38,7 +38,7 @@ export class SessionStepDefination {
       '/coupons',
       {
         title: coupon.title,
-        discount: +coupon.price,
+        discount: +coupon.discount,
         required_point: +coupon.required_point,
         quota: +coupon.quota,
       },
