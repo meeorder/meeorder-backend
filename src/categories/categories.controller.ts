@@ -128,6 +128,7 @@ export class CategoriesController {
   @ApiOperation({
     summary: "order the categories' rank",
   })
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Patch('rank')
   async updateRank(@Body() doc: RankDto) {
     await this.categoriesService.updateRank(doc);
