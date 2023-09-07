@@ -256,7 +256,7 @@ MEEORDER_PRIVATE_KEY=
 ## Generate Access Token (JWT Token)
 
 ```bash
-$ npm run generate:token --id=<user_id> --username=<username> --role=<role> --file=<where_to_key_file>
+$ npm run generate:token -- --id=<user_id> --username=<username> --role=<role> --file=<where_to_key_file>
 ```
 
 ### Explanation
