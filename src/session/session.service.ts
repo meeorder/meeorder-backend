@@ -260,23 +260,41 @@ export class SessionService {
 
   async updateSessionCoupon(
     id: Types.ObjectId,
-    couponbody: UpdateSessionCouponDto,
+    couponBody: UpdateSessionCouponDto,
   ) {
     const session = await this.sessionModel.findById(id);
-    const coupon = await this.couponModel.findById(session.coupon);
-    const new_coupon = couponbody.coupon_id;
-    let new_point = 0;
-    if (new_coupon === null) {
-      const coupon_point = coupon.required_point;
-      new_point = session.point + coupon_point;
-    } else if (new_coupon !== session.coupon) {
-      const old_coupon_point = session.coupon ? coupon.required_point : 0;
-      const new_coupon_point = (await this.couponModel.findById(new_coupon))
-        .required_point;
-      new_point = session.point + old_coupon_point - new_coupon_point;
+    const currentCoupon = await this.couponModel.findById(session.coupon);
+    const newCouponId = couponBody.coupon_id;
+    let newPoint = 0;
+
+    if (newCouponId === null) {
+      const couponPoint = currentCoupon.required_point;
+      newPoint = session.point + couponPoint;
+
+      currentCoupon.used -= 1;
+      await currentCoupon.save();
+    } else if (session.coupon === null || newCouponId !== session.coupon._id) {
+      const newCoupon = await this.couponModel.findById(newCouponId);
+
+      if (newCoupon.quota === newCoupon.used) {
+        throw new ConflictException('Coupon quota has been reached');
+      }
+
+      newCoupon.used += 1;
+      await newCoupon.save();
+
+      const oldCouponPoint = session.coupon ? currentCoupon.required_point : 0;
+      const newCouponPoint = newCoupon.required_point;
+      newPoint = session.point + oldCouponPoint - newCouponPoint;
     }
+
+    const updateData = {
+      coupon: newCouponId,
+      point: newPoint,
+    };
+
     await this.sessionModel
-      .updateOne({ _id: id }, { coupon: new_coupon, point: new_point })
+      .findByIdAndUpdate(id, updateData, { new: true })
       .orFail()
       .exec();
   }

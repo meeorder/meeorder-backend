@@ -8,6 +8,7 @@ import { UpdateSessionCouponDto } from '@/session/dto/updatecoupon.dto';
 import { SessionService } from '@/session/session.service';
 import {
   Body,
+  ConflictException,
   Controller,
   Delete,
   Get,
@@ -219,9 +220,12 @@ export class SessionController {
   }
 
   @ApiResponse({
-    description: 'Update coupon in session',
-    type: () => UpdateSessionCouponDto,
-    status: HttpStatus.OK,
+    description: 'Coupon is attached to session',
+    status: HttpStatus.NO_CONTENT,
+  })
+  @ApiResponse({
+    status: HttpStatus.CONFLICT,
+    description: 'Resource conflict (coupon quota has been reached)',
   })
   @ApiOperation({
     summary: 'Update coupon in session',
@@ -233,6 +237,14 @@ export class SessionController {
     @Param('id', new ParseMongoIdPipe()) id: Types.ObjectId,
     @Body() doc: UpdateSessionCouponDto,
   ) {
-    await this.sessionService.updateSessionCoupon(id, doc);
+    try {
+      await this.sessionService.updateSessionCoupon(id, doc);
+    } catch (e) {
+      if (e instanceof ConflictException) {
+        throw new HttpException(e.message, HttpStatus.CONFLICT);
+      } else {
+        throw e;
+      }
+    }
   }
 }
