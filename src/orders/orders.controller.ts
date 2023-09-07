@@ -1,3 +1,4 @@
+import { DisableAddonsDto } from '@/orders/dto/disable.addons.dto';
 import { CreateOrderDto } from '@/orders/dto/order.create.dto';
 import { OrderGetDto } from '@/orders/dto/order.get.dto';
 import { OrderStatus } from '@/orders/enums/orders.status';
@@ -12,7 +13,13 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Types } from 'mongoose';
 import { OrdersService } from './orders.service';
 
@@ -108,5 +115,23 @@ export class OrdersController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async cancel(@Param('id', new ParseMongoIdPipe()) id: Types.ObjectId) {
     await this.ordersService.cancel(new Types.ObjectId(id));
+  }
+
+  @Patch('/:id/cancel/addons')
+  @ApiParam({ name: 'id', type: String, description: 'Session ID (ObjectId)' })
+  @ApiBody({ type: DisableAddonsDto, description: 'List of addons to disable' })
+  @ApiResponse({
+    status: HttpStatus.NO_CONTENT,
+    description: 'Cancel order with trigger disable addons',
+  })
+  @ApiOperation({
+    summary: 'Cancel order and disable addons',
+  })
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async cancelByAddons(
+    @Param('id', new ParseMongoIdPipe()) id: Types.ObjectId,
+    @Body() addonsList: DisableAddonsDto,
+  ) {
+    await this.ordersService.cancelByAddons(id, addonsList);
   }
 }

@@ -1,7 +1,9 @@
 import { CreateAddonDto } from '@/addons/dto/addon.dto';
+import { DisableAddonsDto } from '@/orders/dto/disable.addons.dto';
 import { AddonSchema } from '@/schema/addons.schema';
 import { Injectable } from '@nestjs/common';
 import { ReturnModelType } from '@typegoose/typegoose';
+import { Types } from 'mongoose';
 import { InjectModel } from 'nest-typegoose';
 
 @Injectable()
@@ -35,6 +37,21 @@ export class AddonsService {
       .findOneAndUpdate({ _id: id, deleted_at: null }, updateAddon, {
         new: true,
       })
+      .exec();
+  }
+
+  async disableAddons(disableAddonsList: DisableAddonsDto) {
+    await this.addonModel
+      .updateMany(
+        {
+          _id: {
+            $in: disableAddonsList.addonsList.map((id) => {
+              return new Types.ObjectId(id);
+            }),
+          },
+        },
+        { available: false },
+      )
       .exec();
   }
 

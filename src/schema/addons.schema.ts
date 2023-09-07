@@ -25,4 +25,8 @@ export class AddonSchema {
     description: 'Addon deletion date',
   })
   deleted_at: Date;
+
+  @Prop({ default: true })
+  @ApiProperty({ type: Boolean, description: 'Addon status' })
+  available: boolean;
 }
