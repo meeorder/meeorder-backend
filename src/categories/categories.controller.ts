@@ -13,7 +13,7 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { MongooseError } from 'mongoose';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/category.createCategory.dto';
@@ -59,6 +59,11 @@ export class CategoriesController {
   })
   @ApiOperation({
     summary: 'Get a category by id',
+  })
+  @ApiParam({
+    name: 'id',
+    type: String,
+    description: 'Category ID (ObjectID)',
   })
   @Get(':id')
   getCategory(@Param('id') id: string) {

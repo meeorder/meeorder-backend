@@ -13,7 +13,13 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { MongooseError } from 'mongoose';
 import { AddonsService } from './addons.service';
 
@@ -58,6 +64,7 @@ export class AddonsController {
   @ApiOperation({
     summary: 'Get a addon by id',
   })
+  @ApiParam({ name: 'id', type: String, description: 'Addon ID (ObjectID)' })
   @Get(':id')
   async getAddon(@Param('id') id: string) {
     const doc = await this.addonService.getAddonById(id);
@@ -80,6 +87,7 @@ export class AddonsController {
   @ApiOperation({
     summary: 'Replace a addon by id',
   })
+  @ApiParam({ name: 'id', type: String, description: 'Addon ID (ObjectID)' })
   @Put(':id')
   async updateAddon(@Param('id') id: string, @Body() doc: CreateAddonDto) {
     try {
@@ -104,6 +112,7 @@ export class AddonsController {
   @ApiOperation({
     summary: 'Delete a addon by id',
   })
+  @ApiParam({ name: 'id', type: String, description: 'Addon ID (ObjectID)' })
   @Delete(':id')
   async deleteAddon(@Param('id') id: string) {
     try {
