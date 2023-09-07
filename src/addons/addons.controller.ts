@@ -26,7 +26,7 @@ export class AddonsController {
   @ApiResponse({
     status: HttpStatus.CREATED,
     description: 'Created addon',
-    type: () => CreateAddonDto,
+    type: () => AddonSchema,
   })
   @ApiOperation({ summary: 'Create a addon' })
   @Post()
@@ -71,7 +71,7 @@ export class AddonsController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Updated addon',
-    type: () => CreateAddonDto,
+    type: () => AddonSchema,
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,

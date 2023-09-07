@@ -26,7 +26,7 @@ export class CategoriesController {
   @ApiResponse({
     status: HttpStatus.CREATED,
     description: 'Created new category',
-    type: () => CreateCategoryDto,
+    type: () => CategorySchema,
   })
   @ApiOperation({
     summary: 'Create a category',
@@ -72,7 +72,7 @@ export class CategoriesController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Update category',
-    type: () => UpdateCategoryDto,
+    type: () => CategorySchema,
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
