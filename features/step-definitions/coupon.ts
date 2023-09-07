@@ -38,8 +38,9 @@ export class SessionStepDefination {
       '/coupons',
       {
         title: coupon.title,
-        price: +coupon.price,
+        discount: +coupon.price,
         required_point: +coupon.required_point,
+        quota: +coupon.quota,
       },
     );
   }
