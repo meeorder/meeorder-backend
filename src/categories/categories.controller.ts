@@ -86,6 +86,11 @@ export class CategoriesController {
   @ApiOperation({
     summary: 'Replace a category by id',
   })
+  @ApiParam({
+    name: 'id',
+    type: String,
+    description: 'Category ID (ObjectID)',
+  })
   @Patch(':id')
   async updateCategory(
     @Param('id') id: string,
@@ -112,6 +117,11 @@ export class CategoriesController {
   })
   @ApiOperation({
     summary: 'Delete a category by id',
+  })
+  @ApiParam({
+    name: 'id',
+    type: String,
+    description: 'Category ID (ObjectID)',
   })
   @Delete(':id')
   async deleteCategory(@Param('id') id: string) {
