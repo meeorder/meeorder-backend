@@ -1,8 +1,10 @@
+import { Role } from '@/decorator/roles.decorator';
 import { CreateMenuDto } from '@/menus/dto/menus.createMenu.dto';
 import { GetAllMenuResponseDto } from '@/menus/dto/menus.getAllMenuResponse.dto';
 import { GetMenuByIdResponseDto } from '@/menus/dto/menus.getMenuByIdReponse.dto';
 import { ParseStringObjectIdArrayPipe } from '@/menus/menus.pipe';
 import { MenuSchema } from '@/schema/menus.schema';
+import { UserRole } from '@/schema/users.schema';
 import {
   Body,
   Controller,
@@ -16,7 +18,13 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Types } from 'mongoose';
 import { MenusService } from './menus.service';
 @Controller({ path: 'menus', version: '1' })
@@ -66,6 +74,8 @@ export class MenusController {
   @ApiOperation({
     summary: 'Create a menu',
   })
+  @ApiBearerAuth()
+  @Role(UserRole.Owner)
   @Post()
   async createMenu(@Body() foodData: CreateMenuDto): Promise<MenuSchema> {
     const createdMenu = await this.menuservice.createMenu(foodData);
@@ -102,6 +112,8 @@ export class MenusController {
   @ApiOperation({
     summary: 'Delete a menu by id',
   })
+  @ApiBearerAuth()
+  @Role(UserRole.Owner)
   @Delete(':id')
   async removeMenuById(@Param('id') id: string) {
     await this.menuservice.deleteOneMenu(id);
@@ -119,6 +131,8 @@ export class MenusController {
     summary: 'Delete menus by ids',
     description: 'Delete many menus',
   })
+  @ApiBearerAuth()
+  @Role(UserRole.Owner)
   @Delete()
   async removeMenus(
     @Query('ids', new ParseStringObjectIdArrayPipe()) ids: Types.ObjectId[],
@@ -137,6 +151,8 @@ export class MenusController {
   @ApiOperation({
     summary: 'Publish a menu by id',
   })
+  @ApiBearerAuth()
+  @Role(UserRole.Owner)
   @Patch(':id/publish')
   async publishMenuById(@Param('id') id: string) {
     await this.menuservice.publishMenu(id);
@@ -153,6 +169,8 @@ export class MenusController {
   @ApiOperation({
     summary: 'Unpublish a menu by id',
   })
+  @ApiBearerAuth()
+  @Role(UserRole.Owner)
   @Patch(':id/unpublish')
   async unpublishMenuById(@Param('id') id: string) {
     await this.menuservice.unpublishMenu(id);

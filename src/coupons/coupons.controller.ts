@@ -24,6 +24,7 @@ import { UpdateCouponDto } from './dto/update-coupon.dto';
 
 @Controller({ path: 'coupons', version: '1' })
 @ApiTags('coupons')
+@ApiBearerAuth()
 export class CouponsController {
   constructor(private readonly couponsService: CouponsService) {}
 
@@ -37,7 +38,6 @@ export class CouponsController {
   })
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  @ApiBearerAuth()
   @Role(UserRole.Owner)
   create(@Body() createCouponDto: CreateCouponDto) {
     return this.couponsService.createCoupon(createCouponDto);
@@ -53,6 +53,7 @@ export class CouponsController {
   })
   @Get()
   @HttpCode(HttpStatus.OK)
+  @Role(UserRole.Owner)
   async findAll() {
     return await this.couponsService.getAllCouponByOwner();
   }
@@ -66,6 +67,7 @@ export class CouponsController {
   })
   @Get(':id')
   @HttpCode(HttpStatus.OK)
+  @Role(UserRole.Owner)
   async findOne(@Param('id') id: string) {
     return await this.couponsService.getCouponByIdByOwner(id);
   }
@@ -80,6 +82,7 @@ export class CouponsController {
   })
   @Put(':id')
   @HttpCode(HttpStatus.OK)
+  @Role(UserRole.Owner)
   async update(
     @Param('id') id: string,
     @Body() updateCouponDto: UpdateCouponDto,
@@ -95,6 +98,7 @@ export class CouponsController {
     summary: 'Delete a coupon by id',
   })
   @Delete(':id')
+  @Role(UserRole.Owner)
   @HttpCode(HttpStatus.OK)
   async remove(@Param('id') id: string) {
     return await this.couponsService.deleteCoupon(id);

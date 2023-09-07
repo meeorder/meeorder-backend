@@ -1,3 +1,4 @@
+import { MongoTransform } from '@/utils/mongo-transform';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
@@ -14,7 +15,7 @@ export class UpdateCategoryDto {
   title?: string;
 
   @ApiProperty({ type: String, isArray: true, required: false })
-  @Transform(({ value }) => value.map((v) => new Types.ObjectId(v)))
+  @Transform(new MongoTransform().array())
   @IsOptional()
   @IsNotEmpty()
   @IsArray()
