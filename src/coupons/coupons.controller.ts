@@ -1,4 +1,6 @@
+import { Role } from '@/decorator/roles.decorator';
 import { CouponSchema } from '@/schema/coupons.schema';
+import { UserRole } from '@/schema/users.schema';
 import {
   Body,
   Controller,
@@ -10,7 +12,12 @@ import {
   Post,
   Patch as Put,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { CouponsService } from './coupons.service';
 import { CreateCouponDto } from './dto/create-coupon.dto';
 import { UpdateCouponDto } from './dto/update-coupon.dto';
@@ -30,8 +37,10 @@ export class CouponsController {
   })
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async create(@Body() createCouponDto: CreateCouponDto) {
-    return await this.couponsService.createCoupon(createCouponDto);
+  @ApiBearerAuth()
+  @Role(UserRole.Owner)
+  create(@Body() createCouponDto: CreateCouponDto) {
+    return this.couponsService.createCoupon(createCouponDto);
   }
 
   @ApiResponse({

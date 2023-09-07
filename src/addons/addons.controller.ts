@@ -1,5 +1,7 @@
 import { CreateAddonDto } from '@/addons/dto/addon.dto';
+import { Role } from '@/decorator/roles.decorator';
 import { AddonSchema } from '@/schema/addons.schema';
+import { UserRole } from '@/schema/users.schema';
 import {
   Body,
   Controller,
@@ -14,6 +16,7 @@ import {
   Query,
 } from '@nestjs/common';
 import {
+  ApiBearerAuth,
   ApiOperation,
   ApiParam,
   ApiQuery,
@@ -34,8 +37,10 @@ export class AddonsController {
     description: 'Created addon',
     type: () => AddonSchema,
   })
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a addon' })
   @Post()
+  @Role(UserRole.Owner)
   async createAddon(@Body() doc: CreateAddonDto) {
     return await this.addonService.createAddon(doc.title, doc.price);
   }
@@ -87,8 +92,10 @@ export class AddonsController {
   @ApiOperation({
     summary: 'Replace a addon by id',
   })
+  @ApiBearerAuth()
   @ApiParam({ name: 'id', type: String, description: 'Addon ID (ObjectID)' })
   @Put(':id')
+  @Role(UserRole.Owner)
   async updateAddon(@Param('id') id: string, @Body() doc: CreateAddonDto) {
     try {
       await this.addonService.updateAddon(id, doc);
@@ -114,6 +121,8 @@ export class AddonsController {
   })
   @ApiParam({ name: 'id', type: String, description: 'Addon ID (ObjectID)' })
   @Delete(':id')
+  @ApiBearerAuth()
+  @Role(UserRole.Owner)
   async deleteAddon(@Param('id') id: string) {
     try {
       await this.addonService.deleteAddon(id);
