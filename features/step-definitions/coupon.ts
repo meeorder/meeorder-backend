@@ -20,8 +20,9 @@ export class SessionStepDefination {
     for (const coupon of coupons) {
       const doc = await this.couponModel.create({
         title: coupon.title,
-        price: +coupon.price,
+        discount: +coupon.price,
         required_point: +coupon.required_point,
+        quota: +coupon.quota,
         _id: new Types.ObjectId(coupon._id),
         activated: coupon.activated ?? true,
       });
@@ -77,14 +78,14 @@ export class SessionStepDefination {
     expect(this.workspace.response.data.length).toBe(size);
   }
 
-  @then('coupon response id {string} redeemable should be {string}')
-  couponResponseShouldBe(id: string, redeemable: string) {
-    const isRedeemable = redeemable === 'true';
+  @then('coupon response id {string} usable should be {string}')
+  couponResponseShouldBe(id: string, usable: string) {
+    const isUsable = usable === 'true';
     const data: CouponDto[] = this.workspace.response.data;
     expect(Array.isArray(data)).toBeTruthy();
     const coupon = data.find((coupon) => `${coupon._id}` === id);
     expect(coupon).toBeDefined();
-    expect(coupon.redeemable).toEqual(isRedeemable);
+    expect(coupon.redeemable).toEqual(isUsable);
   }
 
   @after()
