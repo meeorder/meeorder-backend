@@ -1,4 +1,5 @@
 import { AddonsService } from '@/addons/addons.service';
+import { DisableAddonsDto } from '@/orders/dto/disable.addons.dto';
 import { CreateOrderDto } from '@/orders/dto/order.create.dto';
 import { OrderGetDto } from '@/orders/dto/order.get.dto';
 import { OrderStatus } from '@/orders/enums/orders.status';
@@ -123,11 +124,11 @@ export class OrdersService {
       .exec();
   }
 
-  async cancelByAddons(id: Types.ObjectId) {
-    const cancelOrder = await this.orderModel
+  async cancelByAddons(id: Types.ObjectId, disableAddons: DisableAddonsDto) {
+    await this.orderModel
       .findOneAndUpdate({ _id: id }, { cancelled_at: new Date() })
       .exec();
-    await this.addonsService.disableAddon(cancelOrder.addons);
+    await this.addonsService.disableAddon(disableAddons);
   }
 
   async getOrdersBySession(session: Types.ObjectId) {
