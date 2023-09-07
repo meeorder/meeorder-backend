@@ -13,7 +13,7 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { MongooseError } from 'mongoose';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/category.createCategory.dto';
@@ -26,7 +26,7 @@ export class CategoriesController {
   @ApiResponse({
     status: HttpStatus.CREATED,
     description: 'Created new category',
-    type: () => CreateCategoryDto,
+    type: () => CategorySchema,
   })
   @ApiOperation({
     summary: 'Create a category',
@@ -60,6 +60,11 @@ export class CategoriesController {
   @ApiOperation({
     summary: 'Get a category by id',
   })
+  @ApiParam({
+    name: 'id',
+    type: String,
+    description: 'Category ID (ObjectID)',
+  })
   @Get(':id')
   getCategory(@Param('id') id: string) {
     const doc = this.categoriesService.getCategoryById(id);
@@ -72,7 +77,7 @@ export class CategoriesController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Update category',
-    type: () => UpdateCategoryDto,
+    type: () => CategorySchema,
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
@@ -80,6 +85,11 @@ export class CategoriesController {
   })
   @ApiOperation({
     summary: 'Replace a category by id',
+  })
+  @ApiParam({
+    name: 'id',
+    type: String,
+    description: 'Category ID (ObjectID)',
   })
   @Patch(':id')
   async updateCategory(
@@ -108,6 +118,11 @@ export class CategoriesController {
   @ApiOperation({
     summary: 'Delete a category by id',
   })
+  @ApiParam({
+    name: 'id',
+    type: String,
+    description: 'Category ID (ObjectID)',
+  })
   @Delete(':id')
   async deleteCategory(@Param('id') id: string) {
     try {
@@ -128,6 +143,7 @@ export class CategoriesController {
   @ApiOperation({
     summary: "order the categories' rank",
   })
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Patch('rank')
   async updateRank(@Body() doc: RankDto) {
     await this.categoriesService.updateRank(doc);

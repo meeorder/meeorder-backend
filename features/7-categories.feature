@@ -36,8 +36,8 @@ Feature: Categories
       | _id                      | title |
       | 64f5ec463ec7999abb9b6f0f | Cat4  |
     When update category at id "64f5ec463ec7999abb9b6f0f"
-      | title     |
-      | New_Cat4  |
+      | title    |
+      | New_Cat4 |
     Then should return status code 200
     When get category by id "64f5ec463ec7999abb9b6f0f"
     Then should response data be
@@ -51,14 +51,14 @@ Feature: Categories
       | 64f6d1b448c75d8f1f2982e0 | Cat4  |
       | 64f6d1c98e9e6db0ff03a2f0 | Cat5  |
     When update cateogries rank
-      | rank                                                 |
-      | 64f6d1c98e9e6db0ff03a2f0,64f6d1b448c75d8f1f2982e0    |
-    Then should return status code 200
+      | rank                                              |
+      | 64f6d1c98e9e6db0ff03a2f0,64f6d1b448c75d8f1f2982e0 |
+    Then should return status code 204
     When get category by id "64f6d1b448c75d8f1f2982e0"
     Then should response data be
-      | key   | value                    | type   |
-      | _id   | 64f6d1b448c75d8f1f2982e0 | string |
-      | rank  | 1                       | number |
+      | key  | value                    | type   |
+      | _id  | 64f6d1b448c75d8f1f2982e0 | string |
+      | rank | 1                        | number |
     When get category by id "64f6d1c98e9e6db0ff03a2f0"
     Then should response data be
       | key  | value                    | type   |

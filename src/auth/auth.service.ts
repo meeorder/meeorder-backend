@@ -51,10 +51,6 @@ export class AuthService {
       password: hash,
       role: UserRole.Customer,
     });
-    return {
-      _id: registerUser._id,
-      username: registerUser.username,
-      role: registerUser.role,
-    };
+    return registerUser.toObject();
   }
 }

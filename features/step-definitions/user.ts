@@ -1,9 +1,10 @@
-import { UserSchema } from '@/schema/users.schema';
+import { UserRole, UserSchema } from '@/schema/users.schema';
 import { DataTable } from '@cucumber/cucumber';
 import { ReturnModelType } from '@typegoose/typegoose';
 import * as argon2 from 'argon2';
 import { after, binding, given, when } from 'cucumber-tsflow';
 import { Workspace } from 'features/step-definitions/workspace';
+import { Types } from 'mongoose';
 
 @binding([Workspace])
 export class UserSteps {
@@ -22,11 +23,11 @@ export class UserSteps {
     const users = dt.hashes();
     for (const user of users) {
       await this.userModel.create({
-        _id: user._id,
+        _id: new Types.ObjectId(user._id),
         username: user.username,
         password: await this.hashPassword(user.password),
-        role: user.role,
-        point: user.point ?? 0,
+        role: +user.role ?? UserRole.Owner,
+        point: +user.point ?? 0,
       });
     }
   }

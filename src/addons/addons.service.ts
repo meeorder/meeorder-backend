@@ -18,8 +18,12 @@ export class AddonsService {
     });
   }
 
-  async getAllAddons() {
-    return await this.addonModel.find({ deleted_at: null }).exec();
+  async getAllAddons(status: string) {
+    let script = {};
+    if (status === 'active') {
+      script = { deleted_at: null };
+    }
+    return await this.addonModel.find(script).exec();
   }
 
   async getAddonById(id: string) {

@@ -43,7 +43,7 @@ export class CreateCouponDto {
   amount: number;
 
   @ApiProperty({
-    type: Number,
+    type: Boolean,
     description: 'Coupon status',
     required: true,
   })
