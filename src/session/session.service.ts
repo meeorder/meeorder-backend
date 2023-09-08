@@ -1,6 +1,7 @@
 import { AddonsService } from '@/addons/addons.service';
 import { MenusService } from '@/menus/menus.service';
 import { OrdersResponseDto } from '@/orders/dto/orders.response.dto';
+import { OrderStatus } from '@/orders/enums/orders.status';
 import { OrdersService } from '@/orders/orders.service';
 import { AddonSchema } from '@/schema/addons.schema';
 import { CouponSchema } from '@/schema/coupons.schema';
@@ -12,6 +13,8 @@ import { SessionUserUpdateDto } from '@/session/dto/update-sessionUser.dto';
 import { UpdateSessionCouponDto } from '@/session/dto/updatecoupon.dto';
 import {
   ConflictException,
+  HttpException,
+  HttpStatus,
   Inject,
   Injectable,
   forwardRef,
@@ -45,6 +48,16 @@ export class SessionService {
   }
 
   async finishSession(id: Types.ObjectId) {
+    if (
+      !(await this.ordersService.getOrdersBySession(id)).every(
+        ({ status }) => status === OrderStatus.Done,
+      )
+    ) {
+      throw new HttpException(
+        'Session has orders that are not finished',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     const result = await this.sessionModel
       .updateOne(
         { _id: id, deleted_at: null },
