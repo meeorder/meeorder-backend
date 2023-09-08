@@ -1,7 +1,6 @@
 import { ParseMongoIdPipe } from '@/pipes/mongo-id.pipe';
 import { SessionSchema } from '@/schema/session.schema';
 import { CreateSessionDto } from '@/session/dto/create-session.dto';
-import { ExampleCouponDto } from '@/session/dto/example-coupon.dto';
 import { OrdersListDto } from '@/session/dto/listorders.dto';
 import { SessionUserUpdateDto } from '@/session/dto/update-sessionUser.dto';
 import { UpdateSessionCouponDto } from '@/session/dto/updatecoupon.dto';
@@ -28,6 +27,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { MongooseError, Types } from 'mongoose';
+import { CouponDto } from './dto/getcoupon.dto';
 
 @Controller({ path: 'sessions', version: '1' })
 @ApiTags('sessions')
@@ -205,9 +205,10 @@ export class SessionController {
   }
 
   @ApiResponse({
-    description: 'Get all redeemable coupon',
-    type: () => ExampleCouponDto,
     status: HttpStatus.OK,
+    type: () => CouponDto,
+    isArray: true,
+    description: 'Get all redeemable coupon',
   })
   @ApiOperation({
     summary: 'Get all redeemable coupon',
