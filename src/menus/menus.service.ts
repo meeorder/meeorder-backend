@@ -191,7 +191,7 @@ export class MenusService {
         { new: true },
       )
       .exec();
-    if (menu.category) {
+    if (<Types.ObjectId>menu.category) {
       await this.categoriesService.pullMenuFromCategory(
         menu.category._id,
         menu._id,
