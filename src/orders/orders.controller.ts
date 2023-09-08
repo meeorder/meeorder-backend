@@ -113,6 +113,11 @@ export class OrdersController {
   @ApiParam({ name: 'id' })
   @ApiNotFoundResponse()
   @ApiNoContentResponse()
+  @ApiOperation({
+    summary: 'Cancel order',
+    description:
+      'Cancel order and disable addons, ingredients(not implemented) if included',
+  })
   @HttpCode(HttpStatus.NO_CONTENT)
   async cancelOrder(
     @Body() { addons, reason }: CancelOrderDto,
