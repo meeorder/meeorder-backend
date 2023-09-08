@@ -160,22 +160,56 @@ export class MenusService {
   }
 
   async updateOne(id: string, menuData: CreateMenuDto) {
-    await this.menuModel.updateOne({ _id: id }, menuData).exec();
+    const oldMenu = await this.menuModel.findByIdAndUpdate(id, menuData).exec();
+    if (oldMenu.category._id === menuData.category) {
+      return;
+    }
+
+    await this.categoriesService.pullMenuFromCategory(
+      oldMenu.category._id,
+      oldMenu._id,
+    );
+
+    if (!menuData.category) {
+      return;
+    }
+
+    await this.categoriesService.pushMenuToCategory(
+      menuData.category._id,
+      oldMenu._id,
+    );
   }
 
   async deleteOneMenu(id: string) {
     const currentDate = new Date();
-    await this.menuModel.updateOne({ _id: id }, { deleted_at: currentDate });
+    const menu = await this.menuModel.findByIdAndUpdate(
+      id,
+      {
+        deleted_at: currentDate,
+      },
+      { new: true },
+    );
+    if (menu.category) {
+      await this.categoriesService.pullMenuFromCategory(
+        menu.category._id,
+        menu._id,
+      );
+    }
   }
 
   async deleteManyMenus(ids: Types.ObjectId[]) {
     const currentDate = new Date();
-    const deleteManyQuery = {
-      _id: { $in: ids },
-    };
-    await this.menuModel.updateMany(deleteManyQuery, {
-      deleted_at: currentDate,
-    });
+    const menus = await this.menuModel.find({ _id: { $in: ids } }).exec();
+    const categories = menus.map((menu) => menu.category._id);
+
+    await this.menuModel.updateMany(
+      { _id: { $in: ids } },
+      { deleted_at: currentDate },
+    );
+
+    if (categories.length > 0) {
+      await this.categoriesService.pullManyMenusFromCategories(categories, ids);
+    }
   }
 
   async publishMenu(id: string) {

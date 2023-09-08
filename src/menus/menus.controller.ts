@@ -1,7 +1,7 @@
 import { CreateMenuDto } from '@/menus/dto/menus.createMenu.dto';
 import { GetAllMenuResponseDto } from '@/menus/dto/menus.getAllMenuResponse.dto';
 import { GetMenuByIdResponseDto } from '@/menus/dto/menus.getMenuByIdReponse.dto';
-import { ParseStringObjectIdArrayPipe } from '@/menus/menus.pipe';
+import { ParseStringArrayToObjectIdArrayPipe } from '@/menus/menus.pipe';
 import { MenuSchema } from '@/schema/menus.schema';
 import {
   Body,
@@ -121,7 +121,8 @@ export class MenusController {
   })
   @Delete()
   async removeMenus(
-    @Query('ids', new ParseStringObjectIdArrayPipe()) ids: Types.ObjectId[],
+    @Query('ids', new ParseStringArrayToObjectIdArrayPipe())
+    ids: Types.ObjectId[],
   ) {
     await this.menuservice.deleteManyMenus(ids);
   }
