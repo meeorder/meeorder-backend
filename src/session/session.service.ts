@@ -49,11 +49,9 @@ export class SessionService {
 
   async finishSession(id: Types.ObjectId) {
     if (
-      (await this.ordersService.getOrdersBySession(id))
-        .map(({ status }) => {
-          return true ? status === OrderStatus.Done : false;
-        })
-        .every((status) => status === true) === false
+      (await this.ordersService.getOrdersBySession(id)).every(
+        ({ status }) => status === OrderStatus.Done,
+      ) === false
     ) {
       throw new HttpException(
         'Session has orders that are not finished',
