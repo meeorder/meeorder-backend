@@ -29,7 +29,7 @@ export class SessionSchema {
 
   @Prop({ default: null, ref: () => UserSchema })
   @ApiProperty({
-    type: String,
+    type: UserSchema,
     description: 'User ID',
     nullable: true,
   })
@@ -41,14 +41,14 @@ export class SessionSchema {
 
   @Prop({ default: null, ref: () => CouponSchema })
   @ApiProperty({
-    type: String,
+    type: CouponSchema,
     nullable: true,
     description: 'Coupon ID',
   })
   coupon: Ref<CouponSchema>;
 
   @Prop({ required: true, ref: () => TablesSchema })
-  @ApiProperty({ type: String, description: 'Table ID' })
+  @ApiProperty({ type: TablesSchema, description: 'Table ID' })
   table: Ref<TablesSchema>;
 
   @Prop({ default: null })
