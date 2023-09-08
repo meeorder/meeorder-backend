@@ -9,10 +9,11 @@ export class CancelOrderDto {
     type: String,
     isArray: true,
     description: 'Ingredients that out of stock (not implemented yet)',
+    default: [],
   })
   @IsOptional()
   @Transform(new MongoTransform().array())
-  ingredients: Types.ObjectId[];
+  ingredients: Types.ObjectId[] = [];
 
   @ApiPropertyOptional({
     type: String,
