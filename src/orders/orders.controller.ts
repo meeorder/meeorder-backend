@@ -1,4 +1,5 @@
-import { DisableAddonsDto } from '@/orders/dto/disable.addons.dto';
+import { AddonsService } from '@/addons/addons.service';
+import { CancelOrderDto } from '@/orders/dto/cancel-order.dto';
 import { CreateOrderDto } from '@/orders/dto/order.create.dto';
 import { OrderGetDto } from '@/orders/dto/order.get.dto';
 import { OrderStatus } from '@/orders/enums/orders.status';
@@ -9,12 +10,14 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  NotFoundException,
   Param,
   Patch,
   Post,
 } from '@nestjs/common';
 import {
-  ApiBody,
+  ApiNoContentResponse,
+  ApiNotFoundResponse,
   ApiOperation,
   ApiParam,
   ApiResponse,
@@ -26,7 +29,10 @@ import { OrdersService } from './orders.service';
 @Controller({ path: 'orders', version: '1' })
 @ApiTags('orders')
 export class OrdersController {
-  constructor(private ordersService: OrdersService) {}
+  constructor(
+    private readonly ordersService: OrdersService,
+    private readonly addonsService: AddonsService,
+  ) {}
 
   @Post()
   @ApiResponse({ status: HttpStatus.CREATED, description: 'Create order' })
@@ -103,35 +109,19 @@ export class OrdersController {
     );
   }
 
-  @Patch('/:id/cancel')
-  @ApiParam({ name: 'id', type: String, description: 'Session ID (ObjectId)' })
-  @ApiResponse({
-    status: HttpStatus.NO_CONTENT,
-    description: 'Cancel order',
-  })
-  @ApiOperation({
-    summary: 'Cancel order',
-  })
+  @Patch(':id/cancel')
+  @ApiParam({ name: 'id' })
+  @ApiNotFoundResponse()
+  @ApiNoContentResponse()
   @HttpCode(HttpStatus.NO_CONTENT)
-  async cancel(@Param('id', new ParseMongoIdPipe()) id: Types.ObjectId) {
-    await this.ordersService.cancel(new Types.ObjectId(id));
-  }
-
-  @Patch('/:id/cancel/addons')
-  @ApiParam({ name: 'id', type: String, description: 'Session ID (ObjectId)' })
-  @ApiBody({ type: DisableAddonsDto, description: 'List of addons to disable' })
-  @ApiResponse({
-    status: HttpStatus.NO_CONTENT,
-    description: 'Cancel order with trigger disable addons',
-  })
-  @ApiOperation({
-    summary: 'Cancel order and disable addons',
-  })
-  @HttpCode(HttpStatus.NO_CONTENT)
-  async cancelByAddons(
+  async cancelOrder(
+    @Body() { addons, reason }: CancelOrderDto,
     @Param('id', new ParseMongoIdPipe()) id: Types.ObjectId,
-    @Body() addonsList: DisableAddonsDto,
   ) {
-    await this.ordersService.cancelByAddons(id, addonsList);
+    const op = await this.ordersService.cancel(id, reason);
+    if (op.matchedCount === 0) {
+      throw new NotFoundException({ message: 'Order not found' });
+    }
+    await this.addonsService.disableAddons(addons);
   }
 }
