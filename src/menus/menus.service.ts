@@ -182,13 +182,15 @@ export class MenusService {
 
   async deleteOneMenu(id: string) {
     const currentDate = new Date();
-    const menu = await this.menuModel.findByIdAndUpdate(
-      id,
-      {
-        deleted_at: currentDate,
-      },
-      { new: true },
-    );
+    const menu = await this.menuModel
+      .findByIdAndUpdate(
+        id,
+        {
+          deleted_at: currentDate,
+        },
+        { new: true },
+      )
+      .exec();
     if (menu.category) {
       await this.categoriesService.pullMenuFromCategory(
         menu.category._id,
@@ -202,10 +204,9 @@ export class MenusService {
     const menus = await this.menuModel.find({ _id: { $in: ids } }).exec();
     const categories = menus.map((menu) => menu.category._id);
 
-    await this.menuModel.updateMany(
-      { _id: { $in: ids } },
-      { deleted_at: currentDate },
-    );
+    await this.menuModel
+      .updateMany({ _id: { $in: ids } }, { deleted_at: currentDate })
+      .exec();
 
     if (categories.length > 0) {
       await this.categoriesService.pullManyMenusFromCategories(categories, ids);
@@ -214,10 +215,12 @@ export class MenusService {
 
   async publishMenu(id: string) {
     const currentDate = new Date();
-    await this.menuModel.updateOne({ _id: id }, { published_at: currentDate });
+    await this.menuModel
+      .updateOne({ _id: id }, { published_at: currentDate })
+      .exec();
   }
 
   async unpublishMenu(id: string) {
-    await this.menuModel.updateOne({ _id: id }, { published_at: null });
+    await this.menuModel.updateOne({ _id: id }, { published_at: null }).exec();
   }
 }

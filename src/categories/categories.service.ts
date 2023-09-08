@@ -84,9 +84,11 @@ export class CategoriesService {
     categoryIds: Types.ObjectId[],
     menuIds: Types.ObjectId[],
   ) {
-    await this.categoryModel.updateMany(
-      { _id: { $in: categoryIds } },
-      { $pull: { menus: { $in: menuIds } } },
-    );
+    await this.categoryModel
+      .updateMany(
+        { _id: { $in: categoryIds } },
+        { $pull: { menus: { $in: menuIds } } },
+      )
+      .exec();
   }
 }
