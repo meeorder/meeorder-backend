@@ -1,7 +1,11 @@
 import { Config, configuration } from '@/config';
 import { DataTable } from '@cucumber/cucumber';
 import { ConfigService } from '@nestjs/config';
-import axios, { AxiosInstance, AxiosResponse } from 'axios';
+import axios, {
+  AxiosInstance,
+  AxiosResponse,
+  RawAxiosRequestHeaders,
+} from 'axios';
 import { afterAll, beforeAll, binding, then } from 'cucumber-tsflow';
 import expect from 'expect';
 import { Datasource } from 'features/step-definitions/datasource';
@@ -30,7 +34,29 @@ export class Workspace {
 
   public datasource: Datasource;
 
-  public response: AxiosResponse<any>;
+  private _response: AxiosResponse<any>;
+
+  private cookies: Record<string, string> = {};
+
+  private extractCookie(res: AxiosResponse<any>) {
+    const cookies = res.headers['set-cookie'];
+    const extractregEx = /(.*)=(.*); Path=(.*)/;
+    if (cookies) {
+      for (const cookie of cookies) {
+        const [key, value] = extractregEx.exec(cookie).slice(1);
+        this.cookies[key] = value;
+      }
+    }
+  }
+
+  get response() {
+    return this._response;
+  }
+
+  set response(res) {
+    this._response = res;
+    this.extractCookie(res);
+  }
 
   public axiosInstance: AxiosInstance;
 
@@ -41,6 +67,10 @@ export class Workspace {
       baseURL: version ? `${this.baseURL}/api/v${version}` : this.baseURL,
       validateStatus: () => true,
     });
+  }
+
+  public setHeader(key: keyof RawAxiosRequestHeaders, value: string) {
+    this.axiosInstance.defaults.headers.common[key] = value;
   }
 
   @beforeAll()
@@ -88,5 +118,11 @@ export class Workspace {
     for (const expectItem of expected) {
       expect(this.response.data[expectItem.key]).toEqual(expectItem.value);
     }
+  }
+
+  @then('should response be length {int}')
+  responseLength(length: number) {
+    expect(Array.isArray(this.response.data)).toBeTruthy();
+    expect(this.response.data).toHaveLength(length);
   }
 }

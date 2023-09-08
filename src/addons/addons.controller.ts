@@ -11,8 +11,15 @@ import {
   Param,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { MongooseError } from 'mongoose';
 import { AddonsService } from './addons.service';
 
@@ -25,51 +32,62 @@ export class AddonsController {
   @ApiResponse({
     status: HttpStatus.CREATED,
     description: 'Created addon',
-    type: () => CreateAddonDto,
+    type: () => AddonSchema,
   })
+  @ApiOperation({ summary: 'Create a addon' })
   @Post()
-  createAddon(@Body() doc: CreateAddonDto) {
-    return this.addonService.createAddon(doc.title, doc.price);
+  async createAddon(@Body() doc: CreateAddonDto) {
+    return await this.addonService.createAddon(doc.title, doc.price);
   }
 
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Get all addons',
     type: () => AddonSchema,
     isArray: true,
   })
   @Get()
-  getAllAddons() {
-    return this.addonService.getAllAddons();
+  @ApiQuery({ name: 'status', enum: ['active', 'all'] })
+  @ApiOperation({ summary: 'Get all addons' })
+  async getAllAddons(@Query('status') status: string = 'active') {
+    return await this.addonService.getAllAddons(status);
   }
 
+  @HttpCode(HttpStatus.OK)
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Get addon by Id',
     type: () => AddonSchema,
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
     description: 'Addon not found',
   })
+  @ApiOperation({
+    summary: 'Get a addon by id',
+  })
+  @ApiParam({ name: 'id', type: String, description: 'Addon ID (ObjectID)' })
   @Get(':id')
-  getAddon(@Param('id') id: string) {
-    const doc = this.addonService.getAddonById(id);
+  async getAddon(@Param('id') id: string) {
+    const doc = await this.addonService.getAddonById(id);
     if (!doc) {
       throw new HttpException('No addon found', HttpStatus.NOT_FOUND);
     }
     return doc;
   }
 
+  @HttpCode(HttpStatus.OK)
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Updated addon',
-    type: () => CreateAddonDto,
+    type: () => AddonSchema,
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
     description: 'Addon not found',
   })
+  @ApiOperation({
+    summary: 'Replace a addon by id',
+  })
+  @ApiParam({ name: 'id', type: String, description: 'Addon ID (ObjectID)' })
   @Put(':id')
   async updateAddon(@Param('id') id: string, @Body() doc: CreateAddonDto) {
     try {
@@ -86,12 +104,15 @@ export class AddonsController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiResponse({
     status: HttpStatus.NO_CONTENT,
-    description: 'Deleted addon',
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
     description: 'Addon not found',
   })
+  @ApiOperation({
+    summary: 'Delete a addon by id',
+  })
+  @ApiParam({ name: 'id', type: String, description: 'Addon ID (ObjectID)' })
   @Delete(':id')
   async deleteAddon(@Param('id') id: string) {
     try {

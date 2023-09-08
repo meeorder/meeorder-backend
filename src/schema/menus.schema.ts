@@ -1,5 +1,7 @@
+import { AddonSchema } from '@/schema/addons.schema';
+import { CategorySchema } from '@/schema/categories.schema';
 import { ApiProperty } from '@nestjs/swagger';
-import { modelOptions, Prop } from '@typegoose/typegoose';
+import { modelOptions, Prop, Ref } from '@typegoose/typegoose';
 import { Types } from 'mongoose';
 
 @modelOptions({
@@ -10,37 +12,47 @@ export class MenuSchema {
   @ApiProperty({ type: String, description: 'Menu ID' })
   _id: Types.ObjectId;
 
-  @Prop()
-  @ApiProperty()
+  @Prop({ default: null })
+  @ApiProperty({ type: String, nullable: true, description: 'Menu image' })
   image: string;
 
-  @Prop()
-  @ApiProperty()
+  @Prop({ required: true })
+  @ApiProperty({ type: String, description: 'Menu title' })
   title: string;
 
-  @Prop()
-  @ApiProperty()
-  description: string;
-
-  @Prop()
-  @ApiProperty()
-  price: number;
-
-  @Prop()
+  @Prop({ default: null })
   @ApiProperty({
     type: String,
+    nullable: true,
+    description: 'Menu description',
   })
-  category: Types.ObjectId;
+  description: string;
 
-  @Prop()
-  @ApiProperty()
-  addons: Types.ObjectId[];
+  @Prop({ required: true })
+  @ApiProperty({ type: Number, description: 'Menu price' })
+  price: number;
 
-  @Prop({ default: null })
-  @ApiProperty()
+  @Prop({ default: null, ref: () => CategorySchema })
+  @ApiProperty({
+    type: () => CategorySchema,
+    nullable: true,
+    description: 'Menu category',
+  })
+  category: Ref<CategorySchema>;
+
+  @Prop({ required: true, ref: () => AddonSchema, default: [] })
+  @ApiProperty({ description: 'Menu addons' })
+  addons: Ref<AddonSchema>[];
+
+  @Prop({ required: true, default: new Date() })
+  @ApiProperty({ type: Date, description: 'Menu publication date' })
   published_at: Date;
 
   @Prop({ default: null })
-  @ApiProperty()
+  @ApiProperty({
+    type: Date,
+    nullable: true,
+    description: 'Menu deletion date',
+  })
   deleted_at: Date;
 }

@@ -1,3 +1,4 @@
+import { CategoriesService } from '@/categories/categories.service';
 import { CreateMenuDto } from '@/menus/dto/menus.createMenu.dto';
 import { GetAllMenuResponseDto } from '@/menus/dto/menus.getAllMenuResponse.dto';
 import { GetMenuByIdResponseDto } from '@/menus/dto/menus.getMenuByIdReponse.dto';
@@ -11,6 +12,7 @@ export class MenusService {
   constructor(
     @InjectModel(MenuSchema)
     private readonly menuModel: ReturnModelType<typeof MenuSchema>,
+    private readonly categoriesService: CategoriesService,
   ) {}
 
   private readonly getAddonInfoScript = [
@@ -150,6 +152,12 @@ export class MenusService {
 
   async createMenu(menuData: CreateMenuDto): Promise<MenuSchema> {
     const createdMenu = await this.menuModel.create(menuData);
+    if (menuData.category) {
+      await this.categoriesService.pushMenuToCategory(
+        menuData.category,
+        createdMenu._id,
+      );
+    }
     return createdMenu;
   }
 

@@ -10,8 +10,8 @@ export class TablesService {
     private readonly tablesModel: ReturnModelType<typeof TablesSchema>,
   ) {}
 
-  async createTable(_id: number) {
-    return await this.tablesModel.create({ _id });
+  async createTable(title: string) {
+    return await this.tablesModel.create({ title });
   }
 
   async getTables() {

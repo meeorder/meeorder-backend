@@ -1,8 +1,8 @@
-import { OrderStatus } from '@/orders/enums/orders.status';
 import { OrdersSchema } from '@/schema/order.schema';
 import { SessionSchema } from '@/schema/session.schema';
+import { DataTable } from '@cucumber/cucumber';
 import { ReturnModelType } from '@typegoose/typegoose';
-import { after, binding, when } from 'cucumber-tsflow';
+import { after, binding, given, when } from 'cucumber-tsflow';
 import expect from 'expect';
 import { Workspace } from 'features/step-definitions/workspace';
 import { Types } from 'mongoose';
@@ -18,24 +18,34 @@ export class OrderStepDefination {
     this.sessionModel = this.workspace.datasource.getModel(SessionSchema);
   }
 
-  private orderId: string;
+  @given('orders')
+  async givenOrders(dt: DataTable) {
+    const orders = dt.hashes();
+
+    for (const order of orders) {
+      const doc = await this.orderModel.create({
+        session: new Types.ObjectId(order.session),
+        menu: new Types.ObjectId(order.menu),
+        addons: [new Types.ObjectId(order.addon ?? 1)],
+        additional_info: order.additional_info,
+        _id: new Types.ObjectId(order._id),
+      });
+
+      expect(doc).toBeDefined();
+    }
+  }
 
   @when('create order')
-  async createOrder() {
-    await this.sessionModel.create({
-      table: 1,
-      uid: null,
-      _id: new Types.ObjectId('64cfe636970bec4e46724a45'),
-      finished_at: null,
-    });
+  async createOrder(dt: DataTable) {
+    const order = dt.hashes()[0];
     this.workspace.response = await this.workspace.axiosInstance.post(
       '/orders',
       {
-        session: '64cfe636970bec4e46724a45',
+        session: order.session,
         orders: [
           {
-            menu: '64cfb7512219122e426138e4',
-            addons: ['5f9d88b9c3b9c3b9c3b9c3bc'],
+            menu: order.menu,
+            addons: [order.addon],
             additional_info: 'info',
           },
         ],
@@ -46,29 +56,26 @@ export class OrderStepDefination {
   @when('get all orders')
   async getAllOrders() {
     this.workspace.response = await this.workspace.axiosInstance.get('/orders');
-    this.orderId = this.workspace.response.data[0]._id;
-    expect(this.workspace.response.data.length).toBe(1);
-    expect(this.workspace.response.data[0].status).toBe(OrderStatus.InQueue);
   }
 
-  @when('update order to preparing')
-  async updateOrderStatus() {
+  @when('update order {string} to preparing')
+  async updateOrderStatus(order: string) {
     this.workspace.response = await this.workspace.axiosInstance.patch(
-      `/orders/${this.orderId}/preparing`,
+      `/orders/${order}/preparing`,
     );
   }
 
-  @when('update order to ready to serve')
-  async updateOrderStatusToReady() {
+  @when('update order {string} to ready to serve')
+  async updateOrderStatusToReady(order: string) {
     this.workspace.response = await this.workspace.axiosInstance.patch(
-      `/orders/${this.orderId}/ready_to_serve`,
+      `/orders/${order}/ready_to_serve`,
     );
   }
 
-  @when('update order to done')
-  async updateOrderStatusToDone() {
+  @when('update order {string} to done')
+  async updateOrderStatusToDone(order: string) {
     this.workspace.response = await this.workspace.axiosInstance.patch(
-      `/orders/${this.orderId}/done`,
+      `/orders/${order}/done`,
     );
   }
 

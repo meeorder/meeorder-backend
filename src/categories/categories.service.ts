@@ -5,7 +5,6 @@ import { Injectable } from '@nestjs/common';
 import { ReturnModelType } from '@typegoose/typegoose';
 import { Types, mongo } from 'mongoose';
 import { InjectModel } from 'nest-typegoose';
-
 @Injectable()
 export class CategoriesService {
   constructor(
@@ -41,8 +40,8 @@ export class CategoriesService {
     return doc;
   }
 
-  deleteCategory(id: string): Promise<mongo.DeleteResult> {
-    return this.categoryModel.deleteOne({ _id: id }).exec();
+  async deleteCategory(id: string): Promise<mongo.DeleteResult> {
+    return await this.categoryModel.deleteOne({ _id: id }).exec();
   }
 
   async updateRank(rankBody: RankDto) {
@@ -54,5 +53,16 @@ export class CategoriesService {
       },
     }));
     await this.categoryModel.bulkWrite(updates);
+  }
+
+  async pushMenuToCategory(categoryId: Types.ObjectId, menuId: Types.ObjectId) {
+    const doc = await this.categoryModel
+      .findByIdAndUpdate(
+        categoryId,
+        { $push: { menus: menuId } },
+        { new: true },
+      )
+      .exec();
+    return doc;
   }
 }

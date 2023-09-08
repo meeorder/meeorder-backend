@@ -11,13 +11,22 @@ export class AddonSchema {
   _id: Types.ObjectId;
 
   @Prop({ required: true })
-  @ApiProperty()
+  @ApiProperty({ type: String, description: 'Addon Title' })
   title: string;
 
   @Prop({ required: true })
-  @ApiProperty()
+  @ApiProperty({ type: Number, description: 'Addon Price' })
   price: number;
 
   @Prop({ default: null })
+  @ApiProperty({
+    type: Date,
+    nullable: true,
+    description: 'Addon deletion date',
+  })
   deleted_at: Date;
+
+  @Prop({ default: true })
+  @ApiProperty({ type: Boolean, description: 'Addon status' })
+  available: boolean;
 }

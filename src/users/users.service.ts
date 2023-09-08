@@ -1,8 +1,7 @@
 import { UserRole, UserSchema } from '@/schema/users.schema';
 import { CreateUserDto } from '@/users/dto/user.create.dto';
-import { CreateUserResponseDto } from '@/users/dto/user.response.dto';
 import { Injectable } from '@nestjs/common';
-import { ReturnModelType } from '@typegoose/typegoose';
+import { DocumentType, ReturnModelType } from '@typegoose/typegoose';
 import * as argon2 from 'argon2';
 import { Types } from 'mongoose';
 import { InjectModel } from 'nest-typegoose';
@@ -16,32 +15,33 @@ export class UsersService {
 
   async createUser(
     createUserDto: CreateUserDto,
-  ): Promise<CreateUserResponseDto> {
+  ): Promise<DocumentType<UserSchema>> {
     const hashedPassword = await argon2.hash(createUserDto.password);
     const createdUser = await this.userModel.create({
       username: createUserDto.username,
       password: hashedPassword,
-      role: UserRole[createUserDto.role],
+      role: createUserDto.role,
     });
-    return {
-      _id: createdUser._id,
-      username: createdUser.username,
-      role: createdUser.role,
-    };
+    return createdUser;
   }
 
   async getUserByUsername(username: string) {
-    return await this.userModel.findOne({ username }).exec();
+    return await this.userModel
+      .findOne({ username })
+      .select('+password')
+      .exec();
+  }
+
+  getUserById(id: Types.ObjectId) {
+    return this.userModel.findById(id).exec();
   }
 
   async getUsers(role: string = undefined) {
     if (!role) {
-      return await this.userModel
-        .find({ deleted_at: null }, { password: false })
-        .exec();
+      return await this.userModel.find({ deleted_at: null }).exec();
     }
     return await this.userModel
-      .find({ role: UserRole[role], deleted_at: null }, { password: false })
+      .find({ role: UserRole[role], deleted_at: null })
       .exec();
   }
 

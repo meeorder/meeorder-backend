@@ -1,7 +1,7 @@
+import { MenuSchema } from '@/schema/menus.schema';
 import { ApiProperty } from '@nestjs/swagger';
-import { Prop, modelOptions } from '@typegoose/typegoose';
+import { Prop, Ref, modelOptions } from '@typegoose/typegoose';
 import { Types } from 'mongoose';
-
 @modelOptions({ schemaOptions: { collection: 'categories' } })
 export class CategorySchema {
   @Prop({ auto: true })
@@ -9,14 +9,18 @@ export class CategorySchema {
   _id: Types.ObjectId;
 
   @Prop({ required: true })
-  @ApiProperty()
+  @ApiProperty({ type: String, description: 'Category title', required: true })
   title: string;
 
-  @Prop({ default: [] })
-  @ApiProperty({ type: String, isArray: true })
-  menus: Types.ObjectId[];
+  @Prop({ default: [], ref: () => MenuSchema })
+  @ApiProperty({ type: String, description: 'List of Menu', isArray: true })
+  menus: Ref<MenuSchema>[];
 
-  @Prop({ default: -1 })
-  @ApiProperty()
+  @Prop({ default: null })
+  @ApiProperty({
+    type: Number,
+    description: 'Category rank',
+    nullable: true,
+  })
   rank: number;
 }

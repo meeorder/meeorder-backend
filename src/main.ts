@@ -1,3 +1,4 @@
+import fastifyCookie from '@fastify/cookie';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
@@ -8,7 +9,6 @@ import {
 import { AppModule } from './app.module';
 import { Config } from './config';
 import { SwaggerBuilder } from './document';
-import fastifyCookie from '@fastify/cookie';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -20,7 +20,9 @@ async function bootstrap() {
     type: VersioningType.URI,
     prefix: 'api/v',
   });
-  app.useGlobalPipes(new ValidationPipe({ transform: true }));
+  app.useGlobalPipes(
+    new ValidationPipe({ transform: true, forbidNonWhitelisted: true }),
+  );
 
   await app.register(fastifyCookie, {
     secret: 'my-secret', // for cookies signature
@@ -30,6 +32,7 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   app.enableCors({
     origin: new RegExp('(.*)'),
+    credentials: true,
   });
   await app.listen(configService.get(Config.PORT), '0.0.0.0');
 }

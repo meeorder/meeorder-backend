@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString, IsUrl } from 'class-validator';
 import { Types } from 'mongoose';
 export class CreateCouponDto {
   @ApiProperty({ type: String, description: 'Coupon Code', required: true })
@@ -16,6 +16,11 @@ export class CreateCouponDto {
   @IsOptional()
   description?: string;
 
+  @ApiProperty({ type: String, description: 'Coupon image', required: false })
+  @IsUrl()
+  @IsOptional()
+  image?: string;
+
   @ApiProperty({
     type: String,
     isArray: true,
@@ -27,23 +32,30 @@ export class CreateCouponDto {
 
   @ApiProperty({
     type: Number,
-    description: 'Discount Price of Coupon',
+    description: 'Discount price of Coupon',
     required: true,
   })
   @IsNumber()
-  price: number;
+  discount: number;
 
   @ApiProperty({
     type: Number,
-    description: 'Amount of Coupon',
-    required: false,
+    description: 'Quota of the coupon',
+    required: true,
   })
   @IsNumber()
-  @IsOptional()
-  amount: number;
+  quota: number;
 
   @ApiProperty({
     type: Number,
+    description: 'Number of coupons that have been redeemed',
+    required: false,
+  })
+  @IsOptional()
+  redeemed?: number;
+
+  @ApiProperty({
+    type: Boolean,
     description: 'Coupon status',
     required: true,
   })

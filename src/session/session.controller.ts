@@ -1,10 +1,14 @@
 import { ParseMongoIdPipe } from '@/pipes/mongo-id.pipe';
 import { SessionSchema } from '@/schema/session.schema';
 import { CreateSessionDto } from '@/session/dto/create-session.dto';
+import { ExampleCouponDto } from '@/session/dto/example-coupon.dto';
 import { OrdersListDto } from '@/session/dto/listorders.dto';
+import { SessionUserUpdateDto } from '@/session/dto/update-sessionUser.dto';
+import { UpdateSessionCouponDto } from '@/session/dto/updatecoupon.dto';
 import { SessionService } from '@/session/session.service';
 import {
   Body,
+  ConflictException,
   Controller,
   Delete,
   Get,
@@ -16,7 +20,13 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { MongooseError, Types } from 'mongoose';
 
 @Controller({ path: 'sessions', version: '1' })
@@ -27,9 +37,11 @@ export class SessionController {
   @ApiQuery({ name: 'finished', type: Boolean, required: false })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Sessions list',
     type: () => SessionSchema,
     isArray: true,
+  })
+  @ApiOperation({
+    summary: 'Get all sessions',
   })
   @Get()
   getSessions(@Query('finished') finished?: boolean) {
@@ -41,6 +53,13 @@ export class SessionController {
     status: HttpStatus.OK,
     description: 'Session',
     type: () => SessionSchema,
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Session not found',
+  })
+  @ApiOperation({
+    summary: 'Get a session by id',
   })
   @Get(':id')
   async getSession(@Param('id', new ParseMongoIdPipe()) id: Types.ObjectId) {
@@ -60,9 +79,14 @@ export class SessionController {
     status: HttpStatus.NOT_FOUND,
     description: 'No session found in the table',
   })
-  @ApiParam({ name: 'id', type: Number, description: 'Table ID' })
+  @ApiOperation({
+    summary: 'Get a session by table id',
+  })
+  @ApiParam({ name: 'id', type: String, description: 'Table ID' })
   @Get('table/:id')
-  async getSessionByTable(@Param('id') id: number) {
+  async getSessionByTable(
+    @Param('id', new ParseMongoIdPipe()) id: Types.ObjectId,
+  ) {
     const doc = await this.sessionService.getSessionByTable(id);
     if (!doc) {
       throw new HttpException(
@@ -79,11 +103,18 @@ export class SessionController {
     description: 'Session created',
     type: () => SessionSchema,
   })
+  @ApiResponse({
+    status: HttpStatus.CONFLICT,
+    description: 'Session already exists',
+  })
+  @ApiOperation({
+    summary: 'Create a session',
+  })
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async createSession(@Body() dto: CreateSessionDto) {
     await this.sessionService.validateTableHasSession(dto.table);
-    const doc = await this.sessionService.createSession(dto.table, dto.uid);
+    const doc = await this.sessionService.createSession(dto.table);
     return doc;
   }
 
@@ -96,6 +127,9 @@ export class SessionController {
     description: 'Session not found',
   })
   @ApiParam({ name: 'id', type: String, description: 'Session ID (ObjectId)' })
+  @ApiOperation({
+    summary: 'Finish a session',
+  })
   @Patch(':id/finish')
   @HttpCode(HttpStatus.NO_CONTENT)
   async finishSession(@Param('id', new ParseMongoIdPipe()) id: Types.ObjectId) {
@@ -119,6 +153,9 @@ export class SessionController {
     description: 'Session not found',
   })
   @ApiParam({ name: 'id', type: String, description: 'Session ID (ObjectId)' })
+  @ApiOperation({
+    summary: 'Delete a session by id',
+  })
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteSession(@Param('id', new ParseMongoIdPipe()) id: Types.ObjectId) {
@@ -139,10 +176,75 @@ export class SessionController {
     type: () => OrdersListDto,
     status: HttpStatus.OK,
   })
+  @ApiOperation({
+    summary: 'Get orders by session',
+  })
   @HttpCode(HttpStatus.OK)
   async getOrdersBySession(
     @Param('id', new ParseMongoIdPipe()) id: Types.ObjectId,
   ) {
     return await this.sessionService.listOrdersBySession(id);
+  }
+
+  @ApiResponse({
+    description: 'Updated session user',
+    type: () => SessionUserUpdateDto,
+    status: HttpStatus.OK,
+  })
+  @ApiOperation({
+    summary: 'Updated session user',
+  })
+  @HttpCode(HttpStatus.OK)
+  @ApiParam({ name: 'id', type: String, description: 'Session ID (ObjectId)' })
+  @Patch(':id/user')
+  async updateSessionUser(
+    @Param('id', new ParseMongoIdPipe()) id: Types.ObjectId,
+    @Body() doc: SessionUserUpdateDto,
+  ) {
+    return await this.sessionService.updateSessionUser(id, doc);
+  }
+
+  @ApiResponse({
+    description: 'Get all redeemable coupon',
+    type: () => ExampleCouponDto,
+    status: HttpStatus.OK,
+  })
+  @ApiOperation({
+    summary: 'Get all redeemable coupon',
+  })
+  @HttpCode(HttpStatus.OK)
+  @ApiParam({ name: 'id', type: String, description: 'Session ID (ObjectId)' })
+  @Get(':id/coupon/all')
+  async getCoupons(@Param('id', new ParseMongoIdPipe()) id: Types.ObjectId) {
+    return await this.sessionService.getAllCoupon(id);
+  }
+
+  @ApiResponse({
+    description: 'Coupon is attached to session',
+    status: HttpStatus.NO_CONTENT,
+  })
+  @ApiResponse({
+    status: HttpStatus.CONFLICT,
+    description: 'Resource conflict (coupon quota has been reached)',
+  })
+  @ApiOperation({
+    summary: 'Update coupon in session',
+  })
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiParam({ name: 'id', type: String, description: 'Session ID (ObjectId)' })
+  @Patch(':id/coupon')
+  async updateSessionCoupon(
+    @Param('id', new ParseMongoIdPipe()) id: Types.ObjectId,
+    @Body() doc: UpdateSessionCouponDto,
+  ) {
+    try {
+      await this.sessionService.updateSessionCoupon(id, doc);
+    } catch (e) {
+      if (e instanceof ConflictException) {
+        throw new HttpException(e.message, HttpStatus.CONFLICT);
+      } else {
+        throw e;
+      }
+    }
   }
 }

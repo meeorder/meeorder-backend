@@ -1,6 +1,7 @@
 import { ParseMongoIdPipe } from '@/pipes/mongo-id.pipe';
 import { UserSchema } from '@/schema/users.schema';
 import { CreateUserDto } from '@/users/dto/user.create.dto';
+import { UserResponseDto } from '@/users/dto/user.response.dto';
 import { UsersService } from '@/users/users.service';
 import {
   Body,
@@ -12,7 +13,13 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { ApiBody, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Types } from 'mongoose';
 
 @Controller({ path: 'users', version: '1' })
@@ -23,9 +30,14 @@ export class UsersController {
   @Post()
   @ApiBody({ type: CreateUserDto })
   @ApiResponse({ status: HttpStatus.CREATED, description: 'Create user' })
+  @ApiOperation({
+    summary: 'Create user (for Owner)',
+  })
   @HttpCode(HttpStatus.CREATED)
   async createUser(@Body() createUserDto: CreateUserDto) {
-    return await this.usersService.createUser(createUserDto);
+    const doc = await this.usersService.createUser(createUserDto);
+
+    return UserResponseDto.fromDocument(doc);
   }
 
   @Get()
@@ -40,6 +52,9 @@ export class UsersController {
     description: 'Get users by roles',
     type: () => UserSchema,
     isArray: true,
+  })
+  @ApiOperation({
+    summary: 'Get users',
   })
   @HttpCode(HttpStatus.OK)
   async getUsers(@Query('role') role: string) {
@@ -56,12 +71,15 @@ export class UsersController {
   @ApiResponse({
     status: HttpStatus.NO_CONTENT,
   })
+  @ApiOperation({
+    summary: 'Delete user',
+  })
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteUser(@Query('id', new ParseMongoIdPipe()) id: Types.ObjectId) {
     await this.usersService.deleteUser(id);
   }
 
-  @Post('/reset_password')
+  @Post('/reset/password')
   @ApiQuery({
     name: 'id',
     type: String,
@@ -70,6 +88,9 @@ export class UsersController {
   })
   @ApiResponse({
     status: HttpStatus.NO_CONTENT,
+  })
+  @ApiOperation({
+    summary: 'Reset user password',
   })
   @HttpCode(HttpStatus.NO_CONTENT)
   async updateUser(@Query('id', new ParseMongoIdPipe()) id: Types.ObjectId) {

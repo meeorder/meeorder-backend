@@ -1,18 +1,22 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsNumber, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { Types } from 'mongoose';
-
 export class UpdateCategoryDto {
-  @ApiProperty()
+  @ApiProperty({
+    type: String,
+    description: 'Category title',
+    required: false,
+  })
   @IsString()
-  title: string;
+  @IsNotEmpty()
+  @IsOptional()
+  title?: string;
 
-  @ApiProperty({ type: String, isArray: true })
+  @ApiProperty({ type: String, isArray: true, required: false })
   @Transform(({ value }) => value.map((v) => new Types.ObjectId(v)))
-  menus: Types.ObjectId[];
-
-  @ApiProperty()
-  @IsNumber()
-  rank: number;
+  @IsOptional()
+  @IsNotEmpty()
+  @IsArray()
+  menus?: Types.ObjectId[];
 }

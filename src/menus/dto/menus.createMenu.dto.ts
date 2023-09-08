@@ -2,25 +2,27 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { Types } from 'mongoose';
 export class CreateMenuDto {
-  @ApiProperty()
+  @ApiProperty({ type: String, nullable: true, description: 'Menu Image' })
   image: string;
 
-  @ApiProperty()
+  @ApiProperty({ type: String, required: true, description: 'Menu Title' })
   title: string;
-
-  @ApiProperty()
-  description: string;
-
-  @ApiProperty()
-  price: number;
 
   @ApiProperty({
     type: String,
+    nullable: true,
+    description: 'Menu Description',
   })
-  @Transform(({ value }) => new Types.ObjectId(value))
-  category: Types.ObjectId;
+  description: string;
 
-  @ApiProperty()
+  @ApiProperty({ type: Number, required: true, description: 'Menu Price' })
+  price: number;
+
+  @ApiProperty({ type: String, description: 'Menu Category' })
+  @Transform(({ value }) => new Types.ObjectId(value))
+  category?: Types.ObjectId;
+
+  @ApiProperty({ type: String, isArray: true, description: 'Menu Addons' })
   @Transform(({ value }) => value.map((v) => new Types.ObjectId(v)))
   addons: Types.ObjectId[];
 }

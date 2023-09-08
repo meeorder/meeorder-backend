@@ -1,3 +1,4 @@
+import { DisableAddonsDto } from '@/orders/dto/disable.addons.dto';
 import { CreateOrderDto } from '@/orders/dto/order.create.dto';
 import { OrderGetDto } from '@/orders/dto/order.get.dto';
 import { OrderStatus } from '@/orders/enums/orders.status';
@@ -12,7 +13,13 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { ApiBody, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Types } from 'mongoose';
 import { OrdersService } from './orders.service';
 
@@ -22,8 +29,10 @@ export class OrdersController {
   constructor(private ordersService: OrdersService) {}
 
   @Post()
-  @ApiBody({ type: () => CreateOrderDto })
   @ApiResponse({ status: HttpStatus.CREATED, description: 'Create order' })
+  @ApiOperation({
+    summary: 'Create order',
+  })
   @HttpCode(HttpStatus.CREATED)
   async createOrder(@Body() createOrderDto: CreateOrderDto) {
     return await this.ordersService.createOrder(createOrderDto);
@@ -32,9 +41,11 @@ export class OrdersController {
   @Get()
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Get all orders',
     type: () => OrderGetDto,
     isArray: true,
+  })
+  @ApiOperation({
+    summary: 'Get all orders',
   })
   @HttpCode(HttpStatus.OK)
   async getOrders() {
@@ -46,6 +57,9 @@ export class OrdersController {
   @ApiResponse({
     status: HttpStatus.NO_CONTENT,
     description: 'Set order status to preparing',
+  })
+  @ApiOperation({
+    summary: 'Change order status to preparing',
   })
   @HttpCode(HttpStatus.NO_CONTENT)
   async preparing(@Param('id', new ParseMongoIdPipe()) id: Types.ObjectId) {
@@ -61,6 +75,9 @@ export class OrdersController {
     status: HttpStatus.NO_CONTENT,
     description: 'Set order status to ready to serve',
   })
+  @ApiOperation({
+    summary: 'Change order status to ready to serve',
+  })
   @HttpCode(HttpStatus.NO_CONTENT)
   async readyToServe(@Param('id', new ParseMongoIdPipe()) id: Types.ObjectId) {
     await this.ordersService.setStatus(
@@ -74,6 +91,9 @@ export class OrdersController {
   @ApiResponse({
     status: HttpStatus.NO_CONTENT,
     description: 'Set order status to done',
+  })
+  @ApiOperation({
+    summary: 'Change order status to done',
   })
   @HttpCode(HttpStatus.NO_CONTENT)
   async done(@Param('id', new ParseMongoIdPipe()) id: Types.ObjectId) {
@@ -89,8 +109,29 @@ export class OrdersController {
     status: HttpStatus.NO_CONTENT,
     description: 'Cancel order',
   })
+  @ApiOperation({
+    summary: 'Cancel order',
+  })
   @HttpCode(HttpStatus.NO_CONTENT)
   async cancel(@Param('id', new ParseMongoIdPipe()) id: Types.ObjectId) {
     await this.ordersService.cancel(new Types.ObjectId(id));
+  }
+
+  @Patch('/:id/cancel/addons')
+  @ApiParam({ name: 'id', type: String, description: 'Session ID (ObjectId)' })
+  @ApiBody({ type: DisableAddonsDto, description: 'List of addons to disable' })
+  @ApiResponse({
+    status: HttpStatus.NO_CONTENT,
+    description: 'Cancel order with trigger disable addons',
+  })
+  @ApiOperation({
+    summary: 'Cancel order and disable addons',
+  })
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async cancelByAddons(
+    @Param('id', new ParseMongoIdPipe()) id: Types.ObjectId,
+    @Body() addonsList: DisableAddonsDto,
+  ) {
+    await this.ordersService.cancelByAddons(id, addonsList);
   }
 }

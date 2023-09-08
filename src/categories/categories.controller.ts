@@ -12,13 +12,11 @@ import {
   Param,
   Patch,
   Post,
-  Put,
 } from '@nestjs/common';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { MongooseError } from 'mongoose';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/category.createCategory.dto';
-
 @Controller({ path: 'categories', version: '1' })
 @ApiTags('categories')
 export class CategoriesController {
@@ -28,7 +26,10 @@ export class CategoriesController {
   @ApiResponse({
     status: HttpStatus.CREATED,
     description: 'Created new category',
-    type: () => CreateCategoryDto,
+    type: () => CategorySchema,
+  })
+  @ApiOperation({
+    summary: 'Create a category',
   })
   @Post()
   createCategory(@Body() doc: CreateCategoryDto) {
@@ -37,9 +38,11 @@ export class CategoriesController {
 
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Get all categories',
     type: () => CategorySchema,
     isArray: true,
+  })
+  @ApiOperation({
+    summary: 'Get all categories',
   })
   @Get()
   getAllCategories() {
@@ -48,12 +51,19 @@ export class CategoriesController {
 
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Get category by ID',
     type: () => CategorySchema,
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
     description: 'Category not found',
+  })
+  @ApiOperation({
+    summary: 'Get a category by id',
+  })
+  @ApiParam({
+    name: 'id',
+    type: String,
+    description: 'Category ID (ObjectID)',
   })
   @Get(':id')
   getCategory(@Param('id') id: string) {
@@ -67,19 +77,27 @@ export class CategoriesController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Update category',
-    type: () => UpdateCategoryDto,
+    type: () => CategorySchema,
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
     description: 'Category not found',
   })
-  @Put(':id')
+  @ApiOperation({
+    summary: 'Replace a category by id',
+  })
+  @ApiParam({
+    name: 'id',
+    type: String,
+    description: 'Category ID (ObjectID)',
+  })
+  @Patch(':id')
   async updateCategory(
     @Param('id') id: string,
     @Body() doc: UpdateCategoryDto,
   ) {
     try {
-      await this.categoriesService.updateCategory(id, doc);
+      return await this.categoriesService.updateCategory(id, doc);
     } catch (e) {
       if (e instanceof MongooseError) {
         throw new HttpException('Category not found', HttpStatus.NOT_FOUND);
@@ -92,11 +110,18 @@ export class CategoriesController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiResponse({
     status: HttpStatus.NO_CONTENT,
-    description: 'Deleted category',
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
     description: 'Category not found',
+  })
+  @ApiOperation({
+    summary: 'Delete a category by id',
+  })
+  @ApiParam({
+    name: 'id',
+    type: String,
+    description: 'Category ID (ObjectID)',
   })
   @Delete(':id')
   async deleteCategory(@Param('id') id: string) {
@@ -115,6 +140,10 @@ export class CategoriesController {
     status: HttpStatus.NO_CONTENT,
     description: 'Change category rank',
   })
+  @ApiOperation({
+    summary: "order the categories' rank",
+  })
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Patch('rank')
   async updateRank(@Body() doc: RankDto) {
     await this.categoriesService.updateRank(doc);

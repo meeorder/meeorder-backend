@@ -1,3 +1,4 @@
+import { CouponSchema } from '@/schema/coupons.schema';
 import {
   Body,
   Controller,
@@ -6,10 +7,10 @@ import {
   HttpCode,
   HttpStatus,
   Param,
-  Patch,
   Post,
+  Patch as Put,
 } from '@nestjs/common';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CouponsService } from './coupons.service';
 import { CreateCouponDto } from './dto/create-coupon.dto';
 import { UpdateCouponDto } from './dto/update-coupon.dto';
@@ -22,7 +23,10 @@ export class CouponsController {
   @ApiResponse({
     status: HttpStatus.CREATED,
     description: 'Coupon created',
-    type: () => CreateCouponDto,
+    type: () => CouponSchema,
+  })
+  @ApiOperation({
+    summary: 'Create a coupon',
   })
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -32,8 +36,11 @@ export class CouponsController {
 
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Get all coupons',
-    type: () => [CreateCouponDto],
+    type: () => CouponSchema,
+    isArray: true,
+  })
+  @ApiOperation({
+    summary: 'Get all coupons (Owner)',
   })
   @Get()
   @HttpCode(HttpStatus.OK)
@@ -43,8 +50,10 @@ export class CouponsController {
 
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Get all coupons',
-    type: () => CreateCouponDto,
+    type: () => CouponSchema,
+  })
+  @ApiOperation({
+    summary: 'Get a coupon by id',
   })
   @Get(':id')
   @HttpCode(HttpStatus.OK)
@@ -55,9 +64,12 @@ export class CouponsController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Coupon updated',
-    type: () => CreateCouponDto,
+    type: () => CouponSchema,
   })
-  @Patch(':id')
+  @ApiOperation({
+    summary: 'Update a coupon by id',
+  })
+  @Put(':id')
   @HttpCode(HttpStatus.OK)
   async update(
     @Param('id') id: string,
@@ -69,6 +81,9 @@ export class CouponsController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Coupon deleted',
+  })
+  @ApiOperation({
+    summary: 'Delete a coupon by id',
   })
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
