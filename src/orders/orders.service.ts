@@ -133,7 +133,7 @@ export class OrdersService {
   async getOrdersBySession(session: Types.ObjectId) {
     return await this.orderModel
       .find({ session })
-      .populate('menu addons')
+      .populate('menu addons status')
       .exec();
   }
 }
