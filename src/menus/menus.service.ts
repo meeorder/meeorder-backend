@@ -15,7 +15,7 @@ export class MenusService {
     private readonly categoriesService: CategoriesService,
   ) {}
 
-  private readonly getAddonInfoScript = [
+  private readonly getAddonInfoAggregation = [
     {
       $unwind: {
         path: '$addons',
@@ -58,7 +58,7 @@ export class MenusService {
     },
   ];
 
-  private readonly groupCategoryScript = [
+  private readonly groupCategoryAggregation = [
     {
       $lookup: {
         from: 'categories',
@@ -131,8 +131,8 @@ export class MenusService {
     const script = [
       { $match: { _id: { $exists: true } } },
       { $match: scriptForStatus },
-      ...this.getAddonInfoScript,
-      ...this.groupCategoryScript,
+      ...this.getAddonInfoAggregation,
+      ...this.groupCategoryAggregation,
     ];
 
     const result = await this.menuModel.aggregate(script).exec();
@@ -140,14 +140,12 @@ export class MenusService {
   }
 
   async findOneMenu(id: string): Promise<GetMenuByIdResponseDto> {
-    const script = [
-      {
-        $match: { _id: new Types.ObjectId(id) },
-      },
-      ...this.getAddonInfoScript,
-    ];
-    const menu = await this.menuModel.aggregate(script).exec();
-    return menu[0];
+    const result = await this.menuModel
+      .findById(id)
+      .populate('addons')
+      .populate('category')
+      .exec();
+    return <GetMenuByIdResponseDto>result;
   }
 
   async createMenu(menuData: CreateMenuDto): Promise<MenuSchema> {
@@ -172,10 +170,10 @@ export class MenusService {
 
   async deleteManyMenus(ids: Types.ObjectId[]) {
     const currentDate = new Date();
-    const deleteManyScript = {
+    const deleteManyAggregation = {
       _id: { $in: ids },
     };
-    await this.menuModel.updateMany(deleteManyScript, {
+    await this.menuModel.updateMany(deleteManyAggregation, {
       deleted_at: currentDate,
     });
   }
