@@ -149,6 +149,11 @@ export class MenusService {
   }
 
   async createMenu(menuData: CreateMenuDto): Promise<MenuSchema> {
+    if (!menuData.category) {
+      // If category is not exist, set category to 'other' category
+      menuData.category = this.categoriesService.othersCategoryID;
+    }
+
     const createdMenu = await this.menuModel.create(menuData);
     if (menuData.category) {
       await this.categoriesService.pushMenuToCategory(
@@ -156,12 +161,19 @@ export class MenusService {
         createdMenu._id,
       );
     }
+
     return createdMenu;
   }
 
   async updateOne(id: string, menuData: CreateMenuDto) {
+    if (!menuData.category) {
+      // If category is not exist, set category to 'other' category
+      menuData.category = this.categoriesService.othersCategoryID;
+    }
+
     const oldMenu = await this.menuModel.findByIdAndUpdate(id, menuData).exec();
-    if (oldMenu.category._id === menuData.category) {
+
+    if (oldMenu.category._id.equals(menuData.category)) {
       return;
     }
 
@@ -170,12 +182,8 @@ export class MenusService {
       oldMenu._id,
     );
 
-    if (!menuData.category) {
-      return;
-    }
-
     await this.categoriesService.pushMenuToCategory(
-      menuData.category._id,
+      menuData.category,
       oldMenu._id,
     );
   }

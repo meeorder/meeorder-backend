@@ -12,6 +12,10 @@ export class CategoriesService {
     private readonly categoryModel: ReturnModelType<typeof CategorySchema>,
   ) {}
 
+  public readonly othersCategoryID = new Types.ObjectId(
+    '64ef35bbe6c66d526b0981f0',
+  );
+
   async createCategory(title: string) {
     return await this.categoryModel.create({
       title,

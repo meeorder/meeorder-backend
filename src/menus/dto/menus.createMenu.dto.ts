@@ -19,7 +19,6 @@ export class CreateMenuDto {
   price: number;
 
   @ApiProperty({ type: String, description: 'Menu Category' })
-  @Transform(({ value }) => new Types.ObjectId(value))
   category?: Types.ObjectId;
 
   @ApiProperty({ type: String, isArray: true, description: 'Menu Addons' })
