@@ -170,10 +170,10 @@ export class MenusService {
 
   async deleteManyMenus(ids: Types.ObjectId[]) {
     const currentDate = new Date();
-    const deleteManyAggregation = {
+    const deleteManyQuery = {
       _id: { $in: ids },
     };
-    await this.menuModel.updateMany(deleteManyAggregation, {
+    await this.menuModel.updateMany(deleteManyQuery, {
       deleted_at: currentDate,
     });
   }
