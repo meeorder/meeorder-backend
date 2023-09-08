@@ -17,7 +17,7 @@
       "env": {
         "NODE_ENV": "development",
         "PORT": "4000",
-        "MONGO_URI": "mongodb://localhost:27017",
+        "MONGO_URI": "mongodb+srv://meeorder-ku:J6MqU8xBePxMG35O@meeorder.lzavilq.mongodb.net/?authMechanism=DEFAULT",
         "MONGO_DB_NAME": "meeorder",
         "MEEORDER_PRIVATE_KEY": "-----BEGIN EC PARAMETERS-----\nBggqhkjOPQMBBw==\n-----END EC PARAMETERS-----\n-----BEGIN EC PRIVATE KEY-----\nMHcCAQEEIJLdEnQOssaVeoDOR+F+L5TFfYWkCgxkv5fqMsOQbLYpoAoGCCqGSM49\nAwEHoUQDQgAEgSZ90gdltEHCGEelvcfc5KAZJrBJ25skRaOloMdi43Y3BJDFxvfD\nxBrItXlZ2+UYPIOTbCiPLv5qMwwM/2SRgQ==\n-----END EC PRIVATE KEY-----",
         "MEEORDER_PUBLIC_KEY": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEgSZ90gdltEHCGEelvcfc5KAZJrBJ\n25skRaOloMdi43Y3BJDFxvfDxBrItXlZ2+UYPIOTbCiPLv5qMwwM/2SRgQ==\n-----END PUBLIC KEY-----"
@@ -36,7 +36,7 @@
       "env": {
         "NODE_ENV": "development",
         "PORT": "4000",
-        "MONGO_URI": "mongodb://localhost:27017",
+        "MONGO_URI": "mongodb+srv://meeorder-ku:J6MqU8xBePxMG35O@meeorder.lzavilq.mongodb.net/?authMechanism=DEFAULT",
         "MONGO_DB_NAME": "meeorder",
         "MEEORDER_PRIVATE_KEY": "-----BEGIN EC PARAMETERS-----\nBggqhkjOPQMBBw==\n-----END EC PARAMETERS-----\n-----BEGIN EC PRIVATE KEY-----\nMHcCAQEEIJLdEnQOssaVeoDOR+F+L5TFfYWkCgxkv5fqMsOQbLYpoAoGCCqGSM49\nAwEHoUQDQgAEgSZ90gdltEHCGEelvcfc5KAZJrBJ25skRaOloMdi43Y3BJDFxvfD\nxBrItXlZ2+UYPIOTbCiPLv5qMwwM/2SRgQ==\n-----END EC PRIVATE KEY-----",
         "MEEORDER_PUBLIC_KEY": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEgSZ90gdltEHCGEelvcfc5KAZJrBJ\n25skRaOloMdi43Y3BJDFxvfDxBrItXlZ2+UYPIOTbCiPLv5qMwwM/2SRgQ==\n-----END PUBLIC KEY-----"
