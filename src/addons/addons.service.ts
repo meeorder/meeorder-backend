@@ -1,5 +1,4 @@
 import { CreateAddonDto } from '@/addons/dto/addon.dto';
-import { DisableAddonsDto } from '@/orders/dto/disable.addons.dto';
 import { AddonSchema } from '@/schema/addons.schema';
 import { Injectable } from '@nestjs/common';
 import { ReturnModelType } from '@typegoose/typegoose';
@@ -40,14 +39,12 @@ export class AddonsService {
       .exec();
   }
 
-  async disableAddons(disableAddonsList: DisableAddonsDto) {
+  async disableAddons(addons: Types.ObjectId[]) {
     await this.addonModel
       .updateMany(
         {
           _id: {
-            $in: disableAddonsList.addonsList.map((id) => {
-              return new Types.ObjectId(id);
-            }),
+            $in: addons,
           },
         },
         { available: false },
