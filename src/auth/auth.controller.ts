@@ -54,7 +54,7 @@ export class AuthController {
 
   @HttpCode(HttpStatus.CREATED)
   @Post('register')
-  @ApiOperation({ summary: "Customer's registraion" })
+  @ApiOperation({ summary: "Customer's registration" })
   @ApiResponse({ type: () => RegisterDto, status: HttpStatus.CREATED })
   async register(@Body() registerDto: RegisterDto) {
     return await this.authService.register(registerDto);

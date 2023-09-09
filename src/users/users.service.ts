@@ -1,6 +1,6 @@
 import { UserRole, UserSchema } from '@/schema/users.schema';
 import { CreateUserDto } from '@/users/dto/user.create.dto';
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { DocumentType, ReturnModelType } from '@typegoose/typegoose';
 import * as argon2 from 'argon2';
 import { Types } from 'mongoose';
@@ -17,6 +17,14 @@ export class UsersService {
     createUserDto: CreateUserDto,
   ): Promise<DocumentType<UserSchema>> {
     const hashedPassword = await argon2.hash(createUserDto.password);
+    const existingUser = await this.userModel.findOne({
+      username: createUserDto.username,
+    });
+    if (existingUser) {
+      throw new UnauthorizedException({
+        message: 'Username is already taken',
+      });
+    }
     const createdUser = await this.userModel.create({
       username: createUserDto.username,
       password: hashedPassword,
