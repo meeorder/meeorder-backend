@@ -3,6 +3,7 @@ import { UpdateIngredientDto } from '@/ingredients/dto/update.ingredient.dto';
 import { IngredientsService } from '@/ingredients/ingredients.service';
 import { IngredientSchema } from '@/schema/ingredients.schema';
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -12,9 +13,9 @@ import {
   Param,
   Patch,
   Post,
-  Put,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { MongooseError } from 'mongoose';
 
 @Controller({ path: 'ingredients', version: '1' })
 @ApiTags('ingredients')
@@ -74,16 +75,24 @@ export class IngredientsController {
   @ApiOperation({
     summary: 'Update a ingredient by id',
   })
-  @Put(':id')
+  @Patch(':id')
   @HttpCode(HttpStatus.OK)
-  async update(
+  async updateIngredient(
     @Param('id') id: string,
     @Body() updateIngredientDto: UpdateIngredientDto,
   ) {
-    return await this.ingredientsService.updateIngredient(
-      id,
-      updateIngredientDto,
-    );
+    try {
+      return await this.ingredientsService.updateIngredient(
+        id,
+        updateIngredientDto,
+      );
+    } catch (e) {
+      if (e instanceof MongooseError) {
+        throw new BadRequestException('Ingredient not found');
+      } else {
+        throw e;
+      }
+    }
   }
 
   // Delete a ingredient
@@ -98,33 +107,5 @@ export class IngredientsController {
   @HttpCode(HttpStatus.OK)
   async remove(@Param('id') id: string) {
     return await this.ingredientsService.deleteIngredient(id);
-  }
-
-  // Update status of a ingredient(unavailable)
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'Ingredient unavailable status updated',
-  })
-  @ApiOperation({
-    summary: 'Update status of a ingredient to unavailable by id',
-  })
-  @Patch(':id/unavailable')
-  @HttpCode(HttpStatus.OK)
-  async updateIngredientToUnavailable(@Param('id') id: string) {
-    return await this.ingredientsService.updateIngredientToUnavailable(id);
-  }
-
-  // Update status of a ingredient(available)
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'Ingredient available status updated',
-  })
-  @ApiOperation({
-    summary: 'Update status of a ingredient to available by id',
-  })
-  @Patch(':id/available')
-  @HttpCode(HttpStatus.OK)
-  async updateIngredientToAvailable(@Param('id') id: string) {
-    return await this.ingredientsService.updateIngredientToAvailable(id);
   }
 }

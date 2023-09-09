@@ -1,4 +1,22 @@
-import { CreateIngredientDto } from '@/ingredients/dto/create.ingredient.dto';
-import { PartialType } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
-export class UpdateIngredientDto extends PartialType(CreateIngredientDto) {}
+export class UpdateIngredientDto {
+  @ApiProperty({
+    type: String,
+    description: 'Ingredient title',
+    required: false,
+  })
+  @IsString()
+  @IsNotEmpty()
+  @IsOptional()
+  title?: string;
+
+  @ApiProperty({
+    type: Boolean,
+    description: 'Ingredient status',
+    required: false,
+  })
+  @IsOptional()
+  available: boolean;
+}

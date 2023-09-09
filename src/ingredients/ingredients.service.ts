@@ -3,6 +3,7 @@ import { UpdateIngredientDto } from '@/ingredients/dto/update.ingredient.dto';
 import { IngredientSchema } from '@/schema/ingredients.schema';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { ReturnModelType } from '@typegoose/typegoose';
+import { Types } from 'mongoose';
 import { InjectModel } from 'nest-typegoose';
 
 @Injectable()
@@ -36,9 +37,22 @@ export class IngredientsService {
   }
 
   async updateIngredient(id: string, ingredientInfo: UpdateIngredientDto) {
-    return await this.ingredientModel
-      .findByIdAndUpdate(id, ingredientInfo)
-      .exec();
+    try {
+      return await this.ingredientModel
+        .findByIdAndUpdate(new Types.ObjectId(id), ingredientInfo, {
+          new: true,
+        })
+        .exec();
+    } catch (err) {
+      const duplicateErrorCode = 11000;
+      if (err.code === duplicateErrorCode) {
+        throw new BadRequestException({
+          message: 'Title is already taken',
+        });
+      } else {
+        throw err;
+      }
+    }
   }
 
   async deleteIngredient(id: string) {
@@ -47,13 +61,5 @@ export class IngredientsService {
       throw new Error('Ingredient not found');
     }
     return { message: 'Ingredient deleted' };
-  }
-
-  async updateIngredientToUnavailable(id: string) {
-    await this.ingredientModel.updateOne({ _id: id }, { available: false });
-  }
-
-  async updateIngredientToAvailable(id: string) {
-    await this.ingredientModel.updateOne({ _id: id }, { available: true });
   }
 }
