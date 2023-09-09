@@ -13,26 +13,21 @@ export class IngredientsService {
   ) {}
 
   async createIngredient(ingredientInfo: CreateIngredientDto) {
-    const doc = await this.ingredientModel.create(ingredientInfo);
-    return doc;
+    return await this.ingredientModel.create(ingredientInfo);
   }
 
   async getAllIngredient() {
-    const docs = await this.ingredientModel.find();
-    return docs;
+    return await this.ingredientModel.find().exec();
   }
 
   async getIngredientById(id: string) {
-    const doc = await this.ingredientModel.findById(id);
-    return doc;
+    return await this.ingredientModel.findById(id).exec();
   }
 
   async updateIngredient(id: string, ingredientInfo: UpdateIngredientDto) {
-    const doc = await this.ingredientModel.findByIdAndUpdate(
-      id,
-      ingredientInfo,
-    );
-    return doc;
+    return await this.ingredientModel
+      .findByIdAndUpdate(id, ingredientInfo)
+      .exec();
   }
 
   async deleteIngredient(id: string) {
