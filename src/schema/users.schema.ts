@@ -19,7 +19,7 @@ export class UserSchema {
   @ApiProperty({ type: String, description: 'User ID' })
   _id: Types.ObjectId;
 
-  @prop({ required: true })
+  @prop({ unique: true, required: true })
   @ApiProperty({ type: String, description: 'User name' })
   username: string;
 

@@ -46,6 +46,14 @@ export class AuthService {
 
   async register(registerDto: RegisterDto): Promise<RegisterResponseDto> {
     const hash = await argon2.hash(registerDto.password);
+    const existingUser = await this.userModel.findOne({
+      username: registerDto.username,
+    });
+    if (existingUser) {
+      throw new UnauthorizedException({
+        message: 'Username is already taken',
+      });
+    }
     const registerUser = await this.userModel.create({
       username: registerDto.username,
       password: hash,
