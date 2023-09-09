@@ -4,11 +4,16 @@ import { MenuSchema } from '@/schema/menus.schema';
 import { SessionSchema } from '@/schema/session.schema';
 import { ApiProperty, getSchemaPath } from '@nestjs/swagger';
 import { Prop, Ref, modelOptions } from '@typegoose/typegoose';
+import { Types } from 'mongoose';
 
 @modelOptions({
   schemaOptions: { collection: 'orders' },
 })
 export class OrdersSchema {
+  @Prop({ auto: true })
+  @ApiProperty({ type: String })
+  _id: Types.ObjectId;
+
   @Prop({ name: 'created_at', default: new Date() })
   @ApiProperty({ type: Date, description: 'Order creation date' })
   created_at: Date;
@@ -48,4 +53,8 @@ export class OrdersSchema {
   @Prop({ default: null })
   @ApiProperty({ type: Date, description: 'Order cancellation date' })
   cancelled_at: Date;
+
+  @Prop({ default: null })
+  @ApiProperty({ type: String, description: 'Reason for cancel order' })
+  cancel_reason: string;
 }
