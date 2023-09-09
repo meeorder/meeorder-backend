@@ -133,6 +133,7 @@ describe('SessionService', () => {
     describe('should called function with corrected parameter', () => {
       it('should called with {$ne: null} when finished is true ', async () => {
         sessionModel.find = jest.fn().mockReturnValue({
+          populate: jest.fn().mockReturnThis(),
           orFail: jest.fn().mockReturnThis(),
           exec: jest.fn().mockResolvedValue([]),
         });
@@ -145,6 +146,7 @@ describe('SessionService', () => {
 
       it('should called with null when finished is false ', async () => {
         sessionModel.find = jest.fn().mockReturnValue({
+          populate: jest.fn().mockReturnThis(),
           orFail: jest.fn().mockReturnThis(),
           exec: jest.fn().mockResolvedValue([]),
         });

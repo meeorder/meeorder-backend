@@ -86,6 +86,7 @@ export class SessionService {
         finished_at: null,
         deleted_at: null,
       })
+      .populate('coupon table user')
       .exec();
 
     return session;
@@ -97,6 +98,7 @@ export class SessionService {
         _id: id,
         deleted_at: null,
       })
+      .populate('coupon table user')
       .exec();
   }
 
@@ -106,6 +108,7 @@ export class SessionService {
         finished_at: finished ? { $ne: null } : null,
         deleted_at: null,
       })
+      .populate('coupon table user')
       .exec();
 
     return sessions;
