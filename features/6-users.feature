@@ -26,4 +26,20 @@ Feature: Users
       | meeorder01 | 1q2w3e4r | employee |
     Then should return status code 400
 
-  
+  Scenario: Create username with max length more than 32
+    When create a user
+      | username                                                                                                                                                                                      | password | role     |
+      | 123213123121231231231231231231231231231231231231231123132131231231231312321312313123213123123123213123123123123123113121231231231231231231231231231123123123123122312312312231231231231231312 | 123      | employee |
+    Then should return status code 400
+
+  Scenario: Create username with min length less than 3
+    When create a user
+      | username | password | role     |
+      | 12       | 1q2w3e4r | employee |
+    Then should return status code 400
+
+  Scenario: Create username with special character
+    When create a user
+      | username    | password | role     |
+      | !meeorder01 | 1q2w3e4r | employee |
+    Then should return status code 400

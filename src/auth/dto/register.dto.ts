@@ -1,17 +1,23 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, MaxLength, MinLength } from 'class-validator';
+import {
+  IsAlphanumeric,
+  IsString,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 
 const maxUsernameLength = 32;
 const minUsernameLength = 4;
 
 export class RegisterDto {
-  @ApiProperty()
+  @ApiProperty({ type: String, description: 'Username' })
   @IsString()
   @MaxLength(maxUsernameLength)
   @MinLength(minUsernameLength)
+  @IsAlphanumeric()
   username: string;
 
-  @ApiProperty()
+  @ApiProperty({ type: String, description: 'Password' })
   @IsString()
   password: string;
 }
