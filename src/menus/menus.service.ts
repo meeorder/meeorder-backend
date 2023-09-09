@@ -15,7 +15,7 @@ export class MenusService {
     private readonly categoriesService: CategoriesService,
   ) {}
 
-  private readonly getAddonInfoScript = [
+  private readonly getAddonInfoAggregation = [
     {
       $unwind: {
         path: '$addons',
@@ -58,7 +58,7 @@ export class MenusService {
     },
   ];
 
-  private readonly groupCategoryScript = [
+  private readonly groupCategoryAggregation = [
     {
       $lookup: {
         from: 'categories',
@@ -131,8 +131,8 @@ export class MenusService {
     const script = [
       { $match: { _id: { $exists: true } } },
       { $match: scriptForStatus },
-      ...this.getAddonInfoScript,
-      ...this.groupCategoryScript,
+      ...this.getAddonInfoAggregation,
+      ...this.groupCategoryAggregation,
     ];
 
     const result = await this.menuModel.aggregate(script).exec();
@@ -140,17 +140,20 @@ export class MenusService {
   }
 
   async findOneMenu(id: string): Promise<GetMenuByIdResponseDto> {
-    const script = [
-      {
-        $match: { _id: new Types.ObjectId(id) },
-      },
-      ...this.getAddonInfoScript,
-    ];
-    const menu = await this.menuModel.aggregate(script).exec();
-    return menu[0];
+    const result = await this.menuModel
+      .findById(id)
+      .populate('addons')
+      .populate('category')
+      .exec();
+    return <GetMenuByIdResponseDto>result;
   }
 
   async createMenu(menuData: CreateMenuDto): Promise<MenuSchema> {
+    if (!menuData.category) {
+      // If category is not exist, set category to 'other' category
+      menuData.category = this.categoriesService.othersCategoryID;
+    }
+
     const createdMenu = await this.menuModel.create(menuData);
     if (menuData.category) {
       await this.categoriesService.pushMenuToCategory(
@@ -158,34 +161,74 @@ export class MenusService {
         createdMenu._id,
       );
     }
+
     return createdMenu;
   }
 
   async updateOne(id: string, menuData: CreateMenuDto) {
-    await this.menuModel.updateOne({ _id: id }, menuData).exec();
+    if (!menuData.category) {
+      // If category is not exist, set category to 'other' category
+      menuData.category = this.categoriesService.othersCategoryID;
+    }
+
+    const oldMenu = await this.menuModel.findByIdAndUpdate(id, menuData).exec();
+
+    if (oldMenu.category._id.equals(menuData.category)) {
+      return;
+    }
+
+    await this.categoriesService.pullMenuFromCategory(
+      oldMenu.category._id,
+      oldMenu._id,
+    );
+
+    await this.categoriesService.pushMenuToCategory(
+      menuData.category,
+      oldMenu._id,
+    );
   }
 
   async deleteOneMenu(id: string) {
     const currentDate = new Date();
-    await this.menuModel.updateOne({ _id: id }, { deleted_at: currentDate });
+    const menu = await this.menuModel
+      .findByIdAndUpdate(
+        id,
+        {
+          deleted_at: currentDate,
+        },
+        { new: true },
+      )
+      .exec();
+    if (<Types.ObjectId>menu.category) {
+      await this.categoriesService.pullMenuFromCategory(
+        menu.category._id,
+        menu._id,
+      );
+    }
   }
 
   async deleteManyMenus(ids: Types.ObjectId[]) {
     const currentDate = new Date();
-    const deleteManyScript = {
-      _id: { $in: ids },
-    };
-    await this.menuModel.updateMany(deleteManyScript, {
-      deleted_at: currentDate,
-    });
+    const menus = await this.menuModel.find({ _id: { $in: ids } }).exec();
+    const categories = menus.map((menu) => menu.category._id);
+
+    await this.menuModel
+      .updateMany({ _id: { $in: ids } }, { deleted_at: currentDate })
+      .exec();
+
+    if (categories.length > 0) {
+      await this.categoriesService.pullManyMenusFromCategories(categories, ids);
+    }
   }
 
   async publishMenu(id: string) {
     const currentDate = new Date();
-    await this.menuModel.updateOne({ _id: id }, { published_at: currentDate });
+    await this.menuModel
+      .updateOne({ _id: id }, { published_at: currentDate })
+      .exec();
   }
 
   async unpublishMenu(id: string) {
-    await this.menuModel.updateOne({ _id: id }, { published_at: null });
+    await this.menuModel.updateOne({ _id: id }, { published_at: null }).exec();
   }
 }

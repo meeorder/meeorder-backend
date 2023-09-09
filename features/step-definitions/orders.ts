@@ -2,7 +2,7 @@ import { OrdersSchema } from '@/schema/order.schema';
 import { SessionSchema } from '@/schema/session.schema';
 import { DataTable } from '@cucumber/cucumber';
 import { ReturnModelType } from '@typegoose/typegoose';
-import { after, binding, given, when } from 'cucumber-tsflow';
+import { after, binding, given, then, when } from 'cucumber-tsflow';
 import expect from 'expect';
 import { Workspace } from 'features/step-definitions/workspace';
 import { Types } from 'mongoose';
@@ -26,7 +26,7 @@ export class OrderStepDefination {
       const doc = await this.orderModel.create({
         session: new Types.ObjectId(order.session),
         menu: new Types.ObjectId(order.menu),
-        addons: [new Types.ObjectId(order.addon ?? 1)],
+        addons: order.addons?.split(',') ?? [],
         additional_info: order.additional_info,
         _id: new Types.ObjectId(order._id),
       });
@@ -77,6 +77,24 @@ export class OrderStepDefination {
     this.workspace.response = await this.workspace.axiosInstance.patch(
       `/orders/${order}/done`,
     );
+  }
+
+  @when('cancel order {string}')
+  async cancelOrder(id: string, dt: DataTable) {
+    const payload = dt.hashes()[0];
+    this.workspace.response = await this.workspace.axiosInstance.patch(
+      `/orders/${id}/cancel`,
+      {
+        addons: payload.addons?.split(',') ?? [],
+        reason: payload.reason ?? 'Reason',
+      },
+    );
+  }
+
+  @then('order {string} should be cancelled')
+  async expectOrderShouldBeCancelled(id: string) {
+    const order = await this.orderModel.findById(id).lean().exec();
+    expect(order.cancelled_at).toBeTruthy();
   }
 
   @after()

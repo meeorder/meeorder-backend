@@ -1,5 +1,4 @@
 import { AddonsService } from '@/addons/addons.service';
-import { DisableAddonsDto } from '@/orders/dto/disable.addons.dto';
 import { CreateOrderDto } from '@/orders/dto/order.create.dto';
 import { OrderGetDto } from '@/orders/dto/order.get.dto';
 import { OrderStatus } from '@/orders/enums/orders.status';
@@ -117,17 +116,18 @@ export class OrdersService {
     await element.updateOne({ status }).exec();
   }
 
-  async cancel(id: Types.ObjectId) {
-    await this.orderModel
-      .findOneAndUpdate({ _id: id }, { cancelled_at: new Date() })
+  cancel(id: Types.ObjectId, reason: string) {
+    return this.orderModel
+      .updateOne(
+        { _id: id },
+        {
+          $set: {
+            cancelled_at: new Date(),
+            cancel_reason: reason,
+          },
+        },
+      )
       .exec();
-  }
-
-  async cancelByAddons(id: Types.ObjectId, disableAddons: DisableAddonsDto) {
-    await this.orderModel
-      .findOneAndUpdate({ _id: id }, { cancelled_at: new Date() })
-      .exec();
-    await this.addonsService.disableAddons(disableAddons);
   }
 
   async getOrdersBySession(session: Types.ObjectId) {
