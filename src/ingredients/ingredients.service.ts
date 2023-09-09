@@ -1,7 +1,7 @@
 import { CreateIngredientDto } from '@/ingredients/dto/create.ingredient.dto';
 import { UpdateIngredientDto } from '@/ingredients/dto/update.ingredient.dto';
 import { IngredientSchema } from '@/schema/ingredients.schema';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { ReturnModelType } from '@typegoose/typegoose';
 import { InjectModel } from 'nest-typegoose';
 
@@ -13,7 +13,18 @@ export class IngredientsService {
   ) {}
 
   async createIngredient(ingredientInfo: CreateIngredientDto) {
-    return await this.ingredientModel.create(ingredientInfo);
+    try {
+      return await this.ingredientModel.create(ingredientInfo);
+    } catch (err) {
+      const duplicateErrorCode = 11000;
+      if (err.code === duplicateErrorCode) {
+        throw new BadRequestException({
+          message: 'Username is already taken',
+        });
+      } else {
+        throw err;
+      }
+    }
   }
 
   async getAllIngredient() {
