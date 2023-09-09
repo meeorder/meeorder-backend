@@ -37,4 +37,12 @@ export class IngredientsService {
     }
     return { message: 'Ingredient deleted' };
   }
+
+  async updateIngredientToUnavailable(id: string) {
+    await this.ingredientModel.updateOne({ _id: id }, { available: false });
+  }
+
+  async updateIngredientToAvailable(id: string) {
+    await this.ingredientModel.updateOne({ _id: id }, { available: true });
+  }
 }

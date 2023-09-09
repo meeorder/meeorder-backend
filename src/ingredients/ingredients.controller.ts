@@ -10,6 +10,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  Patch,
   Post,
   Put,
 } from '@nestjs/common';
@@ -97,5 +98,33 @@ export class IngredientsController {
   @HttpCode(HttpStatus.OK)
   async remove(@Param('id') id: string) {
     return await this.ingredientsService.deleteIngredient(id);
+  }
+
+  // Update status of a ingredient(unavailable)
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Ingredient unavailable status updated',
+  })
+  @ApiOperation({
+    summary: 'Update status of a ingredient to unavailable by id',
+  })
+  @Patch(':id/unavailable')
+  @HttpCode(HttpStatus.OK)
+  async updateIngredientToUnavailable(@Param('id') id: string) {
+    return await this.ingredientsService.updateIngredientToUnavailable(id);
+  }
+
+  // Update status of a ingredient(available)
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Ingredient available status updated',
+  })
+  @ApiOperation({
+    summary: 'Update status of a ingredient to available by id',
+  })
+  @Patch(':id/available')
+  @HttpCode(HttpStatus.OK)
+  async updateIngredientToAvailable(@Param('id') id: string) {
+    return await this.ingredientsService.updateIngredientToAvailable(id);
   }
 }

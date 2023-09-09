@@ -1,6 +1,5 @@
-import { Prop } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
-import { modelOptions } from '@typegoose/typegoose';
+import { Prop, modelOptions } from '@typegoose/typegoose';
 import { Types } from 'mongoose';
 
 @modelOptions({
