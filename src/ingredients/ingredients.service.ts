@@ -1,7 +1,11 @@
 import { CreateIngredientDto } from '@/ingredients/dto/create.ingredient.dto';
 import { UpdateIngredientDto } from '@/ingredients/dto/update.ingredient.dto';
 import { IngredientSchema } from '@/schema/ingredients.schema';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { ReturnModelType } from '@typegoose/typegoose';
 import { Types } from 'mongoose';
 import { InjectModel } from 'nest-typegoose';
@@ -33,16 +37,26 @@ export class IngredientsService {
   }
 
   async getIngredientById(id: string) {
-    return await this.ingredientModel.findById(id).exec();
+    const doc = await this.ingredientModel.findById(id).exec();
+    if (!doc) {
+      throw new NotFoundException('Ingredient not found');
+    }
+    return doc;
   }
 
   async updateIngredient(id: string, ingredientInfo: UpdateIngredientDto) {
     try {
-      return await this.ingredientModel
+      const doc = await this.ingredientModel
         .findByIdAndUpdate(new Types.ObjectId(id), ingredientInfo, {
           new: true,
         })
         .exec();
+
+      if (!doc) {
+        throw new NotFoundException('Ingredient not found');
+      }
+
+      return doc;
     } catch (err) {
       const duplicateErrorCode = 11000;
       if (err.code === duplicateErrorCode) {
@@ -58,7 +72,7 @@ export class IngredientsService {
   async deleteIngredient(id: string) {
     const doc = await this.ingredientModel.findByIdAndRemove(id);
     if (!doc) {
-      throw new Error('Ingredient not found');
+      throw new NotFoundException('Ingredient not found');
     }
     return { message: 'Ingredient deleted' };
   }

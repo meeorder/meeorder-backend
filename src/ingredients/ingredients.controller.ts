@@ -3,7 +3,6 @@ import { UpdateIngredientDto } from '@/ingredients/dto/update.ingredient.dto';
 import { IngredientsService } from '@/ingredients/ingredients.service';
 import { IngredientSchema } from '@/schema/ingredients.schema';
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -15,7 +14,6 @@ import {
   Post,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { MongooseError } from 'mongoose';
 
 @Controller({ path: 'ingredients', version: '1' })
 @ApiTags('ingredients')
@@ -57,6 +55,10 @@ export class IngredientsController {
     status: HttpStatus.OK,
     type: () => IngredientSchema,
   })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Ingredient not found',
+  })
   @ApiOperation({
     summary: 'Get a ingredient by id',
   })
@@ -71,6 +73,10 @@ export class IngredientsController {
     status: HttpStatus.OK,
     description: 'Ingredient updated',
     type: () => IngredientSchema,
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Ingredient not found',
   })
   @ApiOperation({
     summary: 'Update a ingredient by id',
@@ -87,11 +93,7 @@ export class IngredientsController {
         updateIngredientDto,
       );
     } catch (e) {
-      if (e instanceof MongooseError) {
-        throw new BadRequestException('Ingredient not found');
-      } else {
-        throw e;
-      }
+      throw e;
     }
   }
 
@@ -99,6 +101,10 @@ export class IngredientsController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Ingredient deleted',
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Ingredient not found',
   })
   @ApiOperation({
     summary: 'Delete a ingredient by id',
