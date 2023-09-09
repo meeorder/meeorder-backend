@@ -4,6 +4,13 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsString } from 'class-validator';
 
+enum UserRoleString {
+  Owner = 'Owner',
+  Cashier = 'Cashier',
+  Employee = 'Employee',
+  Customer = 'Customer',
+}
+
 export class CreateUserDto {
   @ApiProperty({ type: String, description: 'Username' })
   @IsString()
@@ -15,8 +22,8 @@ export class CreateUserDto {
 
   @ApiProperty({
     type: String,
-    enum: UserRole,
-    example: ['Owner', 'Chef', 'Cashier', 'Employee', 'Customer'],
+    enum: UserRoleString,
+    example: 'Owner',
     description:
       'select role from enum UserRole example: Owner, Chef, Cashier, Employee, Customer',
   })
