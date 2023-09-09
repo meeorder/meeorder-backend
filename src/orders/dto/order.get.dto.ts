@@ -3,12 +3,10 @@ import { AddonSchema } from '@/schema/addons.schema';
 import { MenuSchema } from '@/schema/menus.schema';
 import { SessionWithTable } from '@/session/dto/sessionwithtable.dto';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsMongoId } from 'class-validator';
 import { Types } from 'mongoose';
 
 export class OrderGetDto {
   @ApiProperty({ type: String, description: 'Orders ID' })
-  @IsMongoId()
   '_id': Types.ObjectId;
 
   @ApiProperty({ type: Date })
