@@ -34,7 +34,7 @@ export class MenuSchema {
 
   @Prop({ default: null, ref: () => CategorySchema })
   @ApiProperty({
-    type: () => CategorySchema,
+    type: String,
     nullable: true,
     description: 'Menu category',
   })
