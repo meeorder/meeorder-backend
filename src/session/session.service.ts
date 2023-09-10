@@ -1,4 +1,5 @@
 import { AddonsService } from '@/addons/addons.service';
+import { CouponsService } from '@/coupons/coupons.service';
 import { MenusService } from '@/menus/menus.service';
 import { OrdersResponseDto } from '@/orders/dto/orders.response.dto';
 import { OrderStatus } from '@/orders/enums/orders.status';
@@ -33,6 +34,7 @@ export class SessionService {
     private readonly userModel: ReturnModelType<typeof UserSchema>,
     @InjectModel(CouponSchema)
     private readonly couponModel: ReturnModelType<typeof CouponSchema>,
+    private readonly couponsService: CouponsService,
     private readonly menusService: MenusService,
     private readonly addonsService: AddonsService,
     @Inject(forwardRef(() => OrdersService))
@@ -92,8 +94,10 @@ export class SessionService {
     return session;
   }
 
-  getSessionById(id: Types.ObjectId): Promise<DocumentType<SessionSchema>> {
-    return this.sessionModel
+  async getSessionById(
+    id: Types.ObjectId,
+  ): Promise<DocumentType<SessionSchema>> {
+    return await this.sessionModel
       .findOne({
         _id: id,
         deleted_at: null,
@@ -274,44 +278,27 @@ export class SessionService {
     return false;
   }
 
-  async updateSessionCoupon(
-    id: Types.ObjectId,
-    couponBody: UpdateSessionCouponDto,
-  ) {
-    const session = await this.sessionModel.findById(id);
-    const currentCoupon = await this.couponModel.findById(session.coupon);
-    const newCouponId = couponBody.coupon_id;
-    let newPoint = 0;
+  async updateSessionCoupon(id: Types.ObjectId, body: UpdateSessionCouponDto) {
+    const session = await this.getSessionById(id);
 
-    if (newCouponId === null) {
-      const couponPoint = currentCoupon.required_point;
-      newPoint = session.point + couponPoint;
+    const currentCouponId = session.coupon?._id;
+    const newCouponId = body.coupon_id;
 
-      currentCoupon.redeemed -= 1;
-      await currentCoupon.save();
-    } else if (session.coupon === null || newCouponId !== session.coupon._id) {
-      const newCoupon = await this.couponModel.findById(newCouponId);
-
-      if (newCoupon.quota === newCoupon.redeemed) {
-        throw new ConflictException('Coupon quota has been reached');
-      }
-
-      newCoupon.redeemed += 1;
-      await newCoupon.save();
-
-      const oldCouponPoint = session.coupon ? currentCoupon.required_point : 0;
-      const newCouponPoint = newCoupon.required_point;
-      newPoint = session.point + oldCouponPoint - newCouponPoint;
+    if (currentCouponId?.equals(newCouponId)) {
+      return;
     }
 
-    const updateData = {
-      coupon: newCouponId,
-      point: newPoint,
-    };
+    if (currentCouponId) {
+      await this.couponsService.refundCoupon(currentCouponId.toString());
+    }
 
-    await this.sessionModel
-      .findByIdAndUpdate(id, updateData, { new: true })
-      .orFail()
-      .exec();
+    if (newCouponId) {
+      await this.couponsService.redeemCoupon(newCouponId.toString());
+    }
+
+    session.coupon = newCouponId;
+    await session.save();
+
+    return session;
   }
 }

@@ -45,7 +45,7 @@ export class CouponsController {
   @Get()
   @HttpCode(HttpStatus.OK)
   async findAll() {
-    return await this.couponsService.getAllCouponByOwner();
+    return await this.couponsService.getAllCoupons();
   }
 
   @ApiResponse({
@@ -58,7 +58,7 @@ export class CouponsController {
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   async findOne(@Param('id') id: string) {
-    return await this.couponsService.getCouponByIdByOwner(id);
+    return await this.couponsService.getCouponById(id);
   }
 
   @ApiResponse({
