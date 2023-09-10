@@ -1,6 +1,7 @@
 import { ParseMongoIdPipe } from '@/pipes/mongo-id.pipe';
 import { SessionSchema } from '@/schema/session.schema';
 import { CreateSessionDto } from '@/session/dto/create-session.dto';
+import { GetSessionDto } from '@/session/dto/get-session.dto';
 import { OrdersListDto } from '@/session/dto/listorders.dto';
 import { SessionUserUpdateDto } from '@/session/dto/update-sessionUser.dto';
 import { UpdateSessionCouponDto } from '@/session/dto/updatecoupon.dto';
@@ -37,7 +38,7 @@ export class SessionController {
   @ApiQuery({ name: 'finished', type: Boolean, required: false })
   @ApiResponse({
     status: HttpStatus.OK,
-    type: () => SessionSchema,
+    type: () => GetSessionDto,
     isArray: true,
   })
   @ApiOperation({
@@ -52,7 +53,7 @@ export class SessionController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Session',
-    type: () => SessionSchema,
+    type: () => GetSessionDto,
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
@@ -73,7 +74,7 @@ export class SessionController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Session',
-    type: () => SessionSchema,
+    type: () => GetSessionDto,
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
