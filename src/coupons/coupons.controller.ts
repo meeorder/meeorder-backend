@@ -55,6 +55,10 @@ export class CouponsController {
   @ApiOperation({
     summary: 'Get a coupon by id',
   })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Coupon not found',
+  })
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   async findOne(@Param('id') id: string) {
@@ -65,6 +69,10 @@ export class CouponsController {
     status: HttpStatus.OK,
     description: 'Coupon updated',
     type: () => CouponSchema,
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Coupon not found',
   })
   @ApiOperation({
     summary: 'Update a coupon by id',
@@ -81,6 +89,10 @@ export class CouponsController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Coupon deleted',
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Coupon not found',
   })
   @ApiOperation({
     summary: 'Delete a coupon by id',
