@@ -69,12 +69,12 @@ describe('SessionService', () => {
         required_menus: [menuIds[0]],
         required_point: 100,
       };
-      const session: Pick<SessionSchema, 'point'> = {
+      const user: Pick<UserSchema, 'point'> = {
         point: coupon.required_point,
       };
 
       expect(
-        sessionService.isRedeemableCoupon(session, coupon, menus),
+        sessionService.isRedeemableCoupon(user, coupon, menus),
       ).toBeTruthy();
     });
 
@@ -94,12 +94,12 @@ describe('SessionService', () => {
         ] as any,
         required_point: 100,
       };
-      const session: Pick<SessionSchema, 'point'> = {
+      const user: Pick<UserSchema, 'point'> = {
         point: coupon.required_point,
       };
 
       expect(
-        sessionService.isRedeemableCoupon(session, coupon, menus),
+        sessionService.isRedeemableCoupon(user, coupon, menus),
       ).toBeFalsy();
     });
 
@@ -119,12 +119,12 @@ describe('SessionService', () => {
         ] as any,
         required_point: 100,
       };
-      const session: Pick<SessionSchema, 'point'> = {
+      const user: Pick<UserSchema, 'point'> = {
         point: coupon.required_point - 1,
       };
 
       expect(
-        sessionService.isRedeemableCoupon(session, coupon, menus),
+        sessionService.isRedeemableCoupon(user, coupon, menus),
       ).toBeFalsy();
     });
   });
