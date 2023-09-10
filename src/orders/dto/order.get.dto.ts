@@ -1,7 +1,7 @@
 import { OrderStatus } from '@/orders/enums/orders.status';
 import { AddonSchema } from '@/schema/addons.schema';
 import { MenuSchema } from '@/schema/menus.schema';
-import { SessionWithTable } from '@/session/dto/sessionwithtable.dto';
+import { SessionWithTableDto } from '@/session/dto/session[table].dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { Types } from 'mongoose';
 
@@ -28,8 +28,11 @@ export class OrderGetDto {
   @ApiProperty({ type: Date, description: 'for cancel status' })
   cancelled_at: Date;
 
-  @ApiProperty({ type: () => SessionWithTable })
-  session: SessionWithTable;
+  @ApiProperty({
+    type: () => SessionWithTableDto,
+    description: 'Session (table populated)',
+  })
+  session: SessionWithTableDto;
 
   @ApiProperty({ type: () => MenuSchema })
   menu: MenuSchema;
