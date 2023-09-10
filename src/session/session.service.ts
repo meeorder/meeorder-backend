@@ -245,7 +245,7 @@ export class SessionService {
 
   async getAllCoupon(
     id: Types.ObjectId,
-    userId: Types.ObjectId,
+    userId?: Types.ObjectId,
   ): Promise<CouponDto[]> {
     const session = await this.sessionModel.findById(id).exec();
     const orders = await this.ordersService.getOrdersBySession(id);
