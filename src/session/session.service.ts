@@ -71,9 +71,17 @@ export class SessionService {
       .exec();
 
     const session = await this.sessionModel.findById({ _id: id });
+
+    const userUpdateQuery = {};
+
+    if (session.coupon) {
+      const coupon = await this.couponModel.findById(session.coupon).exec();
+      userUpdateQuery['$inc'] = { point: -coupon.required_point };
+    }
+
     await this.userModel.updateOne(
       { _id: session.user, deleted_at: null },
-      { point: session.point },
+      userUpdateQuery,
     );
 
     return result;
