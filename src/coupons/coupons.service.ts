@@ -39,12 +39,9 @@ export class CouponsService {
   }
 
   async deleteCoupon(id: string) {
-    const doc = await this.couponModel
+    await this.couponModel
       .findByIdAndRemove(id)
       .orFail(new NotFoundException('Coupon not found'));
-    if (!doc) {
-      throw new NotFoundException('Coupon not found');
-    }
     return { message: 'Coupon deleted' };
   }
 
