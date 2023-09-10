@@ -15,18 +15,18 @@ export class IngredientSteps {
       await this.workspace.datasource.getModel(IngredientSchema).create({
         _id: new Types.ObjectId(ingredient._id),
         title: ingredient.title,
-        available: ingredient.available === 'true',
+        available: ingredient.available ? +ingredient.available : true,
       });
     }
   }
 
   @when('create an ingredient')
-  async createIngredient(dt: DataTable) {
+  async createIngredients(dt: DataTable) {
     const req = dt.hashes()[0];
     this.workspace.response = await this.workspace.axiosInstance.post(
       '/ingredients',
       {
-        title: req.name,
+        title: req.title,
         available: req.available,
       },
     );

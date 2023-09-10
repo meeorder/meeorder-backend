@@ -55,10 +55,6 @@ export class IngredientsController {
     status: HttpStatus.OK,
     type: () => IngredientSchema,
   })
-  @ApiResponse({
-    status: HttpStatus.NOT_FOUND,
-    description: 'Ingredient not found',
-  })
   @ApiOperation({
     summary: 'Get a ingredient by id',
   })
@@ -74,10 +70,6 @@ export class IngredientsController {
     description: 'Ingredient updated',
     type: () => IngredientSchema,
   })
-  @ApiResponse({
-    status: HttpStatus.NOT_FOUND,
-    description: 'Ingredient not found',
-  })
   @ApiOperation({
     summary: 'Update a ingredient by id',
   })
@@ -87,24 +79,16 @@ export class IngredientsController {
     @Param('id') id: string,
     @Body() updateIngredientDto: UpdateIngredientDto,
   ) {
-    try {
-      return await this.ingredientsService.updateIngredient(
-        id,
-        updateIngredientDto,
-      );
-    } catch (e) {
-      throw e;
-    }
+    return await this.ingredientsService.updateIngredient(
+      id,
+      updateIngredientDto,
+    );
   }
 
   // Delete a ingredient
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Ingredient deleted',
-  })
-  @ApiResponse({
-    status: HttpStatus.NOT_FOUND,
-    description: 'Ingredient not found',
   })
   @ApiOperation({
     summary: 'Delete a ingredient by id',

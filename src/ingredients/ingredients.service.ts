@@ -14,17 +14,21 @@ import { InjectModel } from 'nest-typegoose';
 export class IngredientsService {
   constructor(
     @InjectModel(IngredientSchema)
-    private readonly ingredientModel: ReturnModelType<typeof IngredientSchema>,
+    private ingredientModel: ReturnModelType<typeof IngredientSchema>,
   ) {}
 
   async createIngredient(ingredientInfo: CreateIngredientDto) {
     try {
-      return await this.ingredientModel.create(ingredientInfo);
+      const createIng = await this.ingredientModel.create({
+        title: ingredientInfo.title,
+        available: ingredientInfo.available,
+      });
+      return createIng.toObject();
     } catch (err) {
       const duplicateErrorCode = 11000;
       if (err.code === duplicateErrorCode) {
         throw new BadRequestException({
-          message: 'Username is already taken',
+          message: 'Title is already taken',
         });
       } else {
         throw err;

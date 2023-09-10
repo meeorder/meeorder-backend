@@ -10,11 +10,11 @@ export class IngredientSchema {
   @ApiProperty({ type: String, description: 'Ingredient ID' })
   _id: Types.ObjectId;
 
-  @Prop({ unique: true, required: true })
+  @Prop({ required: true, unique: true })
   @ApiProperty({ type: String, description: 'Ingredient title' })
   title: string;
 
-  @Prop({ default: true })
+  @Prop({ required: true, default: true })
   @ApiProperty({ type: Boolean, description: 'Ingredient status' })
   available: boolean;
 }

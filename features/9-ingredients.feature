@@ -3,9 +3,9 @@ Feature: Ingredients
 
     Scenario: Create duplicate ingredient
         Given ingredients
-            | title | available |
-            | moo   | true      |
+            | title      |
+            | meeorder01 |
         When create an ingredient
-            | title | available |
-            | moo   | true      |
+            | title      |
+            | meeorder01 |
         Then should return status code 400
