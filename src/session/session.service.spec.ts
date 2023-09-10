@@ -1,4 +1,5 @@
 import { AddonsService } from '@/addons/addons.service';
+import { CouponsService } from '@/coupons/coupons.service';
 import { MenusService } from '@/menus/menus.service';
 import { OrdersService } from '@/orders/orders.service';
 import { CouponSchema } from '@/schema/coupons.schema';
@@ -19,6 +20,7 @@ describe('SessionService', () => {
   const menuService: Partial<MenusService> = {};
   const orderService: Partial<OrdersService> = {};
   const addonsService: Partial<AddonsService> = {};
+  const couponsService: Partial<CouponsService> = {};
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -27,6 +29,7 @@ describe('SessionService', () => {
         OrdersService,
         AddonsService,
         MenusService,
+        CouponsService,
         {
           provide: getModelToken(SessionSchema.name),
           useValue: sessionModel,
@@ -47,6 +50,8 @@ describe('SessionService', () => {
       .useValue(menuService)
       .overrideProvider(AddonsService)
       .useValue(addonsService)
+      .overrideProvider(CouponsService)
+      .useValue(couponsService)
       .compile();
 
     sessionService = module.get<SessionService>(SessionService);
