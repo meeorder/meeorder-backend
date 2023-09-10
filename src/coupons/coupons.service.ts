@@ -69,5 +69,6 @@ export class CouponsService {
 
     doc.redeemed -= 1;
     await doc.save();
+    return doc;
   }
 }
