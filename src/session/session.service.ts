@@ -253,29 +253,23 @@ export class SessionService {
   }
 
   isRedeemableCoupon(
-    session: Pick<SessionSchema, 'point'>,
+    user: Pick<UserSchema, 'point'>,
     coupon: Pick<CouponSchema, 'required_point' | 'required_menus'>,
     menus: Pick<MenuSchema, '_id'>[],
   ) {
-    const menus_ = <Types.ObjectId[]>coupon.required_menus;
+    const coupon_required_menus = <Types.ObjectId[]>coupon.required_menus;
 
-    if (coupon.required_point > session.point) {
+    if (coupon.required_point > user.point) {
       return false;
     }
 
-    if (menus_.length === 0) {
+    if (coupon_required_menus.length === 0) {
       return true;
     }
 
-    for (let k = 0; k < menus_.length; k++) {
-      for (let i = 0; i < menus.length; i++) {
-        if (menus[i]._id.equals(menus_[k])) {
-          return true;
-        }
-      }
-    }
-
-    return false;
+    return coupon_required_menus.some((menu) =>
+      menus.some((order) => order._id.equals(menu)),
+    );
   }
 
   async updateSessionCoupon(id: Types.ObjectId, body: UpdateSessionCouponDto) {
