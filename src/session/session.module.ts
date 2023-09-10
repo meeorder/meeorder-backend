@@ -1,4 +1,5 @@
 import { AddonsModule } from '@/addons/addons.module';
+import { CouponsModule } from '@/coupons/coupons.module';
 import { MenusModule } from '@/menus/menus.module';
 import { OrdersModule } from '@/orders/orders.module';
 import { CouponSchema } from '@/schema/coupons.schema';
@@ -13,6 +14,7 @@ import { SessionService } from './session.service';
   imports: [
     TypegooseModule.forFeature([SessionSchema, UserSchema, CouponSchema]),
     forwardRef(() => OrdersModule),
+    CouponsModule,
     MenusModule,
     AddonsModule,
   ],

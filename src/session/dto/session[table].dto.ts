@@ -2,7 +2,7 @@ import { TablesSchema } from '@/schema/tables.schema';
 import { ApiProperty } from '@nestjs/swagger';
 import { Types } from 'mongoose';
 
-export class SessionWithTable {
+export class SessionWithTableDto {
   @ApiProperty({ type: String, description: 'Session ID' })
   _id: Types.ObjectId;
 
@@ -22,9 +22,6 @@ export class SessionWithTable {
     nullable: true,
   })
   user: Types.ObjectId;
-
-  @ApiProperty({ description: 'User point' })
-  point: number;
 
   @ApiProperty({
     type: String,
