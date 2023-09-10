@@ -21,6 +21,7 @@ export class AddonstepDefination {
         _id: addon._id,
         price: +addon.price,
         deleted_at: addon.deleted_at ? new Date(addon.deleted_at) : null,
+        available: addon.available ? addon.available === 'true' : true,
       });
     }
   }
@@ -81,6 +82,12 @@ export class AddonstepDefination {
         price: +addon.price,
       },
     );
+  }
+
+  @then('addon {string} should be disabled')
+  async addonShouldBeDisabled(id: string) {
+    const addon = await this.addonModel.findById(id).lean().exec();
+    expect(addon.available).toBeFalsy();
   }
 
   @after()

@@ -29,3 +29,18 @@ Feature: Orders
     Then should return status code 204
     When update order "64f5707f6d126db5cc098a36" to done
     Then should return status code 204
+
+  Scenario: Cancel order with reason lack of addons
+    Given addons
+      | _id                      | title   | price | available |
+      | 64fb0605ab4bb1fde967f3b0 | addon_1 | 100   | true      |
+      | 64fb0605ab4bb1fde967f3b1 | addon_2 | 200   | true      |
+    Given orders
+      | _id                      | session                  | menu                     | addons                   | additional_info |
+      | 64fb0700ab4bb1fde967f3b1 | 64fb0700ab4bb1fde967e3b1 | 64fb0952ab4bb1fde967f3b3 | 64fb0605ab4bb1fde967f3b0 | Test Menu       |
+    When cancel order "64fb0700ab4bb1fde967f3b1"
+      | reason | addons                   |
+      | 1      | 64fb0605ab4bb1fde967f3b0 |
+    Then should return status code 204
+    And order "64fb0700ab4bb1fde967f3b1" should be cancelled
+    And addon "64fb0605ab4bb1fde967f3b0" should be disabled
