@@ -239,15 +239,22 @@ export class SessionService {
 
   async getAllCoupon(id: Types.ObjectId): Promise<CouponDto[]> {
     const session = await this.sessionModel.findById(id).exec();
+    const user = await this.userModel.findById(session._id).exec();
     const orders = await this.ordersService.getOrdersBySession(id);
     const menu_arr = orders.map((order) => order.menu);
     const coupon_arr = await this.couponModel.find({ activated: true }).exec();
+
+    if (!user) {
+      return coupon_arr.map(
+        (coupon) => new CouponDto(coupon.toObject(), false),
+      );
+    }
 
     return coupon_arr.map(
       (coupon) =>
         new CouponDto(
           coupon.toObject(),
-          this.isRedeemableCoupon(session, coupon, menu_arr),
+          this.isRedeemableCoupon(user, coupon, menu_arr),
         ),
     );
   }
@@ -280,6 +287,14 @@ export class SessionService {
 
     if (currentCouponId?.equals(newCouponId)) {
       return;
+    }
+
+    if (!session.user) {
+      throw new ConflictException('Session has no user');
+    }
+
+    if (session.finished_at) {
+      throw new ConflictException('Session has already finished');
     }
 
     if (currentCouponId) {
