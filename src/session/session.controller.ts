@@ -226,7 +226,6 @@ export class SessionController {
     @Param('id', new ParseMongoIdPipe()) id: Types.ObjectId,
     @Query('user') user?: string,
   ) {
-    console.log(user);
     return await this.sessionService.getAllCoupon(
       id,
       user ? new Types.ObjectId(user) : undefined,
