@@ -236,28 +236,29 @@ export class SessionService {
     return res;
   }
 
-  async updateSessionUser(id: Types.ObjectId, userbody: SessionUserUpdateDto) {
-    const new_user = userbody.user;
-    const new_point = (await this.userModel.findById(new_user)).point;
-    await this.sessionModel
-      .updateOne({ _id: id }, { user: new_user, point: new_point })
-      .orFail()
-      .exec();
+  async updateSessionUser(id: Types.ObjectId, body: SessionUserUpdateDto) {
+    await this.sessionModel.updateOne(
+      { _id: id, deleted_at: null },
+      { user: body?.user, coupon: null },
+    );
   }
 
-  async getAllCoupon(id: Types.ObjectId): Promise<CouponDto[]> {
+  async getAllCoupon(
+    id: Types.ObjectId,
+    userId: Types.ObjectId,
+  ): Promise<CouponDto[]> {
     const session = await this.sessionModel.findById(id).exec();
     const orders = await this.ordersService.getOrdersBySession(id);
     const menu_arr = orders.map((order) => order.menu);
     const coupon_arr = await this.couponModel.find({ activated: true }).exec();
 
-    if (!session.user) {
+    if (!session.user && !userId) {
       return coupon_arr.map(
         (coupon) => new CouponDto(coupon.toObject(), false),
       );
     }
 
-    const user = await this.userModel.findById(session.user._id).exec();
+    const user = await this.userModel.findById(userId ?? session.user).exec();
 
     return coupon_arr.map(
       (coupon) =>
@@ -274,6 +275,10 @@ export class SessionService {
     menus: Pick<MenuSchema, '_id'>[],
   ) {
     const coupon_required_menus = <Types.ObjectId[]>coupon.required_menus;
+
+    if (!user) {
+      return false;
+    }
 
     if (coupon.required_point > user.point) {
       return false;

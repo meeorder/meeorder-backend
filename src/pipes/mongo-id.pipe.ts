@@ -10,7 +10,7 @@ import { Types } from 'mongoose';
 export class ParseMongoIdPipe implements PipeTransform {
   transform(value: any) {
     try {
-      return new Types.ObjectId(value);
+      return value ?? new Types.ObjectId(value);
     } catch (e) {
       throw new HttpException('Invalid ObjectId', HttpStatus.BAD_REQUEST);
     }

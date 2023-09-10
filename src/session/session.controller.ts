@@ -215,9 +215,18 @@ export class SessionController {
   })
   @HttpCode(HttpStatus.OK)
   @ApiParam({ name: 'id', type: String, description: 'Session ID (ObjectId)' })
+  @ApiQuery({
+    name: 'user',
+    type: String,
+    description: 'User ID (ObjectId)',
+    required: false,
+  })
   @Get(':id/coupon/all')
-  async getCoupons(@Param('id', new ParseMongoIdPipe()) id: Types.ObjectId) {
-    return await this.sessionService.getAllCoupon(id);
+  async getCoupons(
+    @Param('id', new ParseMongoIdPipe()) id: Types.ObjectId,
+    @Query('user', new ParseMongoIdPipe()) user?: Types.ObjectId,
+  ) {
+    return await this.sessionService.getAllCoupon(id, user);
   }
 
   @ApiResponse({
