@@ -35,10 +35,6 @@ export class SessionSchema {
   })
   user: Ref<UserSchema>;
 
-  @Prop({ default: 0 })
-  @ApiProperty({ description: 'User point' })
-  point: number;
-
   @Prop({ default: null, ref: () => CouponSchema })
   @ApiProperty({
     type: () => CouponSchema,

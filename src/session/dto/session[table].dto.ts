@@ -23,9 +23,6 @@ export class SessionWithTableDto {
   })
   user: Types.ObjectId;
 
-  @ApiProperty({ description: 'User point' })
-  point: number;
-
   @ApiProperty({
     type: String,
     nullable: true,
