@@ -224,9 +224,13 @@ export class SessionController {
   @Get(':id/coupon/all')
   async getCoupons(
     @Param('id', new ParseMongoIdPipe()) id: Types.ObjectId,
-    @Query('user', new ParseMongoIdPipe()) user?: Types.ObjectId,
+    @Query('user') user?: string,
   ) {
-    return await this.sessionService.getAllCoupon(id, user);
+    console.log(user);
+    return await this.sessionService.getAllCoupon(
+      id,
+      user ? new Types.ObjectId(user) : undefined,
+    );
   }
 
   @ApiResponse({
