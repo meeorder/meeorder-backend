@@ -23,30 +23,25 @@ export class CouponsService {
 
   async getAllCoupons() {
     const docs = await this.couponModel.find().exec();
-    if (!docs) {
-      throw new NotFoundException('Coupons not found');
-    }
     return docs;
   }
 
   async getCouponById(id: string) {
-    const doc = await this.couponModel.findById(id).exec();
-    if (!doc) {
-      throw new NotFoundException('Coupon not found');
-    }
-    return doc;
+    return await this.couponModel
+      .findById(id)
+      .orFail(new NotFoundException('Coupon not found'));
   }
 
   async updateCoupon(id: string, couponData: UpdateCouponDto) {
-    const doc = await this.couponModel.findByIdAndUpdate(id, couponData).exec();
-    if (!doc) {
-      throw new NotFoundException('Coupon not found');
-    }
-    return doc;
+    return await this.couponModel
+      .findByIdAndUpdate(id, couponData)
+      .orFail(new NotFoundException('Coupon not found'));
   }
 
   async deleteCoupon(id: string) {
-    const doc = await this.couponModel.findByIdAndRemove(id).exec();
+    const doc = await this.couponModel
+      .findByIdAndRemove(id)
+      .orFail(new NotFoundException('Coupon not found'));
     if (!doc) {
       throw new NotFoundException('Coupon not found');
     }
