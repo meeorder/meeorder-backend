@@ -238,8 +238,8 @@ export class SessionService {
   }
 
   async getAllCoupon(id: Types.ObjectId): Promise<CouponDto[]> {
+    const session = await this.sessionModel.findById(id).exec();
     const orders = await this.ordersService.getOrdersBySession(id);
-    const session = await this.getSessionById(id);
     const menu_arr = orders.map((order) => order.menu);
     const coupon_arr = await this.couponModel.find({ activated: true }).exec();
 
@@ -273,7 +273,7 @@ export class SessionService {
   }
 
   async updateSessionCoupon(id: Types.ObjectId, body: UpdateSessionCouponDto) {
-    const session = await this.getSessionById(id);
+    const session = await this.sessionModel.findById(id).exec();
 
     const currentCouponId = session.coupon?._id;
     const newCouponId = body.coupon_id;
