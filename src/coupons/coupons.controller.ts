@@ -40,7 +40,7 @@ export class CouponsController {
     isArray: true,
   })
   @ApiOperation({
-    summary: 'Get all coupons (Owner)',
+    summary: 'Get all coupons',
   })
   @Get()
   @HttpCode(HttpStatus.OK)

@@ -60,8 +60,8 @@ export class SessionStepDefination {
     );
   }
 
-  @when('get all coupons by owner')
-  async getAllCouponsByOwner() {
+  @when('get all coupons')
+  async getAllCoupons() {
     this.workspace.response =
       await this.workspace.axiosInstance.get('/coupons');
   }

@@ -19,12 +19,12 @@ Feature: Coupons
       | _id   | 64c5485a510698e8c9e7bdc0 | string |
       | title | Coupon1                  | string |
 
-  Scenario: Get all coupons by owner
+  Scenario: Get all coupons
     Given coupons
       | _id                      | title   | discount | required_point | quota |
       | 64f09e7476b02c5ea04be8ea | Coupon1 | 100      | 100            | 1     |
       | 64f09e7476b02c5ea04be8eb | Coupon2 | 200      | 200            | 1     |
-    When get all coupons by owner
+    When get all coupons
     Then should return status code 200
     Then should response be length 2
 
