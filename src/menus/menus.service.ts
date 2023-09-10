@@ -2,6 +2,7 @@ import { CategoriesService } from '@/categories/categories.service';
 import { CreateMenuDto } from '@/menus/dto/menus.createMenu.dto';
 import { GetAllMenuResponseDto } from '@/menus/dto/menus.getAllMenuResponse.dto';
 import { GetMenuByIdResponseDto } from '@/menus/dto/menus.getMenuByIdReponse.dto';
+import { CategorySchema } from '@/schema/categories.schema';
 import { MenuSchema } from '@/schema/menus.schema';
 import { Injectable } from '@nestjs/common';
 import { ReturnModelType } from '@typegoose/typegoose';
@@ -12,6 +13,8 @@ export class MenusService {
   constructor(
     @InjectModel(MenuSchema)
     private readonly menuModel: ReturnModelType<typeof MenuSchema>,
+    @InjectModel(CategorySchema)
+    private readonly categoryModel: ReturnModelType<typeof CategorySchema>,
     private readonly categoriesService: CategoriesService,
   ) {}
 
@@ -151,26 +154,31 @@ export class MenusService {
   async createMenu(menuData: CreateMenuDto): Promise<MenuSchema> {
     if (!menuData.category) {
       // If category is not exist, set category to 'other' category
+      const otherCategory = await this.categoryModel
+        .findById(this.categoriesService.othersCategoryID)
+        .exec();
+
+      if (!otherCategory) {
+        this.categoryModel.create({
+          title: 'Others',
+          _id: this.categoriesService.othersCategoryID,
+        });
+      }
+
       menuData.category = this.categoriesService.othersCategoryID;
     }
 
     const createdMenu = await this.menuModel.create(menuData);
-    if (menuData.category) {
-      await this.categoriesService.pushMenuToCategory(
-        menuData.category,
-        createdMenu._id,
-      );
-    }
+
+    await this.categoriesService.pushMenuToCategory(
+      menuData.category,
+      createdMenu._id,
+    );
 
     return createdMenu;
   }
 
   async updateOne(id: string, menuData: CreateMenuDto) {
-    if (!menuData.category) {
-      // If category is not exist, set category to 'other' category
-      menuData.category = this.categoriesService.othersCategoryID;
-    }
-
     const oldMenu = await this.menuModel.findByIdAndUpdate(id, menuData).exec();
 
     if (oldMenu.category._id.equals(menuData.category)) {
