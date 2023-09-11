@@ -205,10 +205,13 @@ export class SessionController {
   })
   @ApiOperation({
     summary: 'Updated session user',
+    description: 'user in header will be used as session user',
   })
   @HttpCode(HttpStatus.OK)
   @ApiParam({ name: 'id', type: String, description: 'Session ID (ObjectId)' })
   @Patch(':id/user')
+  @ApiBearerAuth()
+  @Role(UserRole.Customer)
   async updateSessionUser(
     @Param('id', new ParseMongoIdPipe()) id: Types.ObjectId,
     @User() user: UserJwt,
@@ -227,20 +230,15 @@ export class SessionController {
   })
   @HttpCode(HttpStatus.OK)
   @ApiParam({ name: 'id', type: String, description: 'Session ID (ObjectId)' })
-  @ApiQuery({
-    name: 'user',
-    type: String,
-    description: 'User ID (ObjectId)',
-    required: false,
-  })
+  @ApiBearerAuth()
   @Get(':id/coupon/all')
   async getCoupons(
     @Param('id', new ParseMongoIdPipe()) id: Types.ObjectId,
-    @Query('user') user?: string,
+    @User() user?: UserJwt,
   ) {
     return await this.sessionService.getAllCoupon(
       id,
-      user ? new Types.ObjectId(user) : undefined,
+      user?.id ? new Types.ObjectId(user?.id) : null,
     );
   }
 

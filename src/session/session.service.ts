@@ -1,4 +1,5 @@
 import { AddonsService } from '@/addons/addons.service';
+import { UserJwt } from '@/auth/user.jwt.payload';
 import { CouponsService } from '@/coupons/coupons.service';
 import { MenusService } from '@/menus/menus.service';
 import { OrdersResponseDto } from '@/orders/dto/orders.response.dto';
@@ -10,7 +11,6 @@ import { MenuSchema } from '@/schema/menus.schema';
 import { SessionSchema } from '@/schema/session.schema';
 import { UserSchema } from '@/schema/users.schema';
 import { CouponDto } from '@/session/dto/getcoupon.dto';
-import { SessionUserUpdateDto } from '@/session/dto/update-sessionUser.dto';
 import { UpdateSessionCouponDto } from '@/session/dto/updatecoupon.dto';
 import {
   ConflictException,
@@ -236,10 +236,13 @@ export class SessionService {
     return res;
   }
 
-  async updateSessionUser(id: Types.ObjectId, body: SessionUserUpdateDto) {
+  async updateSessionUser(
+    id: Types.ObjectId,
+    { id: user }: Pick<UserJwt, 'id'>,
+  ) {
     await this.sessionModel.updateOne(
       { _id: id, deleted_at: null },
-      { user: body?.user, coupon: null },
+      { user, coupon: null },
     );
   }
 

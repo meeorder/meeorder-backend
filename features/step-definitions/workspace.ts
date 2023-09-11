@@ -7,7 +7,7 @@ import axios, {
   AxiosResponse,
   RawAxiosRequestHeaders,
 } from 'axios';
-import { afterAll, beforeAll, binding, then } from 'cucumber-tsflow';
+import { after, afterAll, beforeAll, binding, then } from 'cucumber-tsflow';
 import expect from 'expect';
 import { Datasource } from 'features/step-definitions/datasource';
 import mongoose from 'mongoose';
@@ -106,6 +106,11 @@ export class Workspace {
   @afterAll()
   async afterAll() {
     await this.datasource.disconnect();
+  }
+
+  @after()
+  clearHeader() {
+    this.axiosInstance.defaults.headers.common = {};
   }
 
   @then('should return status code {int}')

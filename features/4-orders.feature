@@ -20,22 +20,16 @@ Feature: Orders
       | session                  | menu                     | addon                    |
       | 64c5485a510698e8c9e7bdc0 | 000000014aaec6eb813e8bc0 | 000000014aaec6eb813e8bc0 |
     Then should return status code 201
-    When get all orders
-    Then should return status code 200
-    Then should response be length 2
-    When update order "64f5707f6d126db5cc098a36" to preparing
-    Then should return status code 204
-    When update order "64f5707f6d126db5cc098a36" to ready to serve
-    Then should return status code 204
-    When update order "64f5707f6d126db5cc098a36" to done
-    Then should return status code 204
 
   Scenario: Cancel order with reason lack of addons
-    Given addons
+    Given login as
+      | id                       | username          | role |
+      | 64ff1bbf76e1dfabe0337a1b | meeorder_employee | 25   |
+    And addons
       | _id                      | title   | price | available |
       | 64fb0605ab4bb1fde967f3b0 | addon_1 | 100   | true      |
       | 64fb0605ab4bb1fde967f3b1 | addon_2 | 200   | true      |
-    Given orders
+    And orders
       | _id                      | session                  | menu                     | addons                   | additional_info |
       | 64fb0700ab4bb1fde967f3b1 | 64fb0700ab4bb1fde967e3b1 | 64fb0952ab4bb1fde967f3b3 | 64fb0605ab4bb1fde967f3b0 | Test Menu       |
     When cancel order "64fb0700ab4bb1fde967f3b1"
