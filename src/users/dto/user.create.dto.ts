@@ -2,7 +2,15 @@ import { UserRole } from '@/schema/users.schema';
 import { BadRequestException } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsString } from 'class-validator';
+import {
+  IsAlphanumeric,
+  IsString,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
+
+const maxUsernameLength = 32;
+const minUsernameLength = 4;
 
 enum UserRoleString {
   Owner = 'Owner',
@@ -14,6 +22,9 @@ enum UserRoleString {
 export class CreateUserDto {
   @ApiProperty({ type: String, description: 'Username' })
   @IsString()
+  @MaxLength(maxUsernameLength)
+  @MinLength(minUsernameLength)
+  @IsAlphanumeric()
   username: string;
 
   @ApiProperty({ type: String, description: 'Password' })

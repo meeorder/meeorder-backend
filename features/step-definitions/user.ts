@@ -26,8 +26,8 @@ export class UserSteps {
         _id: new Types.ObjectId(user._id),
         username: user.username,
         password: await this.hashPassword(user.password),
-        role: +user.role ?? UserRole.Owner,
-        point: +user.point ?? 0,
+        role: user.role ? +user.role : UserRole.Owner,
+        point: user.point ? +user.point : 0,
       });
     }
   }
