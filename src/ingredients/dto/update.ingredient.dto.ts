@@ -18,5 +18,5 @@ export class UpdateIngredientDto {
     required: false,
   })
   @IsOptional()
-  available: boolean;
+  available?: boolean;
 }
