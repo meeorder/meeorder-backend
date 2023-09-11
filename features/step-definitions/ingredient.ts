@@ -1,18 +1,23 @@
 import { IngredientSchema } from '@/schema/ingredients.schema';
 import { DataTable } from '@cucumber/cucumber';
-import { binding, given, when } from 'cucumber-tsflow';
+import { ReturnModelType } from '@typegoose/typegoose';
+import { after, binding, given, when } from 'cucumber-tsflow';
 import { Workspace } from 'features/step-definitions/workspace';
 import { Types } from 'mongoose';
 
 @binding([Workspace])
 export class IngredientSteps {
-  constructor(private readonly workspace: Workspace) {}
+  private readonly ingredientModel: ReturnModelType<typeof IngredientSchema>;
+
+  constructor(private readonly workspace: Workspace) {
+    this.ingredientModel = this.workspace.datasource.getModel(IngredientSchema);
+  }
 
   @given('ingredients')
   async givenIngredients(dt: DataTable) {
     const ingredients = dt.hashes();
     for (const ingredient of ingredients) {
-      await this.workspace.datasource.getModel(IngredientSchema).create({
+      await this.ingredientModel.create({
         _id: new Types.ObjectId(ingredient._id),
         title: ingredient.title,
         available: ingredient.available ? +ingredient.available : true,
@@ -30,5 +35,10 @@ export class IngredientSteps {
         available: req.available,
       },
     );
+  }
+
+  @after()
+  async cleanUpDb() {
+    await this.ingredientModel.deleteMany({});
   }
 }
