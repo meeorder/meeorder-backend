@@ -15,6 +15,7 @@ import { HealthModule } from './health/health.module';
 import { SessionModule } from './session/session.module';
 import { TablesModule } from './tables/tables.module';
 import { UsersModule } from './users/users.module';
+import { IngredientsModule } from '@/ingredients/ingredients.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { UsersModule } from './users/users.module';
     AuthModule,
     UsersModule,
     CouponsModule,
+    IngredientsModule,
   ],
   providers: [
     {
