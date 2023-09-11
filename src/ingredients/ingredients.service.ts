@@ -2,7 +2,7 @@ import { CreateIngredientDto } from '@/ingredients/dto/create.ingredient.dto';
 import { UpdateIngredientDto } from '@/ingredients/dto/update.ingredient.dto';
 import { IngredientSchema } from '@/schema/ingredients.schema';
 import {
-  BadRequestException,
+  ConflictException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -19,15 +19,14 @@ export class IngredientsService {
 
   async createIngredient(ingredientInfo: CreateIngredientDto) {
     try {
-      const createIng = await this.ingredientModel.create({
+      return await this.ingredientModel.create({
         title: ingredientInfo.title,
         available: ingredientInfo.available,
       });
-      return createIng.toObject();
     } catch (err) {
       const duplicateErrorCode = 11000;
       if (err.code === duplicateErrorCode) {
-        throw new BadRequestException({
+        throw new ConflictException({
           message: 'Title is already taken',
         });
       } else {
@@ -64,7 +63,7 @@ export class IngredientsService {
     } catch (err) {
       const duplicateErrorCode = 11000;
       if (err.code === duplicateErrorCode) {
-        throw new BadRequestException({
+        throw new ConflictException({
           message: 'Title is already taken',
         });
       } else {

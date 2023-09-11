@@ -26,6 +26,10 @@ export class IngredientsController {
     description: 'Ingredient created',
     type: () => IngredientSchema,
   })
+  @ApiResponse({
+    status: HttpStatus.CONFLICT,
+    description: 'Ingredient already exists',
+  })
   @ApiOperation({
     summary: 'Create a ingredient',
   })
@@ -55,6 +59,10 @@ export class IngredientsController {
     status: HttpStatus.OK,
     type: () => IngredientSchema,
   })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Ingredient not found',
+  })
   @ApiOperation({
     summary: 'Get a ingredient by id',
   })
@@ -69,6 +77,14 @@ export class IngredientsController {
     status: HttpStatus.OK,
     description: 'Ingredient updated',
     type: () => IngredientSchema,
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Ingredient not found',
+  })
+  @ApiResponse({
+    status: HttpStatus.CONFLICT,
+    description: 'Ingredient already exists',
   })
   @ApiOperation({
     summary: 'Update a ingredient by id',
@@ -89,6 +105,10 @@ export class IngredientsController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Ingredient deleted',
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Ingredient not found',
   })
   @ApiOperation({
     summary: 'Delete a ingredient by id',
