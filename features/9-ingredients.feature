@@ -8,4 +8,4 @@ Feature: Ingredients
         When create an ingredient
             | title      |
             | meeorder01 |
-        Then should return status code 400
+        Then should return status code 409
