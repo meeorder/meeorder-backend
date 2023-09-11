@@ -12,6 +12,13 @@ import {
 const maxUsernameLength = 32;
 const minUsernameLength = 4;
 
+enum UserRoleString {
+  Owner = 'Owner',
+  Cashier = 'Cashier',
+  Employee = 'Employee',
+  Customer = 'Customer',
+}
+
 export class CreateUserDto {
   @ApiProperty({ type: String, description: 'Username' })
   @IsString()
@@ -26,8 +33,8 @@ export class CreateUserDto {
 
   @ApiProperty({
     type: String,
-    enum: UserRole,
-    example: ['Owner', 'Chef', 'Cashier', 'Employee', 'Customer'],
+    enum: UserRoleString,
+    example: UserRoleString.Owner,
     description:
       'select role from enum UserRole example: Owner, Chef, Cashier, Employee, Customer',
   })
