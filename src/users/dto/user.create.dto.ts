@@ -34,7 +34,7 @@ export class CreateUserDto {
   @ApiProperty({
     type: String,
     enum: UserRoleString,
-    example: 'Owner',
+    example: UserRoleString.Owner,
     description:
       'select role from enum UserRole example: Owner, Chef, Cashier, Employee, Customer',
   })
