@@ -12,6 +12,10 @@ export class CategoriesService {
     private readonly categoryModel: ReturnModelType<typeof CategorySchema>,
   ) {}
 
+  public readonly othersCategoryID = new Types.ObjectId(
+    '64ef35bbe6c66d526b0981f0',
+  );
+
   async createCategory(title: string) {
     return await this.categoryModel.create({
       title,
@@ -64,5 +68,31 @@ export class CategoriesService {
       )
       .exec();
     return doc;
+  }
+
+  async pullMenuFromCategory(
+    categoryId: Types.ObjectId,
+    menuId: Types.ObjectId,
+  ) {
+    const doc = await this.categoryModel
+      .findByIdAndUpdate(
+        categoryId,
+        { $pull: { menus: menuId } },
+        { new: true },
+      )
+      .exec();
+    return doc;
+  }
+
+  async pullManyMenusFromCategories(
+    categoryIds: Types.ObjectId[],
+    menuIds: Types.ObjectId[],
+  ) {
+    await this.categoryModel
+      .updateMany(
+        { _id: { $in: categoryIds } },
+        { $pull: { menus: { $in: menuIds } } },
+      )
+      .exec();
   }
 }

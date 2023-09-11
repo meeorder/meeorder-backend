@@ -52,4 +52,3 @@ Feature: Session
       | key         | value                    | type   |
       | _id         | 64c5485a510698e8c9e7bdc0 | string |
       | finished_at |                          | null   |
-      | table       | 64f55c53561fa6a99fc45b29 | string |

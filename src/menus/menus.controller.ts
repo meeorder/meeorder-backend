@@ -2,7 +2,7 @@ import { Role } from '@/decorator/roles.decorator';
 import { CreateMenuDto } from '@/menus/dto/menus.createMenu.dto';
 import { GetAllMenuResponseDto } from '@/menus/dto/menus.getAllMenuResponse.dto';
 import { GetMenuByIdResponseDto } from '@/menus/dto/menus.getMenuByIdReponse.dto';
-import { ParseStringObjectIdArrayPipe } from '@/menus/menus.pipe';
+import { ParseStringArrayToObjectIdArrayPipe } from '@/menus/menus.pipe';
 import { MenuSchema } from '@/schema/menus.schema';
 import { UserRole } from '@/schema/users.schema';
 import {
@@ -135,7 +135,8 @@ export class MenusController {
   @Role(UserRole.Owner)
   @Delete()
   async removeMenus(
-    @Query('ids', new ParseStringObjectIdArrayPipe()) ids: Types.ObjectId[],
+    @Query('ids', new ParseStringArrayToObjectIdArrayPipe())
+    ids: Types.ObjectId[],
   ) {
     await this.menuservice.deleteManyMenus(ids);
   }

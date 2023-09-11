@@ -33,4 +33,15 @@ export class AuthStep {
 
   @then('cookie should have jwt-meeorder')
   cookieShouldHaveJwtMeeorder() {}
+
+  @when('register with username {string} and password {string}')
+  async register(username: string, password: string) {
+    this.workspace.response = await this.workspace.axiosInstance.post(
+      '/auth/register',
+      {
+        username,
+        password,
+      },
+    );
+  }
 }

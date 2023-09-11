@@ -1,4 +1,5 @@
 import { AddonsService } from '@/addons/addons.service';
+import { CouponsService } from '@/coupons/coupons.service';
 import { MenusService } from '@/menus/menus.service';
 import { OrdersService } from '@/orders/orders.service';
 import { CouponSchema } from '@/schema/coupons.schema';
@@ -19,6 +20,7 @@ describe('SessionService', () => {
   const menuService: Partial<MenusService> = {};
   const orderService: Partial<OrdersService> = {};
   const addonsService: Partial<AddonsService> = {};
+  const couponsService: Partial<CouponsService> = {};
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -27,6 +29,7 @@ describe('SessionService', () => {
         OrdersService,
         AddonsService,
         MenusService,
+        CouponsService,
         {
           provide: getModelToken(SessionSchema.name),
           useValue: sessionModel,
@@ -47,6 +50,8 @@ describe('SessionService', () => {
       .useValue(menuService)
       .overrideProvider(AddonsService)
       .useValue(addonsService)
+      .overrideProvider(CouponsService)
+      .useValue(couponsService)
       .compile();
 
     sessionService = module.get<SessionService>(SessionService);
@@ -69,12 +74,12 @@ describe('SessionService', () => {
         required_menus: [menuIds[0]],
         required_point: 100,
       };
-      const session: Pick<SessionSchema, 'point'> = {
+      const user: Pick<UserSchema, 'point'> = {
         point: coupon.required_point,
       };
 
       expect(
-        sessionService.isRedeemableCoupon(session, coupon, menus),
+        sessionService.isRedeemableCoupon(user, coupon, menus),
       ).toBeTruthy();
     });
 
@@ -94,12 +99,12 @@ describe('SessionService', () => {
         ] as any,
         required_point: 100,
       };
-      const session: Pick<SessionSchema, 'point'> = {
+      const user: Pick<UserSchema, 'point'> = {
         point: coupon.required_point,
       };
 
       expect(
-        sessionService.isRedeemableCoupon(session, coupon, menus),
+        sessionService.isRedeemableCoupon(user, coupon, menus),
       ).toBeFalsy();
     });
 
@@ -119,12 +124,12 @@ describe('SessionService', () => {
         ] as any,
         required_point: 100,
       };
-      const session: Pick<SessionSchema, 'point'> = {
+      const user: Pick<UserSchema, 'point'> = {
         point: coupon.required_point - 1,
       };
 
       expect(
-        sessionService.isRedeemableCoupon(session, coupon, menus),
+        sessionService.isRedeemableCoupon(user, coupon, menus),
       ).toBeFalsy();
     });
   });
@@ -133,6 +138,7 @@ describe('SessionService', () => {
     describe('should called function with corrected parameter', () => {
       it('should called with {$ne: null} when finished is true ', async () => {
         sessionModel.find = jest.fn().mockReturnValue({
+          populate: jest.fn().mockReturnThis(),
           orFail: jest.fn().mockReturnThis(),
           exec: jest.fn().mockResolvedValue([]),
         });
@@ -145,6 +151,7 @@ describe('SessionService', () => {
 
       it('should called with null when finished is false ', async () => {
         sessionModel.find = jest.fn().mockReturnValue({
+          populate: jest.fn().mockReturnThis(),
           orFail: jest.fn().mockReturnThis(),
           exec: jest.fn().mockResolvedValue([]),
         });

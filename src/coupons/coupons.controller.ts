@@ -49,13 +49,13 @@ export class CouponsController {
     isArray: true,
   })
   @ApiOperation({
-    summary: 'Get all coupons (Owner)',
+    summary: 'Get all coupons',
   })
   @Get()
   @HttpCode(HttpStatus.OK)
   @Role(UserRole.Owner)
   async findAll() {
-    return await this.couponsService.getAllCouponByOwner();
+    return await this.couponsService.getAllCoupons();
   }
 
   @ApiResponse({
@@ -65,17 +65,25 @@ export class CouponsController {
   @ApiOperation({
     summary: 'Get a coupon by id',
   })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Coupon not found',
+  })
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   @Role(UserRole.Owner)
   async findOne(@Param('id') id: string) {
-    return await this.couponsService.getCouponByIdByOwner(id);
+    return await this.couponsService.getCouponById(id);
   }
 
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Coupon updated',
     type: () => CouponSchema,
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Coupon not found',
   })
   @ApiOperation({
     summary: 'Update a coupon by id',
@@ -93,6 +101,10 @@ export class CouponsController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Coupon deleted',
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Coupon not found',
   })
   @ApiOperation({
     summary: 'Delete a coupon by id',
