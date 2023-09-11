@@ -10,11 +10,12 @@ export class AuthStep {
   @given('login as')
   async loginAs(dt: DataTable) {
     const req = dt.hashes()[0];
-    const response = await this.login(req.username, req.password);
-    this.workspace.setHeader(
-      'Authorization',
-      `Bearer ${response.access_token}`,
-    );
+    const token = await this.workspace.jwtService.signAsync({
+      id: req.id,
+      username: req.username,
+      role: +req.role,
+    });
+    this.workspace.setHeader('Authorization', `Bearer ${token}`);
   }
 
   @when('login with username {string} and password {string}')
