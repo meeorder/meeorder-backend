@@ -10,6 +10,7 @@ import { MenuSchema } from '@/schema/menus.schema';
 import { SessionSchema } from '@/schema/session.schema';
 import { UserSchema } from '@/schema/users.schema';
 import { CouponDto } from '@/session/dto/getcoupon.dto';
+import { SessionUserUpdateDto } from '@/session/dto/update-sessionUser.dto';
 import { UpdateSessionCouponDto } from '@/session/dto/updatecoupon.dto';
 import {
   ConflictException,
