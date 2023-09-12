@@ -1,4 +1,6 @@
+import { Role } from '@/decorator/roles.decorator';
 import { CouponSchema } from '@/schema/coupons.schema';
+import { UserRole } from '@/schema/users.schema';
 import {
   Body,
   Controller,
@@ -10,13 +12,19 @@ import {
   Post,
   Patch as Put,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { CouponsService } from './coupons.service';
 import { CreateCouponDto } from './dto/create-coupon.dto';
 import { UpdateCouponDto } from './dto/update-coupon.dto';
 
 @Controller({ path: 'coupons', version: '1' })
 @ApiTags('coupons')
+@ApiBearerAuth()
 export class CouponsController {
   constructor(private readonly couponsService: CouponsService) {}
 
@@ -30,8 +38,9 @@ export class CouponsController {
   })
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async create(@Body() createCouponDto: CreateCouponDto) {
-    return await this.couponsService.createCoupon(createCouponDto);
+  @Role(UserRole.Owner)
+  create(@Body() createCouponDto: CreateCouponDto) {
+    return this.couponsService.createCoupon(createCouponDto);
   }
 
   @ApiResponse({
@@ -44,6 +53,7 @@ export class CouponsController {
   })
   @Get()
   @HttpCode(HttpStatus.OK)
+  @Role(UserRole.Owner)
   async findAll() {
     return await this.couponsService.getAllCoupons();
   }
@@ -61,6 +71,7 @@ export class CouponsController {
   })
   @Get(':id')
   @HttpCode(HttpStatus.OK)
+  @Role(UserRole.Owner)
   async findOne(@Param('id') id: string) {
     return await this.couponsService.getCouponById(id);
   }
@@ -79,6 +90,7 @@ export class CouponsController {
   })
   @Put(':id')
   @HttpCode(HttpStatus.OK)
+  @Role(UserRole.Owner)
   async update(
     @Param('id') id: string,
     @Body() updateCouponDto: UpdateCouponDto,
@@ -98,6 +110,7 @@ export class CouponsController {
     summary: 'Delete a coupon by id',
   })
   @Delete(':id')
+  @Role(UserRole.Owner)
   @HttpCode(HttpStatus.OK)
   async remove(@Param('id') id: string) {
     return await this.couponsService.deleteCoupon(id);

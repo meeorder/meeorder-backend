@@ -1,6 +1,9 @@
 Feature: Menu Test
   Scenario: Create Menu, Publish, Get Menu and Delete Menu
     Given a menu
+    And login as
+      | id                       | username       | role |
+      | 64ff1bbf76e1dfabe0337a1b | meeorder_owner | 100  |
     When create a menu
     And publish this menu
     Then should return status code 200

@@ -1,6 +1,8 @@
 import { RankDto } from '@/categories/dto/category.rank.dto';
 import { UpdateCategoryDto } from '@/categories/dto/category.updateCategory.dto';
+import { Role } from '@/decorator/roles.decorator';
 import { CategorySchema } from '@/schema/categories.schema';
+import { UserRole } from '@/schema/users.schema';
 import {
   Body,
   Controller,
@@ -13,7 +15,13 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { MongooseError } from 'mongoose';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/category.createCategory.dto';
@@ -32,6 +40,8 @@ export class CategoriesController {
     summary: 'Create a category',
   })
   @Post()
+  @ApiBearerAuth()
+  @Role(UserRole.Owner)
   createCategory(@Body() doc: CreateCategoryDto) {
     return this.categoriesService.createCategory(doc.title);
   }
@@ -91,6 +101,8 @@ export class CategoriesController {
     type: String,
     description: 'Category ID (ObjectID)',
   })
+  @ApiBearerAuth()
+  @Role(UserRole.Owner)
   @Patch(':id')
   async updateCategory(
     @Param('id') id: string,
@@ -123,6 +135,8 @@ export class CategoriesController {
     type: String,
     description: 'Category ID (ObjectID)',
   })
+  @ApiBearerAuth()
+  @Role(UserRole.Owner)
   @Delete(':id')
   async deleteCategory(@Param('id') id: string) {
     try {
@@ -143,6 +157,8 @@ export class CategoriesController {
   @ApiOperation({
     summary: "order the categories' rank",
   })
+  @ApiBearerAuth()
+  @Role(UserRole.Owner)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Patch('rank')
   async updateRank(@Body() doc: RankDto) {

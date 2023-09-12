@@ -1,3 +1,4 @@
+import { MongoTransform } from '@/utils/mongo-transform';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsNumber, IsOptional, IsString, IsUrl } from 'class-validator';
@@ -27,7 +28,7 @@ export class CreateCouponDto {
     required: false,
   })
   @IsOptional()
-  @Transform(({ value }) => value.map((v) => new Types.ObjectId(v)))
+  @Transform(new MongoTransform(true).array())
   required_menus?: Types.ObjectId[];
 
   @ApiProperty({

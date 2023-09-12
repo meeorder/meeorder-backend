@@ -71,7 +71,6 @@ export class SessionStepDefination {
     this.workspace.response = await this.workspace.axiosInstance.get(
       `/sessions/${session}/coupon/all`,
     );
-    console.log(this.workspace.response.data);
   }
 
   @then('response size should equal to {int}')

@@ -7,7 +7,7 @@ export class CreateOrderDto {
   @IsMongoId()
   session: string;
 
-  @ApiProperty({ type: () => [Orders] })
+  @ApiProperty({ type: () => Orders, isArray: true })
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => Orders)

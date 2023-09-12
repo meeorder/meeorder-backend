@@ -1,9 +1,11 @@
 import { AddonsService } from '@/addons/addons.service';
+import { Role } from '@/decorator/roles.decorator';
 import { CancelOrderDto } from '@/orders/dto/cancel-order.dto';
 import { CreateOrderDto } from '@/orders/dto/order.create.dto';
 import { OrderGetDto } from '@/orders/dto/order.get.dto';
 import { OrderStatus } from '@/orders/enums/orders.status';
 import { ParseMongoIdPipe } from '@/pipes/mongo-id.pipe';
+import { UserRole } from '@/schema/users.schema';
 import {
   Body,
   Controller,
@@ -16,6 +18,7 @@ import {
   Post,
 } from '@nestjs/common';
 import {
+  ApiBearerAuth,
   ApiNoContentResponse,
   ApiNotFoundResponse,
   ApiOperation,
@@ -53,6 +56,8 @@ export class OrdersController {
   @ApiOperation({
     summary: 'Get all orders',
   })
+  @ApiBearerAuth()
+  @Role(UserRole.Employee)
   @HttpCode(HttpStatus.OK)
   async getOrders() {
     return await this.ordersService.getOrders();
@@ -67,6 +72,8 @@ export class OrdersController {
   @ApiOperation({
     summary: 'Change order status to preparing',
   })
+  @ApiBearerAuth()
+  @Role(UserRole.Employee)
   @HttpCode(HttpStatus.NO_CONTENT)
   async preparing(@Param('id', new ParseMongoIdPipe()) id: Types.ObjectId) {
     await this.ordersService.setStatus(
@@ -85,6 +92,8 @@ export class OrdersController {
     summary: 'Change order status to ready to serve',
   })
   @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiBearerAuth()
+  @Role(UserRole.Employee)
   async readyToServe(@Param('id', new ParseMongoIdPipe()) id: Types.ObjectId) {
     await this.ordersService.setStatus(
       new Types.ObjectId(id),
@@ -102,6 +111,8 @@ export class OrdersController {
     summary: 'Change order status to done',
   })
   @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiBearerAuth()
+  @Role(UserRole.Employee)
   async done(@Param('id', new ParseMongoIdPipe()) id: Types.ObjectId) {
     await this.ordersService.setStatus(
       new Types.ObjectId(id),
@@ -118,6 +129,8 @@ export class OrdersController {
     description:
       'Cancel order and disable addons, ingredients(not implemented) if included',
   })
+  @ApiBearerAuth()
+  @Role(UserRole.Employee)
   @HttpCode(HttpStatus.NO_CONTENT)
   async cancelOrder(
     @Body() { addons, reason }: CancelOrderDto,
