@@ -7,7 +7,7 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Launch",
+      "name": "Run Backend",
       "skipFiles": ["<node_internals>/**"],
       "cwd": "${workspaceRoot}",
       "program": "${workspaceRoot}/node_modules/@nestjs/cli/bin/nest.js",
@@ -27,7 +27,7 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Launch (without nvm)",
+      "name": "Run Backend (without nvm)",
       "skipFiles": ["<node_internals>/**"],
       "cwd": "${workspaceRoot}",
       "program": "${workspaceRoot}/node_modules/@nestjs/cli/bin/nest.js",
@@ -46,7 +46,7 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug E2E (Cucumber)",
+      "name": "Integration Test (Cucumber)",
       "skipFiles": ["<node_internals>/**"],
       "cwd": "${workspaceRoot}",
       "program": "${workspaceRoot}/node_modules/@cucumber/cucumber/bin/cucumber.js",
@@ -66,7 +66,7 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug E2E (Cucumber) (without nvm)",
+      "name": "Integration Test (Cucumber) (without nvm)",
       "skipFiles": ["<node_internals>/**"],
       "cwd": "${workspaceRoot}",
       "program": "${workspaceRoot}/node_modules/@cucumber/cucumber/bin/cucumber.js",
