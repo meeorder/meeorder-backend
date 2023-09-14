@@ -69,6 +69,8 @@ jobs:
           BASE_URL: http://127.0.0.1:4000
           MONGO_URI: mongodb://127.0.0.1:27017
           MONGO_DB_NAME: meeorder
+          MEEORDER_PRIVATE_KEY: ${{secrets.MEEORDER_PRIVATE_KEY}}
+          MEEORDER_PUBLIC_KEY: ${{secrets.MEEORDER_PUBLIC_KEY}}
   docker:
     runs-on: ubuntu-latest
     needs:

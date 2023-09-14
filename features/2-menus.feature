@@ -1,6 +1,9 @@
 @menus
 Feature: Menus
   Scenario: Create a menu
+    And login as
+      | id                       | username       | role |
+      | 64ff1bbf76e1dfabe0337a1b | meeorder_owner | 100  |
     When create a menu
       | title | price |
       | menu1 | 100   |

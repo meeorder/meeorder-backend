@@ -49,59 +49,14 @@ export class OrdersService {
   }
 
   async getOrders(): Promise<OrderGetDto[]> {
-    // join orders and session with session id
-    return await this.orderModel
-      .aggregate([
-        {
-          $lookup: {
-            from: 'sessions',
-            localField: 'session',
-            foreignField: '_id',
-            as: 'session',
-          },
-        },
-        {
-          $project: {
-            _id: 1,
-            created_at: 1,
-            status: 1,
-            menu: 1,
-            addons: 1,
-            additional_info: 1,
-            cancelled_at: 1,
-            session: {
-              $arrayElemAt: ['$session', 0],
-            },
-          },
-        },
-        {
-          $match: {
-            'session.finished_at': null,
-          },
-        },
-        {
-          $lookup: {
-            from: 'menus',
-            localField: 'menu',
-            foreignField: '_id',
-            as: 'menu',
-          },
-        },
-        {
-          $project: {
-            _id: 1,
-            created_at: 1,
-            status: 1,
-            menu: {
-              $arrayElemAt: ['$menu', 0],
-            },
-            addons: 1,
-            additional_info: 1,
-            cancelled_at: 1,
-            session: 1,
-          },
-        },
-      ])
+    return <OrderGetDto[]>await this.orderModel
+      .find({ deleted_at: null })
+      .populate('addons menu')
+      .populate({
+        path: 'session',
+        match: { finished_at: null },
+        populate: { path: 'table' },
+      })
       .exec();
   }
 

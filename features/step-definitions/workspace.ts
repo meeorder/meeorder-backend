@@ -1,12 +1,13 @@
 import { Config, configuration } from '@/config';
 import { DataTable } from '@cucumber/cucumber';
 import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
 import axios, {
   AxiosInstance,
   AxiosResponse,
   RawAxiosRequestHeaders,
 } from 'axios';
-import { afterAll, beforeAll, binding, then } from 'cucumber-tsflow';
+import { after, afterAll, beforeAll, binding, then } from 'cucumber-tsflow';
 import expect from 'expect';
 import { Datasource } from 'features/step-definitions/datasource';
 import mongoose from 'mongoose';
@@ -35,6 +36,8 @@ export class Workspace {
   }
 
   public datasource: Datasource;
+
+  public jwtService: JwtService;
 
   private _response: AxiosResponse<any>;
 
@@ -80,6 +83,9 @@ export class Workspace {
     const configService = new ConfigService(configuration());
     const mongoUri = configService.get<string>(Config.MONGO_URI);
     const mongoDbName = configService.get<string>(Config.MONGO_DB_NAME);
+    const jwtPrivateKey = configService.get<string>(
+      Config.MEEORDER_PRIVATE_KEY,
+    );
     this.baseURL = configService.get<string>(Config.BASE_URL);
 
     const connection = mongoose.createConnection(mongoUri, {
@@ -89,11 +95,24 @@ export class Workspace {
     this.datasource = await new Datasource(connection).connect();
 
     this.axiosInstance = this.getAxiosInstance('1');
+
+    this.jwtService = new JwtService({
+      privateKey: jwtPrivateKey,
+      signOptions: {
+        algorithm: 'ES256',
+        expiresIn: '1d',
+      },
+    });
   }
 
   @afterAll()
   async afterAll() {
     await this.datasource.disconnect();
+  }
+
+  @after()
+  clearHeader() {
+    this.axiosInstance.defaults.headers.common = {};
   }
 
   @then('should return status code {int}')
