@@ -17,6 +17,12 @@ export class Datasource {
     await this.connection.close();
   }
 
+  async dropAllCollections() {
+    const { db } = this.connection;
+    const collections = await db.listCollections().toArray();
+    return Promise.all(collections.map(({ name }) => db.dropCollection(name)));
+  }
+
   getModel(
     cl: AnyParamConstructor<any>,
     options?: Pick<IModelOptions, 'options' | 'schemaOptions'>,

@@ -1,5 +1,6 @@
 import { AddonsService } from '@/addons/addons.service';
 import { Role } from '@/decorator/roles.decorator';
+import { IngredientsService } from '@/ingredients/ingredients.service';
 import { CancelOrderDto } from '@/orders/dto/cancel-order.dto';
 import { CreateOrderDto } from '@/orders/dto/order.create.dto';
 import { OrderGetDto } from '@/orders/dto/order.get.dto';
@@ -35,6 +36,7 @@ export class OrdersController {
   constructor(
     private readonly ordersService: OrdersService,
     private readonly addonsService: AddonsService,
+    private readonly ingredientService: IngredientsService,
   ) {}
 
   @Post()
@@ -133,7 +135,7 @@ export class OrdersController {
   @Role(UserRole.Employee)
   @HttpCode(HttpStatus.NO_CONTENT)
   async cancelOrder(
-    @Body() { addons, reason }: CancelOrderDto,
+    @Body() { ingredients, addons, reason }: CancelOrderDto,
     @Param('id', new ParseMongoIdPipe()) id: Types.ObjectId,
   ) {
     const op = await this.ordersService.cancel(id, reason);
@@ -141,5 +143,6 @@ export class OrdersController {
       throw new NotFoundException({ message: 'Order not found' });
     }
     await this.addonsService.disableAddons(addons);
+    await this.ingredientService.disableIngredients(ingredients);
   }
 }

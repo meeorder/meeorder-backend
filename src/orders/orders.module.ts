@@ -1,4 +1,5 @@
 import { AddonsModule } from '@/addons/addons.module';
+import { IngredientsModule } from '@/ingredients/ingredients.module';
 import { OrdersSchema } from '@/schema/order.schema';
 import { SessionModule } from '@/session/session.module';
 import { Module, forwardRef } from '@nestjs/common';
@@ -11,6 +12,7 @@ import { OrdersService } from './orders.service';
     TypegooseModule.forFeature([OrdersSchema]),
     forwardRef(() => SessionModule),
     AddonsModule,
+    IngredientsModule,
   ],
   providers: [OrdersService],
   controllers: [OrdersController],
