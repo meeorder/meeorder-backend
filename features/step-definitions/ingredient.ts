@@ -50,6 +50,6 @@ export class IngredientSteps {
 
   @after()
   async cleanUpDb() {
-    // await this.ingredientModel.deleteMany({});
+    await this.ingredientModel.deleteMany({});
   }
 }

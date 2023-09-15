@@ -86,6 +86,6 @@ export class CategoriesStepDefination {
 
   @after()
   async cleanUpDb() {
-    // await this.categoryModel.deleteMany({});
+    await this.categoryModel.deleteMany({});
   }
 }
