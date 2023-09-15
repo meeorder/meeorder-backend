@@ -1,7 +1,8 @@
 import { IngredientSchema } from '@/schema/ingredients.schema';
 import { DataTable } from '@cucumber/cucumber';
 import { ReturnModelType } from '@typegoose/typegoose';
-import { after, binding, given, when } from 'cucumber-tsflow';
+import { after, binding, given, then, when } from 'cucumber-tsflow';
+import expect from 'expect';
 import { Workspace } from 'features/step-definitions/workspace';
 import { Types } from 'mongoose';
 
@@ -37,8 +38,18 @@ export class IngredientSteps {
     );
   }
 
+  @then('ingredient {string} should be disabled')
+  async shouldBeDisabled(id: string) {
+    const doc = await this.ingredientModel
+      .findById(id)
+      .select('available')
+      .lean()
+      .exec();
+    expect(doc.available).toBeFalsy();
+  }
+
   @after()
   async cleanUpDb() {
-    await this.ingredientModel.deleteMany({});
+    // await this.ingredientModel.deleteMany({});
   }
 }

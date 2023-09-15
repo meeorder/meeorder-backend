@@ -132,12 +132,22 @@ export class MenusService {
       { $match: { _id: { $exists: true } } },
       { $match: scriptForStatus },
       {
+        $lookup: {
+          from: 'ingredients',
+          localField: 'ingredients',
+          foreignField: '_id',
+          as: '_ingredients',
+        },
+      },
+      {
         $addFields: {
-          canOrder: {
+          can_order: {
             $reduce: {
               input: '$_ingredients',
               initialValue: true,
-              in: { $and: ['$$value', '$$this.available'] },
+              in: {
+                $and: ['$$value', '$$this.available'],
+              },
             },
           },
         },
@@ -150,6 +160,8 @@ export class MenusService {
       ...this.getAddonInfoAggregation,
       ...this.groupCategoryAggregation,
     ];
+
+    console.log(JSON.stringify(script));
 
     const result = await this.menuModel.aggregate(script).exec();
     return result;
