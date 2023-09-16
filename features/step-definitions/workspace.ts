@@ -92,6 +92,8 @@ export class Workspace {
 
     this.datasource = await new Datasource(connection).connect();
 
+    await this.datasource.dropAllCollections();
+
     this.axiosInstance = this.getAxiosInstance('1');
 
     this.jwtService = new JwtService({

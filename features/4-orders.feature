@@ -38,3 +38,21 @@ Feature: Orders
     Then should return status code 204
     And order "64fb0700ab4bb1fde967f3b1" should be cancelled
     And addon "64fb0605ab4bb1fde967f3b0" should be disabled
+
+  Scenario: Cancel order with reason lack of ingredients
+    Given login as
+      | id                       | username          | role |
+      | 64ff1bbf76e1dfabe0337a1b | meeorder_employee | 25   |
+    And ingredients
+      | _id                      | title | available |
+      | 6504aeab9a22c9b19517a35b | Moo   | 1         |
+      | 6504aeab9a22c9b19517a35c | Kai   | 1         |
+    And orders
+      | _id                      | session                  | menu                     | addons                   | additional_info |
+      | 64fb0700ab4bb1fde967f3b1 | 64fb0700ab4bb1fde967e3b1 | 64fb0952ab4bb1fde967f3b3 | 64fb0605ab4bb1fde967f3b0 | Test Menu       |
+    When cancel order "64fb0700ab4bb1fde967f3b1"
+      | reason | ingredients              |
+      | 1      | 6504aeab9a22c9b19517a35b |
+    Then should return status code 204
+    And order "64fb0700ab4bb1fde967f3b1" should be cancelled
+    And ingredient "6504aeab9a22c9b19517a35b" should be disabled

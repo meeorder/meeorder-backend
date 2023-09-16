@@ -7,7 +7,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { ReturnModelType } from '@typegoose/typegoose';
-import { Types } from 'mongoose';
+import { Types, UpdateWriteOpResult } from 'mongoose';
 import { InjectModel } from 'nest-typegoose';
 
 @Injectable()
@@ -78,5 +78,24 @@ export class IngredientsService {
       throw new NotFoundException('Ingredient not found');
     }
     return { message: 'Ingredient deleted' };
+  }
+
+  disableIngredients(
+    ingredients: Types.ObjectId[],
+  ): Promise<UpdateWriteOpResult> {
+    return this.ingredientModel
+      .updateMany(
+        {
+          _id: {
+            $in: ingredients,
+          },
+        },
+        {
+          $set: {
+            available: false,
+          },
+        },
+      )
+      .exec();
   }
 }
