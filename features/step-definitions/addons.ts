@@ -80,6 +80,7 @@ export class AddonstepDefination {
       {
         title: addon.title,
         price: +addon.price,
+        available: addon.available === 'true',
       },
     );
   }
