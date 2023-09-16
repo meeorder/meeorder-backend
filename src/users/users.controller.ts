@@ -1,5 +1,6 @@
+import { Role } from '@/decorator/roles.decorator';
 import { ParseMongoIdPipe } from '@/pipes/mongo-id.pipe';
-import { UserSchema } from '@/schema/users.schema';
+import { UserRole, UserSchema } from '@/schema/users.schema';
 import { CreateUserDto } from '@/users/dto/user.create.dto';
 import { UserResponseDto } from '@/users/dto/user.response.dto';
 import { UsersService } from '@/users/users.service';
@@ -14,6 +15,7 @@ import {
   Query,
 } from '@nestjs/common';
 import {
+  ApiBearerAuth,
   ApiBody,
   ApiOperation,
   ApiQuery,
@@ -34,6 +36,8 @@ export class UsersController {
     summary: 'Create user (for Owner)',
   })
   @HttpCode(HttpStatus.CREATED)
+  @ApiBearerAuth()
+  @Role(UserRole.Owner)
   async createUser(@Body() createUserDto: CreateUserDto) {
     const doc = await this.usersService.createUser(createUserDto);
 
@@ -56,6 +60,8 @@ export class UsersController {
   @ApiOperation({
     summary: 'Get users',
   })
+  @ApiBearerAuth()
+  @Role(UserRole.Owner)
   @HttpCode(HttpStatus.OK)
   async getUsers(@Query('role') role: string) {
     return await this.usersService.getUsers(role);
@@ -74,6 +80,8 @@ export class UsersController {
   @ApiOperation({
     summary: 'Delete user',
   })
+  @ApiBearerAuth()
+  @Role(UserRole.Owner)
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteUser(@Query('id', new ParseMongoIdPipe()) id: Types.ObjectId) {
     await this.usersService.deleteUser(id);
@@ -92,6 +100,8 @@ export class UsersController {
   @ApiOperation({
     summary: 'Reset user password',
   })
+  @ApiBearerAuth()
+  @Role(UserRole.Owner)
   @HttpCode(HttpStatus.NO_CONTENT)
   async updateUser(@Query('id', new ParseMongoIdPipe()) id: Types.ObjectId) {
     await this.usersService.resetPassword(id);
