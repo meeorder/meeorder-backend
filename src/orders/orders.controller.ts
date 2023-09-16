@@ -128,8 +128,7 @@ export class OrdersController {
   @ApiNoContentResponse()
   @ApiOperation({
     summary: 'Cancel order',
-    description:
-      'Cancel order and disable addons, ingredients(not implemented) if included',
+    description: 'Cancel order and disable addons, ingredients if included',
   })
   @ApiBearerAuth()
   @Role(UserRole.Employee)
