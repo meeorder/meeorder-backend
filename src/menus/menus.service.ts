@@ -161,8 +161,6 @@ export class MenusService {
       ...this.groupCategoryAggregation,
     ];
 
-    console.log(JSON.stringify(script));
-
     const result = await this.menuModel.aggregate(script).exec();
     return result;
   }
