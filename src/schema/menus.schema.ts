@@ -45,7 +45,7 @@ export class MenuSchema {
   @ApiProperty({ description: 'Menu addons' })
   addons: Ref<AddonSchema>[];
 
-  @Prop({ required: true, ref: () => IngredientSchema, default: [] })
+  @Prop({ ref: () => IngredientSchema, default: [] })
   @ApiProperty({ description: 'Menu ingredients' })
   ingredients: Ref<IngredientSchema>[];
 
