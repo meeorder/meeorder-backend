@@ -49,7 +49,7 @@ export class UserSteps {
   async updateUserRole(dt: DataTable) {
     const req = dt.hashes()[0];
     this.workspace.response = await this.workspace.axiosInstance.patch(
-      `/users/${req._id}/role`,
+      `/users/${req.id}/role`,
       {
         role: req.role,
       },

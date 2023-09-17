@@ -93,6 +93,7 @@ Feature: Users
     When update user info
       | newUsername | oldPassword |
       | vjump       | ixq         |
+    Then should return status code 204
 
   Scenario: Update new username with incorrected password
     Given users
@@ -104,6 +105,7 @@ Feature: Users
     When update user info
       | newUsername | oldPassword |
       | vjump       | xxx         |
+    Then should return status code 400
 
   Scenario: Update new password with corrected password
     Given users
@@ -115,6 +117,7 @@ Feature: Users
     When update user info
       | newPassword | oldPassword |
       | pass_word   | ixq         |
+    Then should return status code 204
 
   Scenario: Update new password with incorrected password
     Given users
@@ -126,3 +129,4 @@ Feature: Users
     When update user info
       | newPassword | oldPassword |
       | kkk         | xxx         |
+    Then should return status code 400
