@@ -45,6 +45,30 @@ export class UserSteps {
     );
   }
 
+  @when('update user role')
+  async updateUserRole(dt: DataTable) {
+    const req = dt.hashes()[0];
+    this.workspace.response = await this.workspace.axiosInstance.patch(
+      `/users/${req._id}/role`,
+      {
+        role: req.role,
+      },
+    );
+  }
+
+  @when('update user info')
+  async updateUserInfo(dt: DataTable) {
+    const req = dt.hashes()[0];
+    this.workspace.response = await this.workspace.axiosInstance.patch(
+      `/users`,
+      {
+        newUsername: req.newUsername,
+        oldPassword: req.oldPassword,
+        newPassword: req.newPassword,
+      },
+    );
+  }
+
   @after()
   async clearDb() {
     await this.userModel.deleteMany({});
