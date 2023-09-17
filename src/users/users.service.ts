@@ -60,9 +60,7 @@ export class UsersService {
 
   async deleteUser(id: Types.ObjectId) {
     await this.userModel
-      .findByIdAndUpdate(id, {
-        deleted_at: new Date(),
-      })
+      .updateOne({ _id: id }, { deleted_at: new Date() })
       .exec();
   }
 
@@ -78,9 +76,12 @@ export class UsersService {
 
   async updateRole(id: Types.ObjectId, updateRole: UpdateRoleDto) {
     await this.userModel
-      .findByIdAndUpdate(id, {
-        role: updateRole.role,
-      })
+      .updateOne(
+        { _id: id },
+        {
+          role: updateRole.role,
+        },
+      )
       .exec();
   }
 

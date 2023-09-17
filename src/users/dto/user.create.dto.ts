@@ -14,7 +14,6 @@ export const minUsernameLength = 4;
 
 export enum UserRoleString {
   Owner = 'Owner',
-  Chef = 'Chef',
   Cashier = 'Cashier',
   Employee = 'Employee',
   Customer = 'Customer',
