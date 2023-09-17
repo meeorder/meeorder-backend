@@ -70,15 +70,34 @@ Feature: Addons
       | _id                      | title  | price | deleted_at |
       | 64f87a87bf47f5c1e79a04db | Addon1 | 22    |            |
     When update addon by id "64f87a87bf47f5c1e79a04db"
-      | title  | price | available |
-      | Addon1 | 999   | false     |
+      | title  | price |
+      | Addon1 | 999   |
     Then should return status code 200
     When get addon by id "64f87a87bf47f5c1e79a04db"
     Then should response data be
-      | key        | value                    | type    |
-      | _id        | 64f87a87bf47f5c1e79a04db | string  |
-      | title      | Addon1                   | string  |
-      | price      | 999                      | number  |
-      | deleted_at | null                     | null    |
-      | available  | false                    | boolean |
+      | key        | value                    | type   |
+      | _id        | 64f87a87bf47f5c1e79a04db | string |
+      | title      | Addon1                   | string |
+      | price      | 999                      | number |
+      | deleted_at | null                     | null   |
+  Scenario: Update addon to activate
+    Given login as
+      | id                       | username       | role |
+      | 64ff1bbf76e1dfabe0337a1b | meeorder_owner | 100  |
+    And addons
+      | _id                      | title  | price | deleted_at | available |
+      | 64f87a87bf47f5c1e79a04db | Addon1 | 22    |            | false     |
+    When activate addon "64f87a87bf47f5c1e79a04db"
+    Then should return status code 204
+    And addon "64f87a87bf47f5c1e79a04db" should be enabled
+  Scenario: Update addon to deactivate
+    Given login as
+      | id                       | username       | role |
+      | 64ff1bbf76e1dfabe0337a1b | meeorder_owner | 100  |
+    And addons
+      | _id                      | title  | price | deleted_at | available |
+      | 64f87a87bf47f5c1e79a04db | Addon1 | 22    |            | true      |
+    When deactivate addon "64f87a87bf47f5c1e79a04db"
+    Then should return status code 204
+    And addon "64f87a87bf47f5c1e79a04db" should be disabled
 

@@ -85,10 +85,38 @@ export class AddonstepDefination {
     );
   }
 
+  @when('activate addon {string}')
+  async activateAddon(id: string) {
+    this.workspace.response = await this.workspace.axiosInstance.patch(
+      `/addons/${id}/activate`,
+    );
+  }
+
+  @when('deactivate addon {string}')
+  async deactivateAddon(id: string) {
+    this.workspace.response = await this.workspace.axiosInstance.patch(
+      `/addons/${id}/deactivate`,
+    );
+  }
+
   @then('addon {string} should be disabled')
   async addonShouldBeDisabled(id: string) {
-    const addon = await this.addonModel.findById(id).lean().exec();
-    expect(addon.available).toBeFalsy();
+    const addon = await this.addonModel
+      .findById(id)
+      .select('available')
+      .lean()
+      .exec();
+    expect(addon.available).toBe(false);
+  }
+
+  @then('addon {string} should be enabled')
+  async addonShouldBeEnabled(id: string) {
+    const addon = await this.addonModel
+      .findById(id)
+      .select('available')
+      .lean()
+      .exec();
+    expect(addon.available).toBe(true);
   }
 
   @after()

@@ -59,4 +59,11 @@ export class AddonsService {
       .orFail()
       .exec();
   }
+
+  setAvailable(id: Types.ObjectId, available: boolean) {
+    return this.addonModel
+      .updateOne({ _id: id }, { $set: { available } }, { new: true })
+      .lean()
+      .exec();
+  }
 }
