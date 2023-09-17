@@ -92,17 +92,23 @@ export class UsersService {
     if (argon2.verify(user.password, updateInfo.oldPassword)) {
       if (updateInfo.newUsername) {
         await this.userModel
-          .findByIdAndUpdate(userId, {
-            username: updateInfo.newUsername,
-          })
+          .updateOne(
+            { _id: userId },
+            {
+              username: updateInfo.newUsername,
+            },
+          )
           .exec();
       }
       if (updateInfo.newPassword) {
         const hashedPassword = await argon2.hash(updateInfo.newPassword);
         await this.userModel
-          .findByIdAndUpdate(userId, {
-            password: hashedPassword,
-          })
+          .updateOne(
+            { _id: userId },
+            {
+              password: hashedPassword,
+            },
+          )
           .exec();
       }
     } else {
