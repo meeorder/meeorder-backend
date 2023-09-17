@@ -23,6 +23,7 @@ export class UpdateInfoDto {
   @ApiProperty({ type: String, description: 'Old Password' })
   @IsString()
   oldPassword: string;
+
   @ApiProperty({ type: String, description: 'New Password' })
   @IsOptional()
   @IsString()
