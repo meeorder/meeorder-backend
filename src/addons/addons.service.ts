@@ -1,6 +1,6 @@
 import { CreateAddonDto } from '@/addons/dto/addon.dto';
 import { AddonSchema } from '@/schema/addons.schema';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { ReturnModelType } from '@typegoose/typegoose';
 import { Types } from 'mongoose';
 import { InjectModel } from 'nest-typegoose';
@@ -36,6 +36,7 @@ export class AddonsService {
       .findOneAndUpdate({ _id: id, deleted_at: null }, updateAddon, {
         new: true,
       })
+      .orFail(() => new NotFoundException('Addon not found'))
       .exec();
   }
 
@@ -56,6 +57,13 @@ export class AddonsService {
     return this.addonModel
       .updateOne({ _id: id }, { deleted_at: new Date() })
       .orFail()
+      .exec();
+  }
+
+  setAvailable(id: Types.ObjectId, available: boolean) {
+    return this.addonModel
+      .updateOne({ _id: id }, { $set: { available } }, { new: true })
+      .lean()
       .exec();
   }
 }

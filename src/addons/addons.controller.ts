@@ -1,5 +1,7 @@
 import { CreateAddonDto } from '@/addons/dto/addon.dto';
+import { UpdateAddonDto } from '@/addons/dto/update-addon.dto';
 import { Role } from '@/decorator/roles.decorator';
+import { ParseMongoIdPipe } from '@/pipes/mongo-id.pipe';
 import { AddonSchema } from '@/schema/addons.schema';
 import { UserRole } from '@/schema/users.schema';
 import {
@@ -11,6 +13,7 @@ import {
   HttpException,
   HttpStatus,
   Param,
+  Patch,
   Post,
   Put,
   Query,
@@ -23,7 +26,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { MongooseError } from 'mongoose';
+import { MongooseError, Types } from 'mongoose';
 import { AddonsService } from './addons.service';
 
 @Controller({ path: 'addons', version: '1' })
@@ -96,16 +99,8 @@ export class AddonsController {
   @ApiParam({ name: 'id', type: String, description: 'Addon ID (ObjectID)' })
   @Put(':id')
   @Role(UserRole.Owner)
-  async updateAddon(@Param('id') id: string, @Body() doc: CreateAddonDto) {
-    try {
-      await this.addonService.updateAddon(id, doc);
-    } catch (e) {
-      if (e instanceof MongooseError) {
-        throw new HttpException('Addon not found', HttpStatus.NOT_FOUND);
-      } else {
-        throw e;
-      }
-    }
+  async updateAddon(@Param('id') id: string, @Body() doc: UpdateAddonDto) {
+    await this.addonService.updateAddon(id, doc);
   }
 
   @HttpCode(HttpStatus.NO_CONTENT)
@@ -133,5 +128,31 @@ export class AddonsController {
         throw e;
       }
     }
+  }
+
+  @Patch('/:id/activate')
+  @ApiParam({ name: 'id', type: String, description: 'Addon ID (ObjectID)' })
+  @ApiOperation({
+    summary: 'Change addon status to available',
+  })
+  @ApiBearerAuth()
+  @Role(UserRole.Owner)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async setAvailable(@Param('id', new ParseMongoIdPipe()) id: Types.ObjectId) {
+    await this.addonService.setAvailable(id, true);
+  }
+
+  @Patch('/:id/deactivate')
+  @ApiParam({ name: 'id', type: String, description: 'Addon ID (ObjectID)' })
+  @ApiOperation({
+    summary: 'Change addon status to unavailable',
+  })
+  @ApiBearerAuth()
+  @Role(UserRole.Owner)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async setUnavailable(
+    @Param('id', new ParseMongoIdPipe()) id: Types.ObjectId,
+  ) {
+    await this.addonService.setAvailable(id, false);
   }
 }
