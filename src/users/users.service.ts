@@ -1,5 +1,7 @@
 import { UserRole, UserSchema } from '@/schema/users.schema';
 import { CreateUserDto } from '@/users/dto/user.create.dto';
+import { UpdateInfoDto } from '@/users/dto/user.update.info.dto';
+import { UpdateRoleDto } from '@/users/dto/user.update.role.dto';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { DocumentType, ReturnModelType } from '@typegoose/typegoose';
 import * as argon2 from 'argon2';
@@ -72,5 +74,40 @@ export class UsersService {
         password: hashedPassword,
       })
       .exec();
+  }
+
+  async updateRole(id: Types.ObjectId, updateRole: UpdateRoleDto) {
+    await this.userModel
+      .findByIdAndUpdate(id, {
+        role: updateRole.role,
+      })
+      .exec();
+  }
+
+  async updateUserInfo(userId: Types.ObjectId, updateInfo: UpdateInfoDto) {
+    const user = await this.userModel
+      .findOne({ _id: userId }, { password: true })
+      .exec();
+    if (argon2.verify(user.password, updateInfo.oldPassword)) {
+      if (updateInfo.newUsername) {
+        await this.userModel
+          .findByIdAndUpdate(userId, {
+            username: updateInfo.newUsername,
+          })
+          .exec();
+      }
+      if (updateInfo.newPassword) {
+        const hashedPassword = await argon2.hash(updateInfo.newPassword);
+        await this.userModel
+          .findByIdAndUpdate(userId, {
+            password: hashedPassword,
+          })
+          .exec();
+      }
+    } else {
+      throw new BadRequestException({
+        message: 'Wrong password',
+      });
+    }
   }
 }
