@@ -10,7 +10,7 @@ export class UpdateRoleDto {
     enum: UserRoleString,
     example: UserRoleString.Owner,
     description:
-      'select role from enum UserRole example: Owner, Chef, Cashier, Employee, Customer',
+      'select role from enum UserRole example: Owner, Cashier, Employee, Customer',
   })
   @Transform(new UserRoleTransform().value())
   role: UserRole;

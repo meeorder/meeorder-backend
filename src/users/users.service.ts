@@ -89,7 +89,7 @@ export class UsersService {
     const user = await this.userModel
       .findOne({ _id: userId }, { password: true })
       .exec();
-    if (argon2.verify(user.password, updateInfo.oldPassword)) {
+    if (await argon2.verify(user.password, updateInfo.oldPassword)) {
       if (updateInfo.newUsername) {
         await this.userModel
           .updateOne(
