@@ -51,12 +51,17 @@ export class OrdersService {
   async getOrders(): Promise<OrderGetDto[]> {
     return <OrderGetDto[]>await this.orderModel
       .find({ deleted_at: null })
-      .populate('addons menu')
+      .populate('addons')
       .populate({
         path: 'session',
         match: { finished_at: null },
         populate: { path: 'table' },
       })
+      .populate({
+        path: 'menu',
+        populate: { path: 'category' },
+      })
+      .lean()
       .exec();
   }
 
