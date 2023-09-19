@@ -1,6 +1,5 @@
 import { AddonsService } from '@/addons/addons.service';
 import { CreateOrderDto } from '@/orders/dto/order.create.dto';
-import { OrderGetDto } from '@/orders/dto/order.get.dto';
 import { OrderStatus } from '@/orders/enums/orders.status';
 import { OrdersSchema } from '@/schema/order.schema';
 import { SessionService } from '@/session/session.service';
@@ -48,15 +47,20 @@ export class OrdersService {
     await this.orderModel.insertMany(insertObject);
   }
 
-  async getOrders(): Promise<OrderGetDto[]> {
-    return <OrderGetDto[]>await this.orderModel
+  getOrders() {
+    return this.orderModel
       .find({ deleted_at: null })
-      .populate('addons menu')
+      .populate('addons')
       .populate({
         path: 'session',
         match: { finished_at: null },
         populate: { path: 'table' },
       })
+      .populate({
+        path: 'menu',
+        populate: { path: 'category' },
+      })
+      .lean()
       .exec();
   }
 
