@@ -131,3 +131,48 @@ Feature: Users
       | kkk         | xxx         |
     Then should return status code 400
 
+  Scenario: Owner resets test password
+    Given login as
+      | id                       | username       | role |
+      | 64ff1bbf76e1dfabe0337a1b | meeorder_owner | 100  |
+    And users
+      | id                       | username | password | role |
+      | 6505b9c900f367f6586cc20f | test     | pass     | 1    |
+    When reset password
+      | id                       |
+      | 6505b9c900f367f6586cc20f |
+    Then should return status code 204
+
+  Scenario: Owner resets him/herself
+    Given login as
+      | id                       | username       | role |
+      | 64ff1bbf76e1dfabe0337a1b | meeorder_owner | 100  |
+    When reset password
+      | id                       |
+      | 64ff1bbf76e1dfabe0337a1b |
+    Then should return status code 400
+
+  Scenario: Owner delete user
+    Given login as
+      | id                       | username       | role |
+      | 64ff1bbf76e1dfabe0337a1b | meeorder_owner | 100  |
+    And users
+      | id                       | username | password | role |
+      | 6505b9c900f367f6586cc20f | test     | pass     | 1    |
+    When delete user
+      | id                       |
+      | 6505b9c900f367f6586cc20f |
+    Then should return status code 204
+
+  Scenario: Owner delete owner user
+    Given users
+      | _id                      | username | password | role | point |
+      | 64f87576dced99c4e4e93468 | vjump    | kung     | 100  | 0     |
+    When login with username and password
+      | username | password |
+      | vjump    | kung     |
+    When delete user
+      | id                       |
+      | 64f87576dced99c4e4e93468 |
+    Then should return status code 400
+

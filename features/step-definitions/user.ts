@@ -69,6 +69,22 @@ export class UserSteps {
     );
   }
 
+  @when('delete user')
+  async deleteUser(dt: DataTable) {
+    const req = dt.hashes()[0];
+    this.workspace.response = await this.workspace.axiosInstance.delete(
+      `/users?id=${req.id}`,
+    );
+  }
+
+  @when('reset password')
+  async resetPassword(dt: DataTable) {
+    const req = dt.hashes()[0];
+    this.workspace.response = await this.workspace.axiosInstance.post(
+      `/users/reset/password?id=${req.id}`,
+    );
+  }
+
   @after()
   async clearDb() {
     await this.userModel.deleteMany({});

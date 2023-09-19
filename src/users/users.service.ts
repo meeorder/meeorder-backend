@@ -87,30 +87,24 @@ export class UsersService {
 
   async updateUserInfo(userId: Types.ObjectId, updateInfo: UpdateInfoDto) {
     const user = await this.userModel
-      .findOne({ _id: userId }, { password: true })
+      .findOne({ _id: userId }, { username: true, password: true })
       .exec();
     if (await argon2.verify(user.password, updateInfo.oldPassword)) {
       if (updateInfo.newUsername) {
-        await this.userModel
-          .updateOne(
-            { _id: userId },
-            {
-              username: updateInfo.newUsername,
-            },
-          )
-          .exec();
+        user.username = updateInfo.newUsername;
       }
       if (updateInfo.newPassword) {
-        const hashedPassword = await argon2.hash(updateInfo.newPassword);
-        await this.userModel
-          .updateOne(
-            { _id: userId },
-            {
-              password: hashedPassword,
-            },
-          )
-          .exec();
+        user.password = await argon2.hash(updateInfo.newPassword);
       }
+      await this.userModel
+        .updateOne(
+          { _id: userId },
+          {
+            username: user.username,
+            password: user.password,
+          },
+        )
+        .exec();
     } else {
       throw new BadRequestException({
         message: 'Wrong password',

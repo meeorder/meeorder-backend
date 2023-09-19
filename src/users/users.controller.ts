@@ -95,7 +95,7 @@ export class UsersController {
     @User() { id }: UserJwt,
     @Query('id', new ParseMongoIdPipe()) deleteId: Types.ObjectId,
   ) {
-    if (id === deleteId.toString()) {
+    if (deleteId.equals(id)) {
       throw new BadRequestException({
         message: 'Cannot delete yourself',
       });
@@ -123,7 +123,7 @@ export class UsersController {
     @User() { id }: UserJwt,
     @Query('id', new ParseMongoIdPipe()) resetId: Types.ObjectId,
   ) {
-    if (id === resetId.toString()) {
+    if (resetId.equals(id)) {
       throw new BadRequestException({
         message: 'Cannot reset password yourself',
       });
@@ -155,7 +155,7 @@ export class UsersController {
     @Param('id', new ParseMongoIdPipe()) UpdateId: Types.ObjectId,
     @Body() updateRoleDto: UpdateRoleDto,
   ) {
-    if (id === UpdateId.toString()) {
+    if (UpdateId.equals(id)) {
       throw new BadRequestException({
         message: 'Cannot update role yourself',
       });
