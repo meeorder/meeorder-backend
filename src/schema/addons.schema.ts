@@ -3,7 +3,13 @@ import { Prop, modelOptions } from '@typegoose/typegoose';
 import { Types } from 'mongoose';
 
 @modelOptions({
-  schemaOptions: { collection: 'addons' },
+  schemaOptions: {
+    collection: 'addons',
+    timestamps: {
+      createdAt: 'created_at',
+      updatedAt: false,
+    },
+  },
 })
 export class AddonSchema {
   @Prop({ auto: true })
@@ -25,6 +31,9 @@ export class AddonSchema {
     description: 'Addon deletion date',
   })
   deleted_at: Date;
+
+  @ApiProperty({ type: Date })
+  created_at: Date;
 
   @Prop({ default: true })
   @ApiProperty({ type: Boolean, description: 'Addon status' })

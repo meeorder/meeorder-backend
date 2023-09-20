@@ -12,6 +12,10 @@ export enum UserRole {
 @modelOptions({
   schemaOptions: {
     collection: 'users',
+    timestamps: {
+      createdAt: 'created_at',
+      updatedAt: false,
+    },
   },
 })
 export class UserSchema {
@@ -34,7 +38,6 @@ export class UserSchema {
   @ApiProperty({ enum: UserRole, description: 'User role' })
   role: UserRole;
 
-  @prop({ default: new Date() })
   @ApiProperty({
     type: Date,
     default: new Date(),
