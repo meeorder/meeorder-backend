@@ -6,7 +6,7 @@ import { CategorySchema } from '@/schema/categories.schema';
 import { MenuSchema } from '@/schema/menus.schema';
 import { Injectable } from '@nestjs/common';
 import { ReturnModelType } from '@typegoose/typegoose';
-import { Types } from 'mongoose';
+import { PipelineStage, Types } from 'mongoose';
 import { InjectModel } from 'nest-typegoose';
 @Injectable()
 export class MenusService {
@@ -131,9 +131,35 @@ export class MenusService {
     } else if (status === 'all') {
       scriptForStatus = { deleted_at: null };
     }
-    const script = [
+    const script: PipelineStage[] = [
       { $match: { _id: { $exists: true } } },
       { $match: scriptForStatus },
+      {
+        $lookup: {
+          from: 'ingredients',
+          localField: 'ingredients',
+          foreignField: '_id',
+          as: '_ingredients',
+        },
+      },
+      {
+        $addFields: {
+          can_order: {
+            $reduce: {
+              input: '$_ingredients',
+              initialValue: true,
+              in: {
+                $and: ['$$value', '$$this.available'],
+              },
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          _ingredients: 0,
+        },
+      },
       ...this.getAddonInfoAggregation,
       ...this.groupCategoryAggregation,
     ];

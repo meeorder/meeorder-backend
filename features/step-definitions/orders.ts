@@ -45,7 +45,8 @@ export class OrderStepDefination {
         orders: [
           {
             menu: order.menu,
-            addons: [order.addon],
+            addons: order.addon?.split(',') ?? [],
+            ingredients: order.ingredient?.split(',') ?? [],
             additional_info: 'info',
           },
         ],
@@ -86,6 +87,7 @@ export class OrderStepDefination {
       `/orders/${id}/cancel`,
       {
         addons: payload.addons?.split(',') ?? [],
+        ingredients: payload.ingredients?.split(',') ?? [],
         reason: payload.reason ?? 'Reason',
       },
     );

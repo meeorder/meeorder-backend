@@ -8,6 +8,10 @@ import { Types } from 'mongoose';
 @modelOptions({
   schemaOptions: {
     collection: 'sessions',
+    timestamps: {
+      createdAt: 'created_at',
+      updatedAt: false,
+    },
   },
 })
 export class SessionSchema {
@@ -15,7 +19,6 @@ export class SessionSchema {
   @ApiProperty({ type: String, description: 'Session ID' })
   _id: Types.ObjectId;
 
-  @Prop({ default: new Date() })
   @ApiProperty({ type: Date, description: 'Session creation date' })
   created_at: Date;
 

@@ -9,10 +9,10 @@ import {
   MinLength,
 } from 'class-validator';
 
-const maxUsernameLength = 32;
-const minUsernameLength = 4;
+export const maxUsernameLength = 32;
+export const minUsernameLength = 4;
 
-enum UserRoleString {
+export enum UserRoleString {
   Owner = 'Owner',
   Cashier = 'Cashier',
   Employee = 'Employee',

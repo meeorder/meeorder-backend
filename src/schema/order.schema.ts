@@ -7,14 +7,19 @@ import { Prop, Ref, modelOptions } from '@typegoose/typegoose';
 import { Types } from 'mongoose';
 
 @modelOptions({
-  schemaOptions: { collection: 'orders' },
+  schemaOptions: {
+    collection: 'orders',
+    timestamps: {
+      createdAt: 'created_at',
+      updatedAt: false,
+    },
+  },
 })
 export class OrdersSchema {
   @Prop({ auto: true })
   @ApiProperty({ type: String })
   _id: Types.ObjectId;
 
-  @Prop({ name: 'created_at', default: new Date() })
   @ApiProperty({ type: Date, description: 'Order creation date' })
   created_at: Date;
 

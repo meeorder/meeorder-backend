@@ -4,12 +4,31 @@ import { ReturnModelType } from '@typegoose/typegoose';
 import { after, binding, given, then, when } from 'cucumber-tsflow';
 import expect from 'expect';
 import { Workspace } from 'features/step-definitions/workspace';
+import { Types } from 'mongoose';
 @binding([Workspace])
 export class MenuTest {
   private readonly menuModel: ReturnModelType<typeof MenuSchema>;
 
   constructor(private readonly workspace: Workspace) {
     this.menuModel = this.workspace.datasource.getModel(MenuSchema);
+  }
+
+  @given('menus')
+  async givenMenus(dt: DataTable) {
+    const req = dt.hashes();
+    for (const doc of req) {
+      await this.menuModel.create({
+        _id: new Types.ObjectId(doc._id),
+        image: doc.image,
+        title: doc.title,
+        description: doc.description,
+        price: doc.price,
+        category: new Types.ObjectId(doc.category),
+        addons: doc.addons?.split(',') ?? [],
+        ingredients: doc.ingredients?.split(',') ?? [],
+        published_at: doc.published_at ? new Date(doc.published_at) : null,
+      });
+    }
   }
 
   @when('create a menu')
@@ -22,23 +41,6 @@ export class MenuTest {
         price: +menu.price,
       },
     );
-  }
-
-  @given('menus')
-  async givenMenus(dt: DataTable) {
-    const menus = dt.hashes();
-    for (const menu of menus) {
-      this.workspace.response = await this.workspace.axiosInstance.post(
-        '/menus',
-        {
-          _id: menu._id,
-          title: menu.title,
-          price: +menu.price,
-          category: menu.category ? menu.category : undefined,
-          addons: menu.addons ? menu.addons.split(',') : undefined,
-        },
-      );
-    }
   }
 
   @when('unpublish menu {string}')
@@ -170,5 +172,24 @@ export class MenuTest {
   @after()
   async cleanUpDB() {
     await this.menuModel.deleteMany({});
+  }
+
+  @when('get all menus with status {string}')
+  async getAllMenus(status: string) {
+    this.workspace.response = await this.workspace.axiosInstance.get(`/menus`, {
+      params: {
+        status,
+      },
+    });
+  }
+
+  @then('should menu id {string} can_order to be {string}')
+  menuIdShouldBe(id: string, status: string) {
+    const { data } = this.workspace.response;
+    expect(Array.isArray(data?.[0]?.menus)).toBeTruthy();
+    const menus: any[] = data?.[0]?.menus;
+    const menu = menus.find((m) => m._id === id);
+    expect(menu).toBeTruthy();
+    expect(menu.can_order).toBe(status === 'true');
   }
 }

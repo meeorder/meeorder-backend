@@ -3,7 +3,13 @@ import { Prop, modelOptions } from '@typegoose/typegoose';
 import { Types } from 'mongoose';
 
 @modelOptions({
-  schemaOptions: { collection: 'ingredients' },
+  schemaOptions: {
+    collection: 'ingredients',
+    timestamps: {
+      createdAt: 'created_at',
+      updatedAt: false,
+    },
+  },
 })
 export class IngredientSchema {
   @Prop({ auto: true })
@@ -17,4 +23,7 @@ export class IngredientSchema {
   @Prop({ required: true, default: true })
   @ApiProperty({ type: Boolean, description: 'Ingredient status' })
   available: boolean;
+
+  @ApiProperty()
+  created_at: Date;
 }
