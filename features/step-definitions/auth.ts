@@ -44,4 +44,17 @@ export class AuthStep {
       },
     );
   }
+
+  @when('login with username and password')
+  async login_with_jwt(dt: DataTable) {
+    const req = dt.hashes()[0];
+    const token = await this.workspace.axiosInstance.post('/auth/login', {
+      username: req.username,
+      password: req.password,
+    });
+    this.workspace.setHeader(
+      'Authorization',
+      `Bearer ${token.data.access_token}`,
+    );
+  }
 }

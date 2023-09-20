@@ -1,6 +1,6 @@
+import { PopulatedCategoryMenuDto } from '@/menus/dto/populated-category.menu.dto';
 import { OrderStatus } from '@/orders/enums/orders.status';
 import { AddonSchema } from '@/schema/addons.schema';
-import { MenuSchema } from '@/schema/menus.schema';
 import { SessionWithTableDto } from '@/session/dto/session[table].dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { Types } from 'mongoose';
@@ -34,6 +34,6 @@ export class OrderGetDto {
   })
   session: SessionWithTableDto;
 
-  @ApiProperty({ type: () => MenuSchema })
-  menu: MenuSchema;
+  @ApiProperty({ type: () => PopulatedCategoryMenuDto })
+  menu: PopulatedCategoryMenuDto;
 }
