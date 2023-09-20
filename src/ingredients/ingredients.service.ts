@@ -98,4 +98,10 @@ export class IngredientsService {
       )
       .exec();
   }
+
+  activateAllIngredient() {
+    return this.ingredientModel
+      .updateMany({}, { $set: { available: true } })
+      .exec();
+  }
 }

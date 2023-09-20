@@ -118,4 +118,18 @@ export class IngredientsController {
   async remove(@Param('id') id: string) {
     return await this.ingredientsService.deleteIngredient(id);
   }
+
+  // Activate all ingredient
+  @ApiResponse({
+    status: HttpStatus.NO_CONTENT,
+    description: 'All ingredient is now available',
+  })
+  @ApiOperation({
+    summary: 'Make all ingredient available',
+  })
+  @Post('/activate/all')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async activateAllIngredient() {
+    await this.ingredientsService.activateAllIngredient();
+  }
 }
