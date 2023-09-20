@@ -4,7 +4,13 @@ import { Prop, Ref, modelOptions } from '@typegoose/typegoose';
 import { Types } from 'mongoose';
 
 @modelOptions({
-  schemaOptions: { collection: 'coupons' },
+  schemaOptions: {
+    collection: 'coupons',
+    timestamps: {
+      createdAt: 'created_at',
+      updatedAt: false,
+    },
+  },
 })
 export class CouponSchema {
   @Prop({ auto: true })
@@ -65,4 +71,7 @@ export class CouponSchema {
     description: 'Coupon required point',
   })
   required_point: number;
+
+  @ApiProperty({ type: Date })
+  created_at: Date;
 }

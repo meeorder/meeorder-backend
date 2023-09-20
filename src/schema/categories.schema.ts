@@ -2,7 +2,15 @@ import { MenuSchema } from '@/schema/menus.schema';
 import { ApiProperty } from '@nestjs/swagger';
 import { Prop, Ref, modelOptions } from '@typegoose/typegoose';
 import { Types } from 'mongoose';
-@modelOptions({ schemaOptions: { collection: 'categories' } })
+@modelOptions({
+  schemaOptions: {
+    collection: 'categories',
+    timestamps: {
+      createdAt: 'created_at',
+      updatedAt: false,
+    },
+  },
+})
 export class CategorySchema {
   @Prop({ auto: true })
   @ApiProperty({ type: String, description: 'Category ID' })
@@ -23,4 +31,7 @@ export class CategorySchema {
     nullable: true,
   })
   rank: number;
+
+  @ApiProperty({ type: Date })
+  created_at: Date;
 }

@@ -6,7 +6,13 @@ import { modelOptions, Prop, Ref } from '@typegoose/typegoose';
 import { Types } from 'mongoose';
 
 @modelOptions({
-  schemaOptions: { collection: 'menus' },
+  schemaOptions: {
+    collection: 'menus',
+    timestamps: {
+      createdAt: 'created_at',
+      updatedAt: false,
+    },
+  },
 })
 export class MenuSchema {
   @Prop({ auto: true })

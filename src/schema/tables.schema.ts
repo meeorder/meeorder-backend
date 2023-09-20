@@ -3,7 +3,13 @@ import { modelOptions, Prop } from '@typegoose/typegoose';
 import { Types } from 'mongoose';
 
 @modelOptions({
-  schemaOptions: { collection: 'tables' },
+  schemaOptions: {
+    collection: 'tables',
+    timestamps: {
+      createdAt: 'created_at',
+      updatedAt: false,
+    },
+  },
 })
 export class TablesSchema {
   @Prop({ auto: true })
@@ -13,4 +19,7 @@ export class TablesSchema {
   @Prop({ required: true })
   @ApiProperty({ type: String, description: 'Table number' })
   title: string;
+
+  @ApiProperty({ type: Date })
+  created_at: Date;
 }
