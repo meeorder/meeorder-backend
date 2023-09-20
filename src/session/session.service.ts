@@ -18,6 +18,7 @@ import {
   HttpStatus,
   Inject,
   Injectable,
+  NotFoundException,
   forwardRef,
 } from '@nestjs/common';
 import { DocumentType, ReturnModelType } from '@typegoose/typegoose';
@@ -64,7 +65,7 @@ export class SessionService {
     }
     const session = await this.sessionModel
       .findByIdAndUpdate(
-        { _id: id, deleted_at: null },
+        { _id: id, deleted_at: null, finished_at: null },
         {
           $set: {
             finished_at: new Date(),
@@ -74,7 +75,7 @@ export class SessionService {
           new: true,
         },
       )
-      .orFail()
+      .orFail(() => new NotFoundException('Session not found or finished'))
       .exec();
 
     if (session.coupon) {

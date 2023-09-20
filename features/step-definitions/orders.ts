@@ -29,6 +29,7 @@ export class OrderStepDefination {
         addons: order.addons?.split(',') ?? [],
         additional_info: order.additional_info,
         _id: new Types.ObjectId(order._id),
+        status: order.status,
       });
 
       expect(doc).toBeDefined();

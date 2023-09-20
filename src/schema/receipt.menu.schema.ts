@@ -1,6 +1,6 @@
 import { MenuSchema } from '@/schema/menus.schema';
 import { ApiProperty } from '@nestjs/swagger';
-import { prop } from '@typegoose/typegoose';
+import { Ref, isDocument, prop } from '@typegoose/typegoose';
 import { Types } from 'mongoose';
 
 export class ReceiptMenuSchema
@@ -17,4 +17,17 @@ export class ReceiptMenuSchema
   @prop()
   @ApiProperty()
   price: number;
+
+  static fromRef(menu: Ref<MenuSchema>) {
+    if (!isDocument(menu)) {
+      throw new Error('Menu is not a document');
+    }
+
+    const receiptMenu = new ReceiptMenuSchema();
+    receiptMenu._id = menu._id;
+    receiptMenu.title = menu.title;
+    receiptMenu.price = menu.price;
+
+    return receiptMenu;
+  }
 }

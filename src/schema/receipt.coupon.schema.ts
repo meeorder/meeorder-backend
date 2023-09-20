@@ -1,6 +1,6 @@
 import { CouponSchema } from '@/schema/coupons.schema';
 import { ApiProperty } from '@nestjs/swagger';
-import { prop } from '@typegoose/typegoose';
+import { Ref, isDocument, prop } from '@typegoose/typegoose';
 import { Types } from 'mongoose';
 
 export class ReceiptCouponSchema
@@ -17,4 +17,17 @@ export class ReceiptCouponSchema
   @prop()
   @ApiProperty()
   discount: number;
+
+  static fromRef(coupon: Ref<CouponSchema>) {
+    if (!isDocument(coupon)) {
+      throw new Error('Coupon is not a document');
+    }
+
+    const receiptCoupon = new ReceiptCouponSchema();
+    receiptCoupon._id = coupon._id;
+    receiptCoupon.title = coupon.title;
+    receiptCoupon.discount = coupon.discount;
+
+    return receiptCoupon;
+  }
 }

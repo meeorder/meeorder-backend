@@ -132,8 +132,8 @@ export class SessionController {
   }
 
   @ApiResponse({
-    status: HttpStatus.NO_CONTENT,
-    description: 'Session finished',
+    status: HttpStatus.OK,
+    description: 'Receipt of session',
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
@@ -146,18 +146,12 @@ export class SessionController {
   @ApiBearerAuth()
   @Role(UserRole.Employee)
   @Patch(':id/finish')
-  @HttpCode(HttpStatus.NO_CONTENT)
+  @HttpCode(HttpStatus.OK)
   async finishSession(@Param('id', new ParseMongoIdPipe()) id: Types.ObjectId) {
-    try {
-      const session = await this.sessionService.finishSession(id);
-      await this.receiptService.generateReceipt(session);
-    } catch (e) {
-      if (e instanceof MongooseError) {
-        throw new HttpException('Session not found', HttpStatus.NOT_FOUND);
-      } else {
-        throw e;
-      }
-    }
+    const session = await this.sessionService.finishSession(id);
+    const receipt = await this.receiptService.generateReceipt(session);
+
+    return receipt.toObject({ virtuals: true });
   }
 
   @ApiResponse({

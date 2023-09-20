@@ -6,5 +6,6 @@ import { ReceiptService } from './receipt.service';
 @Module({
   imports: [TypegooseModule.forFeature([ReceiptSchema])],
   providers: [ReceiptService],
+  exports: [ReceiptService],
 })
 export class ReceiptModule {}
