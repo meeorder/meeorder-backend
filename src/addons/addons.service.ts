@@ -66,4 +66,8 @@ export class AddonsService {
       .lean()
       .exec();
   }
+
+  activateAllAddon() {
+    return this.addonModel.updateMany({}, { $set: { available: true } }).exec();
+  }
 }

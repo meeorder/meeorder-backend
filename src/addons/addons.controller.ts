@@ -155,4 +155,17 @@ export class AddonsController {
   ) {
     await this.addonService.setAvailable(id, false);
   }
+
+  @ApiResponse({
+    status: HttpStatus.NO_CONTENT,
+    description: 'All addons is now available',
+  })
+  @ApiOperation({
+    summary: 'Make all addons available',
+  })
+  @Post('/activate/all')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async activateAllAddon() {
+    await this.addonService.activateAllAddon();
+  }
 }
