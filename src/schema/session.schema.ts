@@ -1,4 +1,5 @@
 import { CouponSchema } from '@/schema/coupons.schema';
+import { OrdersSchema } from '@/schema/order.schema';
 import { TablesSchema } from '@/schema/tables.schema';
 import { UserSchema } from '@/schema/users.schema';
 import { ApiProperty } from '@nestjs/swagger';
@@ -54,4 +55,11 @@ export class SessionSchema {
     description: 'Session deletion date',
   })
   deleted_at: Date;
+
+  @Prop({
+    ref: () => OrdersSchema,
+    localField: '_id',
+    foreignField: 'session',
+  })
+  orders: Ref<OrdersSchema>[];
 }

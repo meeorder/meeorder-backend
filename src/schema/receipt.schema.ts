@@ -2,22 +2,18 @@ import { ReceiptCouponSchema } from '@/schema/receipt.coupon.schema';
 import { ReceiptMenuSchema } from '@/schema/receipt.menu.schema';
 import { SessionSchema } from '@/schema/session.schema';
 import { ApiProperty } from '@nestjs/swagger';
-import { Ref, modelOptions, prop } from '@typegoose/typegoose';
-import { Types } from 'mongoose';
+import { Ref, index, modelOptions, prop } from '@typegoose/typegoose';
 
 @modelOptions({
   schemaOptions: {
     collection: 'receipts',
     timestamps: {
-      createdAt: true,
+      createdAt: 'created_at',
     },
   },
 })
+@index({ session: 1 })
 export class ReceiptSchema {
-  @prop({ auto: true })
-  @ApiProperty()
-  _id: Types.ObjectId;
-
   @prop({ required: true, ref: () => SessionSchema })
   @ApiProperty({ type: String })
   session: Ref<SessionSchema>;
@@ -41,7 +37,11 @@ export class ReceiptSchema {
   @ApiProperty()
   discount_price: number;
 
+  @ApiProperty()
   get net_price(): number {
     return this.total_price - this.discount_price;
   }
+
+  @ApiProperty()
+  created_at: Date;
 }

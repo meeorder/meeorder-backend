@@ -2,6 +2,7 @@ import { UserJwt } from '@/auth/user.jwt.payload';
 import { Role } from '@/decorator/roles.decorator';
 import { User } from '@/decorator/user.decorator';
 import { ParseMongoIdPipe } from '@/pipes/mongo-id.pipe';
+import { ReceiptService } from '@/receipt/receipt.service';
 import { SessionSchema } from '@/schema/session.schema';
 import { UserRole } from '@/schema/users.schema';
 import { CreateSessionDto } from '@/session/dto/create-session.dto';
@@ -37,7 +38,10 @@ import { CouponDto } from './dto/getcoupon.dto';
 @Controller({ path: 'sessions', version: '1' })
 @ApiTags('sessions')
 export class SessionController {
-  constructor(private readonly sessionService: SessionService) {}
+  constructor(
+    private readonly sessionService: SessionService,
+    private readonly receiptService: ReceiptService,
+  ) {}
 
   @ApiQuery({ name: 'finished', type: Boolean, required: false })
   @ApiResponse({
@@ -145,7 +149,8 @@ export class SessionController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async finishSession(@Param('id', new ParseMongoIdPipe()) id: Types.ObjectId) {
     try {
-      await this.sessionService.finishSession(id);
+      const session = await this.sessionService.finishSession(id);
+      await this.receiptService.generateReceipt(session);
     } catch (e) {
       if (e instanceof MongooseError) {
         throw new HttpException('Session not found', HttpStatus.NOT_FOUND);
