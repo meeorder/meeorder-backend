@@ -1,6 +1,4 @@
-import { AddonSchema } from '@/schema/addons.schema';
 import { CategorySchema } from '@/schema/categories.schema';
-import { IngredientSchema } from '@/schema/ingredients.schema';
 import { MenuSchema } from '@/schema/menus.schema';
 import { DataTable } from '@cucumber/cucumber';
 import { ReturnModelType } from '@typegoose/typegoose';
@@ -13,15 +11,11 @@ import { Types } from 'mongoose';
 export class MenuTest {
   private readonly menuModel: ReturnModelType<typeof MenuSchema>;
   private readonly categoryModel: ReturnModelType<typeof CategorySchema>;
-  private readonly addonModel: ReturnModelType<typeof AddonSchema>;
-  private readonly ingredientModel: ReturnModelType<typeof IngredientSchema>;
 
 
   constructor(private readonly workspace: Workspace) {
     this.menuModel = this.workspace.datasource.getModel(MenuSchema);
     this.categoryModel = this.workspace.datasource.getModel(CategorySchema);
-    this.addonModel = this.workspace.datasource.getModel(AddonSchema);
-    this.ingredientModel = this.workspace.datasource.getModel(IngredientSchema);
   }
 
   async createOtherCategory() {
