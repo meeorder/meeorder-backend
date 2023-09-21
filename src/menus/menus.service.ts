@@ -2,7 +2,6 @@ import { CategoriesService } from '@/categories/categories.service';
 import { CreateMenuDto } from '@/menus/dto/menus.createMenu.dto';
 import { GetAllMenuResponseDto } from '@/menus/dto/menus.getAllMenuResponse.dto';
 import { GetMenuByIdResponseDto } from '@/menus/dto/menus.getMenuByIdReponse.dto';
-import { CategorySchema } from '@/schema/categories.schema';
 import { MenuSchema } from '@/schema/menus.schema';
 import { Injectable } from '@nestjs/common';
 import { ReturnModelType } from '@typegoose/typegoose';
@@ -13,8 +12,6 @@ export class MenusService {
   constructor(
     @InjectModel(MenuSchema)
     private readonly menuModel: ReturnModelType<typeof MenuSchema>,
-    @InjectModel(CategorySchema)
-    private readonly categoryModel: ReturnModelType<typeof CategorySchema>,
     private readonly categoriesService: CategoriesService,
   ) {}
 
@@ -110,6 +107,17 @@ export class MenusService {
       },
     },
     {
+      $addFields: {
+        menus: {
+          $filter: {
+            input: '$menus',
+            as: 'menu',
+            cond: { $ne: ['$$menu', null] },
+          },
+        },
+      },
+    },
+    {
       $sort: {
         'category.rank': 1 as any,
       },
@@ -180,16 +188,7 @@ export class MenusService {
   async createMenu(menuData: CreateMenuDto): Promise<MenuSchema> {
     if (!menuData.category) {
       // If category is not exist, set category to 'other' category
-      const otherCategory = await this.categoryModel
-        .findById(this.categoriesService.othersCategoryID)
-        .exec();
-
-      if (!otherCategory) {
-        this.categoryModel.create({
-          title: 'Others',
-          _id: this.categoriesService.othersCategoryID,
-        });
-      }
+      await this.categoriesService.createOtherCategory();
 
       menuData.category = this.categoriesService.othersCategoryID;
     }
