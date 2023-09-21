@@ -2,6 +2,7 @@ import { UserJwt } from '@/auth/user.jwt.payload';
 import { Role } from '@/decorator/roles.decorator';
 import { User } from '@/decorator/user.decorator';
 import { ParseMongoIdPipe } from '@/pipes/mongo-id.pipe';
+import { ReceiptService } from '@/receipt/receipt.service';
 import { SessionSchema } from '@/schema/session.schema';
 import { UserRole } from '@/schema/users.schema';
 import { CreateSessionDto } from '@/session/dto/create-session.dto';
@@ -37,7 +38,10 @@ import { CouponDto } from './dto/getcoupon.dto';
 @Controller({ path: 'sessions', version: '1' })
 @ApiTags('sessions')
 export class SessionController {
-  constructor(private readonly sessionService: SessionService) {}
+  constructor(
+    private readonly sessionService: SessionService,
+    private readonly receiptService: ReceiptService,
+  ) {}
 
   @ApiQuery({ name: 'finished', type: Boolean, required: false })
   @ApiResponse({
@@ -128,8 +132,8 @@ export class SessionController {
   }
 
   @ApiResponse({
-    status: HttpStatus.NO_CONTENT,
-    description: 'Session finished',
+    status: HttpStatus.OK,
+    description: 'Receipt of session',
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
@@ -142,17 +146,12 @@ export class SessionController {
   @ApiBearerAuth()
   @Role(UserRole.Employee)
   @Patch(':id/finish')
-  @HttpCode(HttpStatus.NO_CONTENT)
+  @HttpCode(HttpStatus.OK)
   async finishSession(@Param('id', new ParseMongoIdPipe()) id: Types.ObjectId) {
-    try {
-      await this.sessionService.finishSession(id);
-    } catch (e) {
-      if (e instanceof MongooseError) {
-        throw new HttpException('Session not found', HttpStatus.NOT_FOUND);
-      } else {
-        throw e;
-      }
-    }
+    const session = await this.sessionService.finishSession(id);
+    const receipt = await this.receiptService.generateReceipt(session);
+
+    return receipt.toObject({ virtuals: true });
   }
 
   @ApiResponse({

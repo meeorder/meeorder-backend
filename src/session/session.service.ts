@@ -18,6 +18,7 @@ import {
   HttpStatus,
   Inject,
   Injectable,
+  NotFoundException,
   forwardRef,
 } from '@nestjs/common';
 import { DocumentType, ReturnModelType } from '@typegoose/typegoose';
@@ -49,7 +50,9 @@ export class SessionService {
     return session;
   }
 
-  async finishSession(id: Types.ObjectId) {
+  async finishSession(
+    id: Types.ObjectId,
+  ): Promise<DocumentType<SessionSchema>> {
     if (
       !(await this.ordersService.getOrdersBySession(id)).every(
         ({ status }) => status === OrderStatus.Done,
@@ -60,31 +63,38 @@ export class SessionService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    const result = await this.sessionModel
-      .updateOne(
-        { _id: id, deleted_at: null },
+    const session = await this.sessionModel
+      .findByIdAndUpdate(
+        { _id: id, deleted_at: null, finished_at: null },
         {
-          finished_at: new Date(),
+          $set: {
+            finished_at: new Date(),
+          },
+        },
+        {
+          new: true,
         },
       )
-      .orFail()
+      .orFail(() => new NotFoundException('Session not found or finished'))
       .exec();
 
-    const session = await this.sessionModel.findById({ _id: id });
-
-    const userUpdateQuery = {};
-
     if (session.coupon) {
-      const coupon = await this.couponModel.findById(session.coupon).exec();
-      userUpdateQuery['$inc'] = { point: -coupon.required_point };
+      const coupon = await this.couponModel
+        .findById(session.coupon)
+        .select('required_point')
+        .lean()
+        .exec();
+      await this.userModel
+        .updateOne(
+          { _id: session.user, deleted_at: null },
+          {
+            $inc: { point: -coupon.required_point },
+          },
+        )
+        .exec();
     }
 
-    await this.userModel.updateOne(
-      { _id: session.user, deleted_at: null },
-      userUpdateQuery,
-    );
-
-    return result;
+    return session;
   }
 
   async getSessionByTable(

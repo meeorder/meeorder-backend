@@ -2,6 +2,7 @@ import { AddonsModule } from '@/addons/addons.module';
 import { CouponsModule } from '@/coupons/coupons.module';
 import { MenusModule } from '@/menus/menus.module';
 import { OrdersModule } from '@/orders/orders.module';
+import { ReceiptModule } from '@/receipt/receipt.module';
 import { CouponSchema } from '@/schema/coupons.schema';
 import { SessionSchema } from '@/schema/session.schema';
 import { UserSchema } from '@/schema/users.schema';
@@ -17,6 +18,7 @@ import { SessionService } from './session.service';
     CouponsModule,
     MenusModule,
     AddonsModule,
+    ReceiptModule,
   ],
   providers: [SessionService],
   controllers: [SessionController],

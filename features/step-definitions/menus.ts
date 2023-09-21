@@ -43,7 +43,7 @@ export class MenuTest {
         title: doc.title,
         description: doc.description,
         price: doc.price,
-        category: new Types.ObjectId(doc.category),
+        category: doc.category ? new Types.ObjectId(doc.category) : null,
         addons: doc.addons?.split(',') ?? [],
         ingredients: doc.ingredients?.split(',') ?? [],
         published_at: doc.published_at ? new Date(doc.published_at) : null,
