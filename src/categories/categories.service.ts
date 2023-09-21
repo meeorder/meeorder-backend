@@ -24,16 +24,16 @@ export class CategoriesService {
 
   async createOtherCategory() {
     const otherCategory = await this.categoryModel
-        .findById(this.othersCategoryID)
-        .exec();
+      .findById(this.othersCategoryID)
+      .exec();
 
-      if (!otherCategory) {
-        this.categoryModel.create({
-          title: 'Others',
-          _id: this.othersCategoryID,
-        });
-      }
-      return otherCategory;
+    if (!otherCategory) {
+      this.categoryModel.create({
+        title: 'Others',
+        _id: this.othersCategoryID,
+      });
+    }
+    return otherCategory;
   }
 
   async getAllCategories() {
