@@ -2,16 +2,19 @@
 @menu
 Feature: Menus
   Scenario: Create a menu
-    And login as
+    When login as
       | id                       | username       | role |
       | 64ff1bbf76e1dfabe0337a1b | meeorder_owner | 100  |
-    When create a menu
+    And create a menu
       | title | price |
       | menu1 | 100   |
     Then should return status code 201
     Then should menu appear in database
 
   Scenario: Get menu by id (No category & addon)
+    When login as
+        | id                       | username       | role |
+        | 64ff1bbf76e1dfabe0337a1b | meeorder_owner | 100  |
     Given menus
       | _id                      | title  | price |
       | 64c5485a510698e8c9e7bdc0 | Menu_1 | 100   |
@@ -31,6 +34,9 @@ Feature: Menus
 
 
   Scenario: Get menu by id (With category, no addon)
+    When login as
+      | id                       | username       | role |
+      | 64ff1bbf76e1dfabe0337a1b | meeorder_owner | 100  |
     Given categories
       | _id                      | title  |
       | 64fc6c5759b4b66f30d67843 | ปูไทย   |
@@ -52,6 +58,9 @@ Feature: Menus
       | menus    | 64c5485a510698e8c9e7bdc0 | array  |
 
   Scenario: Get menu by id (With category & addon)
+    When login as
+      | id                       | username       | role |
+      | 64ff1bbf76e1dfabe0337a1b | meeorder_owner | 100  |
     Given categories
       | _id                      | title  |
       | 64fc6c5759b4b66f30d67843 | ปูไทย   |
@@ -76,16 +85,19 @@ Feature: Menus
       | price   | 100                      | number |
 
     Scenario: Get all menus (Status All)
+      When login as
+        | id                       | username       | role |
+        | 64ff1bbf76e1dfabe0337a1b | meeorder_owner | 100  |
       Given categories
         | _id                      | title  |
         | 64fc6c5759b4b66f30d67843 | Cat1   |
         | 64fc75f0808cb60b8ab9f906 | Cat2   |
       Given menus
        | _id                      | title  | price | category                 | addons                                            |
-       | 64fc76201867d411087a0bbf | Menu_1 | 10    | 64fc6c5759b4b66f30d67843 | 64f5f6b25c81011f9748ba46,64fc724bbb111885fcaf555a |
-       | 64fc764a1867d411087a0bc0 | Menu_2 | 20    | 64fc6c5759b4b66f30d67843 |                                                   |
-       | 64fc76621867d411087a0bc1 | Menu_3 | 30    | 64fc75f0808cb60b8ab9f906 | 64f5f6b25c81011f9748ba46                          |
-       | 64fc76751867d411087a0bc2 | Menu_4 | 40    |                          |                                                   |
+       | 650b3e13e57d82a5170a5b2a | Menu_1 | 10    | 64fc6c5759b4b66f30d67843 | 64f5f6b25c81011f9748ba46,64fc724bbb111885fcaf555a |
+       | 650b3e1d260e9aec3203f548 | Menu_2 | 20    | 64fc6c5759b4b66f30d67843 |                                                   |
+       | 650b3e2267c946b867f5d0f8 | Menu_3 | 30    | 64fc75f0808cb60b8ab9f906 | 64f5f6b25c81011f9748ba46                          |
+       | 650b3e2a668b84ca2f65f8f3 | Menu_4 | 40    |                          |                                                   |
       When update cateogries rank
         | rank                                                                       |
         | 64fc6c5759b4b66f30d67843,64fc75f0808cb60b8ab9f906,64ef35bbe6c66d526b0981f0 |
@@ -99,10 +111,10 @@ Feature: Menus
         | key     | value                                               | type   |
         | _id     | 64fc6c5759b4b66f30d67843                            | string |
         | title   | Cat1                                                | string |
-        | menus   | 64fc76201867d411087a0bbf,64fc764a1867d411087a0bc0   | array  |
+        | menus   | 650b3e13e57d82a5170a5b2a,650b3e1d260e9aec3203f548   | array  |
       Then should menu data at index [0][0] be
         | key     | value                                             | type   |
-        | _id     | 64fc76201867d411087a0bbf                          | string |
+        | _id     | 650b3e13e57d82a5170a5b2a                          | string |
         | title   | Menu_1                                            | string |
         | price   | 10                                                | number |
       Then should addons data at index [0][0][0] be
@@ -117,7 +129,7 @@ Feature: Menus
         | price   | 100                                               | number |
       Then should menu data at index [0][1] be
        | key     | value                                             | type   |
-       | _id     | 64fc764a1867d411087a0bc0                          | string |
+       | _id     | 650b3e1d260e9aec3203f548                          | string |
        | title   | Menu_2                                            | string |
        | price   | 20                                                | number |
 
@@ -125,10 +137,10 @@ Feature: Menus
         | key     | value                                             | type   |
         | _id     | 64fc75f0808cb60b8ab9f906                          | string |
         | title   | Cat2                                              | string |
-        | menus   | 64fc76621867d411087a0bc1                          | array  |
+        | menus   | 650b3e2267c946b867f5d0f8                          | array  |
       Then should menu data at index [1][0] be
         | key     | value                                             | type   |
-        | _id     | 64fc76621867d411087a0bc1                          | string |
+        | _id     | 650b3e2267c946b867f5d0f8                          | string |
         | title   | Menu_3                                            | string |
         | price   | 30                                                | number |
 
@@ -136,14 +148,17 @@ Feature: Menus
         | key     | value                                             | type   |
         | _id     | 64ef35bbe6c66d526b0981f0                          | string |
         | title   | Others                                            | string |
-        | menus   | 64fc76751867d411087a0bc2                          | array  |
+        | menus   | 650b3e2a668b84ca2f65f8f3                          | array  |
       Then should menu data at index [2][0] be
         | key     | value                                             | type   |
-        | _id     | 64fc76751867d411087a0bc2                          | string |
+        | _id     | 650b3e2a668b84ca2f65f8f3                          | string |
         | title   | Menu_4                                            | string |
         | price   | 40                                                | number |
 
     Scenario: Unpublish Menu
+      When login as
+        | id                       | username       | role |
+        | 64ff1bbf76e1dfabe0337a1b | meeorder_owner | 100  |
       Given menus
         | _id                      | title  | price |
         | 64fc76201867d411087a0bbf | Menu_1 | 10    |
@@ -156,6 +171,9 @@ Feature: Menus
         | published_at | null                     | null   |
 
     Scenario: Publish Menu
+      When login as
+        | id                       | username       | role |
+        | 64ff1bbf76e1dfabe0337a1b | meeorder_owner | 100  |
       Given menus
        | _id                      | title  | price |
        | 64fc76201867d411087a0bbf | Menu_1 | 10    |
@@ -166,6 +184,9 @@ Feature: Menus
       Then "published_at" field should not be null in response
 
   Scenario: Get menus
+    When login as
+      | id                       | username       | role |
+      | 64ff1bbf76e1dfabe0337a1b | meeorder_owner | 100  |
     Given menus
       | _id                      | title | description | price | category                 | published_at             | ingredients                                       |
       | 6504b0f69a22c9b19517a35c | Menu1 | Menu1       | 1000  | 003d09009a22c9b19517a35d | 2023-09-15T19:31:41.731Z | 6504b1479a22c9b19517a35e                          |
@@ -183,37 +204,34 @@ Feature: Menus
     And should menu id "6504b0f69a22c9b19517a35c" can_order to be "true"
     And should menu id "6504b0f69a22c9b19517a35d" can_order to be "false"
     And should menu id "6504b0f69a22c9b19517a35e" can_order to be "false"
+
     Scenario: Get all menus (Status: published)
+      When login as
+        | id                       | username       | role |
+        | 64ff1bbf76e1dfabe0337a1b | meeorder_owner | 100  |
       Given categories
           | _id                      | title  |
           | 64fc6c5759b4b66f30d67843 | Cat1   |
           | 64fc75f0808cb60b8ab9f906 | Cat2   |
-        Given menus
-        | _id                      | title  | price | category                 |
-        | 64fc76201867d411087a0bbf | Menu_1 | 10    | 64fc6c5759b4b66f30d67843 |
-        | 64fc764a1867d411087a0bc0 | Menu_2 | 20    | 64fc6c5759b4b66f30d67843 |
-        | 64fc76621867d411087a0bc1 | Menu_3 | 30    | 64fc75f0808cb60b8ab9f906 |
-        | 64fc76751867d411087a0bc2 | Menu_4 | 40    |                          |
-        When update cateogries rank
-          | rank                                                                       |
-          | 64fc6c5759b4b66f30d67843,64fc75f0808cb60b8ab9f906,64ef35bbe6c66d526b0981f0 |
-        When unpublish menu "64fc76201867d411087a0bbf"
-        When unpublish menu "64fc76621867d411087a0bc1"
-        When get all menus with status "published"
-        Then should category data at index 0 be
-          | key     | value                                             | type   |
-          | _id     | 64fc6c5759b4b66f30d67843                          | string |
-          | title   | Cat1                                              | string |
-          | menus   | 64fc764a1867d411087a0bc0                          | array  |
-
-        Then should category data at index 1 be
-          | key     | value                                             | type   |
-          | _id     | 64fc75f0808cb60b8ab9f906                          | string |
-          | title   | Cat2                                              | string |
-          | menus   |                                                   | array  |
-
-        Then should category data at index 2 be
-          | key     | value                                             | type   |
-          | _id     | 64ef35bbe6c66d526b0981f0                          | string |
-          | title   | Others                                            | string |
-          | menus   | 64fc76751867d411087a0bc2                          | array  |
+      Given menus
+      | _id                      | title  | price | category                 |
+      | 64fc76201867d411087a0bbf | Menu_1 | 10    | 64fc6c5759b4b66f30d67843 |
+      | 64fc764a1867d411087a0bc0 | Menu_2 | 20    | 64fc6c5759b4b66f30d67843 |
+      | 64fc76621867d411087a0bc1 | Menu_3 | 30    | 64fc75f0808cb60b8ab9f906 |
+      | 64fc76751867d411087a0bc2 | Menu_4 | 40    |                          |
+      When update cateogries rank
+        | rank                                                                       |
+        | 64fc6c5759b4b66f30d67843,64fc75f0808cb60b8ab9f906,64ef35bbe6c66d526b0981f0 |
+      When publish menu "64fc76201867d411087a0bbf"
+      When publish menu "64fc76621867d411087a0bc1"
+      When get all menus with status "published"
+      Then should menu data at index [0][0] be
+        | key     | value                                             | type   |
+        | _id     | 64fc76201867d411087a0bbf                          | string |
+        | title   | Menu_1                                            | string |
+        | price   | 10                                                | number |
+      Then should menu data at index [1][0] be
+        | key     | value                                             | type   |
+        | _id     | 64fc76621867d411087a0bc1                          | string |
+        | title   | Menu_3                                            | string |
+        | price   | 30                                                | number |
