@@ -27,6 +27,8 @@ export class Workspace {
           return { ...item, value: null };
         case 'undefined':
           return { ...item, value: undefined };
+        case 'array':
+          return { ...item, value: item.value ? item.value.split(',') : [] };
         default:
           return item;
       }

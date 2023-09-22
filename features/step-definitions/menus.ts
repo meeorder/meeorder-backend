@@ -1,126 +1,35 @@
-import { CreateMenuDto } from '@/menus/dto/menus.createMenu.dto';
+import { CategorySchema } from '@/schema/categories.schema';
 import { MenuSchema } from '@/schema/menus.schema';
 import { DataTable } from '@cucumber/cucumber';
 import { ReturnModelType } from '@typegoose/typegoose';
-import { binding, given, then, when } from 'cucumber-tsflow';
+import { after, binding, given, then, when } from 'cucumber-tsflow';
 import expect from 'expect';
 import { Workspace } from 'features/step-definitions/workspace';
 import { Types } from 'mongoose';
+
 @binding([Workspace])
 export class MenuTest {
   private readonly menuModel: ReturnModelType<typeof MenuSchema>;
+  private readonly categoryModel: ReturnModelType<typeof CategorySchema>;
+
 
   constructor(private readonly workspace: Workspace) {
     this.menuModel = this.workspace.datasource.getModel(MenuSchema);
+    this.categoryModel = this.workspace.datasource.getModel(CategorySchema);
   }
 
-  private menuData: CreateMenuDto;
+  async createOtherCategory() {
+    const otherCategory = await this.categoryModel
+        .findById("64ef35bbe6c66d526b0981f0")
+        .exec();
 
-  private menuId: string;
-
-  @given('a menu')
-  givenMenu() {
-    this.menuData = {
-      image: 'https://via.placeholder.com/150',
-      title: 'Menu 1',
-      description: 'Menu 1 description',
-      price: 100,
-      category: new Types.ObjectId('5f9d88b9c3b9c3b9c3b9c3ba'),
-      addons: [
-        new Types.ObjectId('5f9d88b9c3b9c3b9c3b9c3bc'),
-        new Types.ObjectId('5f9d88b9c3b9c3b9c3b9c3bb'),
-      ],
-    };
-  }
-
-  @given('menus')
-  async givenMenus(dt: DataTable) {
-    const req = dt.hashes();
-    for (const doc of req) {
-      await this.menuModel.create({
-        _id: new Types.ObjectId(doc._id),
-        image: doc.image,
-        title: doc.title,
-        description: doc.description,
-        price: doc.price,
-        category: doc.category ? new Types.ObjectId(doc.category) : null,
-        addons: doc.addons?.split(',') ?? [],
-        ingredients: doc.ingredients?.split(',') ?? [],
-        published_at: doc.published_at ? new Date(doc.published_at) : null,
+    if (!otherCategory) {
+      this.categoryModel.create({
+        title: 'Others',
+        _id: "64ef35bbe6c66d526b0981f0",
       });
     }
-  }
-
-  @when('create a menu')
-  async createMenu() {
-    this.workspace.response = await this.workspace.axiosInstance.post(
-      '/menus',
-      this.menuData,
-    );
-
-    this.menuId = this.workspace.response.data._id;
-  }
-
-  @when('should return a same menu id when get by the same id')
-  async getMenu() {
-    this.workspace.response = await this.workspace.axiosInstance.get(
-      `/menus/${this.menuId}`,
-    );
-
-    expect(this.workspace.response.data._id).toBe(this.menuId);
-  }
-
-  @when('delete this menu')
-  async deleteMenu() {
-    this.workspace.response = await this.workspace.axiosInstance.delete(
-      `/menus/${this.menuId}`,
-    );
-  }
-
-  @then('update this menu with title {string}')
-  async updateMenu(newName: string) {
-    this.workspace.response = await this.workspace.axiosInstance.put(
-      `/menus/${this.menuId}`,
-      {
-        title: newName,
-      },
-    );
-  }
-
-  @then('menu title should be {string} when get by the same id')
-  async shouldHaveName(newName: string) {
-    this.workspace.response = await this.workspace.axiosInstance.get(
-      `/menus/${this.menuId}`,
-    );
-
-    expect(this.workspace.response.data.title).toBe(newName);
-  }
-
-  @when('get this menu by the same id')
-  async getMenuById() {
-    try {
-      this.workspace.response = await this.workspace.axiosInstance.get(
-        `/menus/${this.menuId}`,
-      );
-    } catch (error) {
-      this.workspace.response = error.response;
-    }
-  }
-
-  @when('publish this menu')
-  async publishMenu() {
-    this.workspace.response = await this.workspace.axiosInstance.patch(
-      `/menus/${this.menuId}/publish`,
-    );
-  }
-
-  @when('get all menus with status {string}')
-  async getAllMenus(status: string) {
-    this.workspace.response = await this.workspace.axiosInstance.get(`/menus`, {
-      params: {
-        status,
-      },
-    });
+    return otherCategory;
   }
 
   @then('should menu id {string} can_order to be {string}')
@@ -131,5 +40,186 @@ export class MenuTest {
     const menu = menus.find((m) => m._id === id);
     expect(menu).toBeTruthy();
     expect(menu.can_order).toBe(status === 'true');
+  }
+
+  @after()
+  async cleanUpDB() {
+    await this.menuModel.deleteMany({});
+  }
+
+  @given('menus')
+  async givenMenus(dt: DataTable) {
+    const req = dt.hashes();
+    await this.createOtherCategory();
+
+    for (const doc of req) {
+      const categoryId = doc.category ? new Types.ObjectId(doc.category) : new Types.ObjectId("64ef35bbe6c66d526b0981f0");
+
+      await this.categoryModel.updateOne({
+        _id: categoryId,
+      }, {
+        $push: {
+          menus: new Types.ObjectId(doc._id),
+        }
+      })
+
+      await this.menuModel.create({
+        _id: new Types.ObjectId(doc._id),
+        image: doc.image,
+        title: doc.title,
+        description: doc.description,
+        price: doc.price,
+        category: categoryId,
+        addons: doc.addons ? doc.addons.split(',').map((v) => new Types.ObjectId(v)) : [],
+        ingredients: doc.ingredients ? doc.ingredients.split(',').map((v) => new Types.ObjectId(v)) : [],
+        published_at: doc.published_at ? new Date(doc.published_at) : null,
+      });
+    }
+  }
+
+  @when('create a menu')
+  async createMenu(dt: DataTable) {
+    const menu = dt.hashes()[0];
+    this.workspace.response = await this.workspace.axiosInstance.post(
+      '/menus',
+      {
+        title: menu.title,
+        price: +menu.price,
+      },
+    );
+  }
+
+  @when('unpublish menu {string}')
+  async unpublishMenu(id: string) {
+    this.workspace.response = await this.workspace.axiosInstance.patch(
+      `/menus/${id}/unpublish`,
+    );
+  }
+
+  @when('publish menu {string}')
+  async publishMenu(id: string) {
+    this.workspace.response = await this.workspace.axiosInstance.patch(
+      `/menus/${id}/publish`,
+    );
+  }
+
+  @when('get menu by id {string}')
+  async getMenuByIdFromResponse(id: string) {
+    this.workspace.response = await this.workspace.axiosInstance.get(
+      `/menus/${id}`,
+    );
+  }
+
+  @when('get all menus with status {string}')
+  async getAllMenusFromResponse(status: string) {
+    this.workspace.response = await this.workspace.axiosInstance.get('/menus', {
+      params: {
+        status,
+      },
+    });
+  }
+
+  @then('should menu appear in database')
+  async shouldMenuAppearInDatabase() {
+    const menu = await this.menuModel.findById(
+      this.workspace.response.data._id,
+    );
+    expect(menu).toBeTruthy();
+  }
+
+  @then('should category data be')
+  shouldCategoryDataBe(dt: DataTable) {
+    const expected = Workspace.responseDtMapType(
+      <{ key: string; value: string; type: string }[]>dt.hashes(),
+    );
+    for (const expectItem of expected) {
+      expect(this.workspace.response.data.category[expectItem.key]).toEqual(
+        expectItem.value,
+      );
+    }
+  }
+
+  @then('should menu data at index {int} be')
+  shouldMenuDataBeDeep(index: number, dt: DataTable) {
+    const expected = Workspace.responseDtMapType(
+      <{ key: string; value: string; type: string }[]>dt.hashes(),
+    );
+
+    for (const expectItem of expected) {
+      console.log(this.workspace.response.data[index][expectItem.key]);
+      expect(this.workspace.response.data[index][expectItem.key]).toEqual(
+        expectItem.value,
+      );
+    }
+  }
+
+  @then('should category data at index {int} be')
+  shouldCategoryDataBeDeep(index: number, dt: DataTable) {
+    const expected = Workspace.responseDtMapType(
+      <{ key: string; value: string; type: string }[]>dt.hashes(),
+    );
+
+    for (const expectItem of expected) {
+      expect(
+        this.workspace.response.data[index].category[expectItem.key],
+      ).toEqual(expectItem.value);
+    }
+  }
+
+  @then('should addons data at index {int} be')
+  shouldAddonsDataBe(index: number, dt: DataTable) {
+    const expected = Workspace.responseDtMapType(
+      <{ key: string; value: string; type: string }[]>dt.hashes(),
+    );
+
+    for (const expectItem of expected) {
+      expect(
+        this.workspace.response.data.addons[index][expectItem.key],
+      ).toEqual(expectItem.value);
+    }
+  }
+
+  @then('should addons data at index [{int}][{int}][{int}] be')
+  shouldAddonsDataBeDeep(
+    firstIndex: number,
+    secondIndex,
+    thirdIndex,
+    dt: DataTable,
+  ) {
+    const expected = Workspace.responseDtMapType(
+      <{ key: string; value: string; type: string }[]>dt.hashes(),
+    );
+
+    for (const expectItem of expected) {
+      expect(
+        this.workspace.response.data[firstIndex].menus[secondIndex].addons[
+          thirdIndex
+        ][expectItem.key],
+      ).toEqual(expectItem.value);
+    }
+  }
+
+  @then('should menu data at index [{int}][{int}] be')
+  shouldMenuDataBe(firstIndex: number, secondIndex: number, dt: DataTable) {
+    const expected = Workspace.responseDtMapType(
+      <{ key: string; value: string; type: string }[]>dt.hashes(),
+    );
+
+    for (const expectItem of expected) {
+      expect(
+        this.workspace.response.data[firstIndex].menus[secondIndex][
+          expectItem.key
+        ],
+      ).toEqual(expectItem.value);
+    }
+  }
+
+  @when('get all menus with status {string}')
+  async getAllMenus(status: string) {
+    this.workspace.response = await this.workspace.axiosInstance.get(`/menus`, {
+      params: {
+        status,
+      },
+    });
   }
 }
