@@ -52,7 +52,7 @@ export class CategoriesService {
       .findById(new Types.ObjectId(id))
       .exec();
     if (!doc) {
-      throw new HttpException("Category doesn't exist", HttpStatus.NOT_FOUND)
+      throw new HttpException("Category doesn't exist", HttpStatus.NOT_FOUND);
     }
     return doc;
   }
@@ -93,7 +93,10 @@ export class CategoriesService {
     await this.categoryModel.bulkWrite(updates);
   }
 
-  async pushManyMenusToCategory(categoryID: Types.ObjectId, menuId: Types.ObjectId[]) {
+  async pushManyMenusToCategory(
+    categoryID: Types.ObjectId,
+    menuId: Types.ObjectId[],
+  ) {
     const doc = await this.categoryModel
       .findByIdAndUpdate(
         categoryID,
