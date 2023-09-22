@@ -210,7 +210,7 @@ export class MenusService {
       return;
     }
 
-    await this.categoriesService.pullMenuFromCategory(
+    await this.categoriesService.popMenuFromCategory(
       oldMenu.category._id,
       oldMenu._id,
     );
@@ -233,7 +233,7 @@ export class MenusService {
       )
       .exec();
     if (<Types.ObjectId>menu.category) {
-      await this.categoriesService.pullMenuFromCategory(
+      await this.categoriesService.popMenuFromCategory(
         menu.category._id,
         menu._id,
       );
@@ -250,7 +250,7 @@ export class MenusService {
       .exec();
 
     if (categories.length > 0) {
-      await this.categoriesService.pullManyMenusFromCategories(categories, ids);
+      await this.categoriesService.popManyMenusFromCategories(categories, ids);
     }
   }
 
