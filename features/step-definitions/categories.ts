@@ -67,6 +67,13 @@ export class CategoriesStepDefination {
     );
   }
 
+  @when('delete category at id {string}')
+  async deleteCategoryAtId(id: string) {
+    this.workspace.response = await this.workspace.axiosInstance.delete(
+      `/categories/${id}`,
+    );
+  }
+
   @when('get all categories')
   async getAllSessions() {
     this.workspace.response =
