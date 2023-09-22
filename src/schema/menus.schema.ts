@@ -55,7 +55,7 @@ export class MenuSchema {
   @ApiProperty({ description: 'Menu ingredients' })
   ingredients: Ref<IngredientSchema>[];
 
-  @Prop({ required: false, default: new Date() })
+  @Prop({ default: new Date() })
   @ApiProperty({ type: Date, description: 'Menu publication date' })
   published_at: Date;
 
