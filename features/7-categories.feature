@@ -80,4 +80,32 @@ Feature: Categories
       | _id  | 64f6d1c98e9e6db0ff03a2f0 | string |
       | rank | 0                        | number |
 
+  Scenario: Delete category (menu inside category should be move to others category)
+    Given categories
+      | _id                      | title |
+      | 64f6d1b448c75d8f1f2982e0 | Cat1  |
+    And login as
+      | id                       | username       | role |
+      | 64ff1bbf76e1dfabe0337a1b | meeorder_owner | 100  |
+    Given menus
+      | _id                      | title  | price | category                 |
+      | 64c5485a510698e8c9e7bdc0 | Menu_1 | 100   | 64f6d1b448c75d8f1f2982e0 |
+      | 64f5f6b25c81011f9748ba46 | Menu_2 | 100   | 64f6d1b448c75d8f1f2982e0 |
+    When delete category at id "64f6d1b448c75d8f1f2982e0"
+    Then should return status code 204
+    When get category by id "64f6d1b448c75d8f1f2982e0"
+    Then should return status code 404
+    When get menu by id "64c5485a510698e8c9e7bdc0"
+    Then should category data be
+      | key | value                    | type   |
+      | _id | 64ef35bbe6c66d526b0981f0 | string |
+    When get menu by id "64f5f6b25c81011f9748ba46"
+    Then should category data be
+      | key | value                    | type   |
+      | _id | 64ef35bbe6c66d526b0981f0 | string |
+    When get category by id "64ef35bbe6c66d526b0981f0"
+    Then should response data be
+      | key   | value                                             | type   |
+      | _id   | 64ef35bbe6c66d526b0981f0                          | string |
+      | menus | 64c5485a510698e8c9e7bdc0,64f5f6b25c81011f9748ba46 | array |
 
