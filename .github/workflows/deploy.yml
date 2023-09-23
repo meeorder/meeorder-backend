@@ -11,7 +11,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: [self-hosted, linux, x64, namirinz]
+    runs-on: "namirinz"
     steps:
     - uses: actions/checkout@v3
     - name: Use Node.js ${{ matrix.node-version }}
