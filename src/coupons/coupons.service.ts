@@ -22,14 +22,19 @@ export class CouponsService {
   }
 
   async getAllCoupons() {
-    const docs = await this.couponModel.find().populate('required_menus').exec();
+    const docs = await this.couponModel
+      .find()
+      .populate('required_menus')
+      .exec();
     return docs;
   }
 
   async getCouponById(id: string) {
     return await this.couponModel
-      .findById(id).populate('required_menus')
-      .orFail(new NotFoundException('Coupon not found')).exec();
+      .findById(id)
+      .populate('required_menus')
+      .orFail(new NotFoundException('Coupon not found'))
+      .exec();
   }
 
   async updateCoupon(id: string, couponData: UpdateCouponDto) {
