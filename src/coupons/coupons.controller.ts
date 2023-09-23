@@ -20,8 +20,8 @@ import {
 } from '@nestjs/swagger';
 import { CouponsService } from './coupons.service';
 import { CreateCouponDto } from './dto/create-coupon.dto';
+import { CouponResponseDTO } from './dto/get-coupon.dto';
 import { UpdateCouponDto } from './dto/update-coupon.dto';
-
 @Controller({ path: 'coupons', version: '1' })
 @ApiTags('coupons')
 @ApiBearerAuth()
@@ -45,7 +45,7 @@ export class CouponsController {
 
   @ApiResponse({
     status: HttpStatus.OK,
-    type: () => CouponSchema,
+    type: () => CouponResponseDTO,
     isArray: true,
   })
   @ApiOperation({
@@ -60,7 +60,7 @@ export class CouponsController {
 
   @ApiResponse({
     status: HttpStatus.OK,
-    type: () => CouponSchema,
+    type: () => CouponResponseDTO,
   })
   @ApiOperation({
     summary: 'Get a coupon by id',
