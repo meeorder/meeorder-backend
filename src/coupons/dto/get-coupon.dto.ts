@@ -1,6 +1,10 @@
 import { MenuSchema } from '@/schema/menus.schema';
 import { ApiProperty } from '@nestjs/swagger';
+import { Types } from 'mongoose';
 export class CouponResponseDTO {
+  @ApiProperty({ type: String, description: 'Coupon ID' })
+  _id: Types.ObjectId;
+
   @ApiProperty({ type: String, description: 'Coupon Code', required: true })
   title: string;
 
