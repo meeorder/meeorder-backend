@@ -3,6 +3,7 @@ import { Role } from '@/decorator/roles.decorator';
 import { User } from '@/decorator/user.decorator';
 import { ParseMongoIdPipe } from '@/pipes/mongo-id.pipe';
 import { ReceiptService } from '@/receipt/receipt.service';
+import { ReceiptSchema } from '@/schema/receipt.schema';
 import { SessionSchema } from '@/schema/session.schema';
 import { UserRole } from '@/schema/users.schema';
 import { CreateSessionDto } from '@/session/dto/create-session.dto';
@@ -134,6 +135,7 @@ export class SessionController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Receipt of session',
+    type: () => ReceiptSchema,
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,

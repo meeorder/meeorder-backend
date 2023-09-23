@@ -10,7 +10,7 @@ import {
   Injectable,
   forwardRef,
 } from '@nestjs/common';
-import { ReturnModelType } from '@typegoose/typegoose';
+import { DocumentType, ReturnModelType } from '@typegoose/typegoose';
 import { Types } from 'mongoose';
 import { InjectModel } from 'nest-typegoose';
 
@@ -93,6 +93,23 @@ export class OrdersService {
     return await this.orderModel
       .find({ session })
       .populate('menu addons')
+      .exec();
+  }
+
+  updateOrder(
+    id: Types.ObjectId,
+    doc: Partial<OrdersSchema>,
+  ): Promise<DocumentType<OrdersSchema>> {
+    return this.orderModel
+      .findByIdAndUpdate(
+        id,
+        {
+          $set: doc,
+        },
+        {
+          new: true,
+        },
+      )
       .exec();
   }
 }

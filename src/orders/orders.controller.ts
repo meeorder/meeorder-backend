@@ -4,8 +4,10 @@ import { IngredientsService } from '@/ingredients/ingredients.service';
 import { CancelOrderDto } from '@/orders/dto/cancel-order.dto';
 import { CreateOrderDto } from '@/orders/dto/order.create.dto';
 import { OrderGetDto } from '@/orders/dto/order.get.dto';
+import { UpdateOrderDto } from '@/orders/dto/order.update.dto';
 import { OrderStatus } from '@/orders/enums/orders.status';
 import { ParseMongoIdPipe } from '@/pipes/mongo-id.pipe';
+import { OrdersSchema } from '@/schema/order.schema';
 import { UserRole } from '@/schema/users.schema';
 import {
   Body,
@@ -22,6 +24,7 @@ import {
   ApiBearerAuth,
   ApiNoContentResponse,
   ApiNotFoundResponse,
+  ApiOkResponse,
   ApiOperation,
   ApiParam,
   ApiResponse,
@@ -65,8 +68,24 @@ export class OrdersController {
     return this.ordersService.getOrders();
   }
 
+  @Patch('/:id')
+  @ApiParam({ name: 'id', type: String, description: 'Order ID' })
+  @ApiBearerAuth()
+  @ApiOkResponse({
+    type: () => OrdersSchema,
+  })
+  @Role(UserRole.Cashier)
+  @HttpCode(HttpStatus.OK)
+  async updateOrder(
+    @Param('id', new ParseMongoIdPipe()) id: Types.ObjectId,
+    @Body() dto: UpdateOrderDto,
+  ) {
+    const doc = await this.ordersService.updateOrder(id, dto);
+    return doc.toObject();
+  }
+
   @Patch('/:id/preparing')
-  @ApiParam({ name: 'id', type: String, description: 'Session ID (ObjectId)' })
+  @ApiParam({ name: 'id', type: String, description: 'Order ID (ObjectId)' })
   @ApiResponse({
     status: HttpStatus.NO_CONTENT,
     description: 'Set order status to preparing',
@@ -85,7 +104,7 @@ export class OrdersController {
   }
 
   @Patch('/:id/ready_to_serve')
-  @ApiParam({ name: 'id', type: String, description: 'Session ID (ObjectId)' })
+  @ApiParam({ name: 'id', type: String, description: 'Order ID (ObjectId)' })
   @ApiResponse({
     status: HttpStatus.NO_CONTENT,
     description: 'Set order status to ready to serve',
