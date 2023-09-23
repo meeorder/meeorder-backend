@@ -1,5 +1,6 @@
 import { AddonsModule } from '@/addons/addons.module';
 import { AuthGuard } from '@/auth/auth.guard';
+import { DashboardModule } from '@/dashboard/dashboard.module';
 import { IngredientsModule } from '@/ingredients/ingredients.module';
 import { MenusModule } from '@/menus/menus.module';
 import { OrdersModule } from '@/orders/orders.module';
@@ -39,6 +40,7 @@ import { UsersModule } from './users/users.module';
     CouponsModule,
     IngredientsModule,
     ReceiptModule,
+    DashboardModule,
   ],
   providers: [
     {
