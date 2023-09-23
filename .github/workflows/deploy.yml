@@ -5,14 +5,8 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ "cd/self-host" ]
-  pull_request:
-    branches: [ "cd/self-host" ]
-env:
-  MONGO_URI: ${{ secrets.MONGO_URI }}
-  MEEORDER_PRIVATE_KEY: ${{ secrets.MEEORDER_PRIVATE_KEY }}
-  MEEORDER_PUBLIC_KEY: ${{ secrets.MEEORDER_PUBLIC_KEY }}
-  PORT: 3000
+    branches:
+      - develop
 
 jobs:
   deploy:
