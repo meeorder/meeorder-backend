@@ -10,6 +10,9 @@ on:
     branches: [ "cd/self-host" ]
 env:
   MONGO_URI: ${{ secrets.MONGO_URI }}
+  MEEORDER_PRIVATE_KEY: ${{MEEORDER_PRIVATE_KEY}}
+  MEEORDER_PUBLIC_KEY: ${{MEEORDER_PUBLIC_KEY}}
+  PORT: 3000
 
 jobs:
   deploy:
