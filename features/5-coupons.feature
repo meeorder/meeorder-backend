@@ -25,6 +25,28 @@ Feature: Coupons
       | _id   | 64c5485a510698e8c9e7bdc0 | string |
       | title | Coupon1                  | string |
 
+  Scenario: Get coupon by id (with required_menus)
+    Given login as
+      | id                       | username       | role |
+      | 64ff1bbf76e1dfabe0337a1b | meeorder_owner | 100  |
+    And menus
+      | _id                      | title   | price |
+      | 650e27bd338ff1ad3089c37b | Menu1   | 100   |
+      | 650e27cc7261ef1da04db59b | Menu2   | 200   |
+    And coupons
+      | _id                      | title   | discount | required_point | required_menus                                    | quota |
+      | 64c5485a510698e8c9e7bdc0 | Coupon1 | 22       | 100            | 650e27bd338ff1ad3089c37b,650e27cc7261ef1da04db59b | 1     |
+    When get coupon by id "64c5485a510698e8c9e7bdc0"
+    Then should return status code 200
+    Then should required_menus at index 0 be
+      | key   | value                    | type   |
+      | _id   | 650e27bd338ff1ad3089c37b | string |
+      | title | Menu1                    | string |
+    Then should required_menus at index 1 be
+      | key   | value                    | type   |
+      | _id   | 650e27cc7261ef1da04db59b | string |
+      | title | Menu2                    | string |
+
   Scenario: Get all coupons
     Given login as
       | id                       | username       | role |
@@ -36,6 +58,28 @@ Feature: Coupons
     When get all coupons
     Then should return status code 200
     Then should response be length 2
+
+  Scenario: Get all coupons (with required_menus)
+    Given login as
+      | id                       | username       | role |
+      | 64ff1bbf76e1dfabe0337a1b | meeorder_owner | 100  |
+    And menus
+      | _id                      | title   | price |
+      | 650e27bd338ff1ad3089c37b | Menu1   | 100   |
+      | 650e27cc7261ef1da04db59b | Menu2   | 200   |
+    And coupons
+      | _id                      | title   | discount | required_point | required_menus                                    | quota |
+      | 64f09e7476b02c5ea04be8ea | Coupon1 | 100      | 100            | 650e27bd338ff1ad3089c37b,650e27cc7261ef1da04db59b | 1     |
+    When get all coupons
+    Then should return status code 200
+    Then should required_menus at index [0][0] be
+      | key   | value                    | type   |
+      | _id   | 650e27bd338ff1ad3089c37b | string |
+      | title | Menu1                    | string |
+    Then should required_menus at index [0][1] be
+      | key   | value                    | type   |
+      | _id   | 650e27cc7261ef1da04db59b | string |
+      | title | Menu2                    | string |
 
   Scenario: Get all coupons by session
     Given login as
