@@ -1,7 +1,8 @@
 import { RankDto } from '@/categories/dto/category.rank.dto';
 import { UpdateCategoryDto } from '@/categories/dto/category.updateCategory.dto';
 import { CategorySchema } from '@/schema/categories.schema';
-import { Injectable } from '@nestjs/common';
+import { MenuSchema } from '@/schema/menus.schema';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ReturnModelType } from '@typegoose/typegoose';
 import { Types, mongo } from 'mongoose';
 import { InjectModel } from 'nest-typegoose';
@@ -10,6 +11,8 @@ export class CategoriesService {
   constructor(
     @InjectModel(CategorySchema)
     private readonly categoryModel: ReturnModelType<typeof CategorySchema>,
+    @InjectModel(MenuSchema)
+    private readonly menuModel: ReturnModelType<typeof MenuSchema>,
   ) {}
 
   public readonly othersCategoryID = new Types.ObjectId(
@@ -48,6 +51,9 @@ export class CategoriesService {
     const doc = await this.categoryModel
       .findById(new Types.ObjectId(id))
       .exec();
+    if (!doc) {
+      throw new HttpException("Category doesn't exist", HttpStatus.NOT_FOUND);
+    }
     return doc;
   }
 
@@ -59,6 +65,20 @@ export class CategoriesService {
   }
 
   async deleteCategory(id: string): Promise<mongo.DeleteResult> {
+    let menuData = await this.categoryModel.aggregate([
+      { $match: { _id: new Types.ObjectId(id) } },
+      { $unwind: '$menus' },
+      { $project: { _id: 0, menus: 1 } },
+    ]);
+    menuData = menuData.map((menu) => menu.menus);
+
+    await this.pushManyMenusToCategory(this.othersCategoryID, menuData);
+
+    await this.menuModel.updateMany(
+      { _id: { $in: menuData } },
+      { category: this.othersCategoryID },
+    );
+
     return await this.categoryModel.deleteOne({ _id: id }).exec();
   }
 
@@ -73,6 +93,20 @@ export class CategoriesService {
     await this.categoryModel.bulkWrite(updates);
   }
 
+  async pushManyMenusToCategory(
+    categoryID: Types.ObjectId,
+    menuId: Types.ObjectId[],
+  ) {
+    const doc = await this.categoryModel
+      .findByIdAndUpdate(
+        categoryID,
+        { $push: { menus: { $each: menuId } } },
+        { new: true },
+      )
+      .exec();
+    return doc;
+  }
+
   async pushMenuToCategory(categoryId: Types.ObjectId, menuId: Types.ObjectId) {
     const doc = await this.categoryModel
       .findByIdAndUpdate(
@@ -84,7 +118,7 @@ export class CategoriesService {
     return doc;
   }
 
-  async pullMenuFromCategory(
+  async popMenuFromCategory(
     categoryId: Types.ObjectId,
     menuId: Types.ObjectId,
   ) {
@@ -98,7 +132,7 @@ export class CategoriesService {
     return doc;
   }
 
-  async pullManyMenusFromCategories(
+  async popManyMenusFromCategories(
     categoryIds: Types.ObjectId[],
     menuIds: Types.ObjectId[],
   ) {
