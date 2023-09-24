@@ -25,7 +25,7 @@ export class DashboardController {
   @ApiOperation({
     summary: 'Get total registered users',
   })
-  @Get(':date')
+  @Get('/customer_report/:date')
   @HttpCode(HttpStatus.OK)
   @Role(UserRole.Owner)
   async getDashboard(@Param('date') date: number) {
