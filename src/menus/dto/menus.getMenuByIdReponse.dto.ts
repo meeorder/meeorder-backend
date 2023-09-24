@@ -1,5 +1,6 @@
 import { AddonSchema } from '@/schema/addons.schema';
 import { CategorySchema } from '@/schema/categories.schema';
+import { IngredientSchema } from '@/schema/ingredients.schema';
 import { ApiProperty } from '@nestjs/swagger';
 import { Types } from 'mongoose';
 export class GetMenuByIdResponseDto {
@@ -27,6 +28,13 @@ export class GetMenuByIdResponseDto {
     description: 'Menu Category',
   })
   category: CategorySchema;
+
+  @ApiProperty({
+    type: String,
+    isArray: true,
+    description: 'Menu Ingredients ID',
+  })
+  ingredients: IngredientSchema[];
 
   @ApiProperty({
     type: AddonSchema,

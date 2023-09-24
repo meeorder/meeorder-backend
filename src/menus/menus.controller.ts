@@ -38,6 +38,9 @@ export class MenusController {
     type: () => GetAllMenuResponseDto,
     isArray: true,
   })
+  @ApiOperation({
+    summary: 'Get all menus',
+  })
   @ApiQuery({ name: 'status', enum: ['published', 'draft', 'all'] })
   @Get()
   async getMenus(
