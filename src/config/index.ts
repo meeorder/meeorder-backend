@@ -12,7 +12,6 @@ export const configuration = () => {
   const DEFAULT_PORT = 3000;
   const DEFAULT_MONGO_DB = 'meeorder';
   const DEFAULT_BASE_URL = 'http://localhost:3000';
-  console.log(process.env.MEEORDER_PRIVATE_KEY);
   return {
     [Config.PORT]: +(process.env.PORT ?? DEFAULT_PORT),
     [Config.MONGO_URI]: process.env.MONGO_URI,
