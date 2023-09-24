@@ -16,11 +16,11 @@ export class OrderCancelSchema {
   @ApiProperty({ type: String })
   reasons: string[];
 
-  @prop({ ref: () => IngredientSchema, default: [], autopopulate: true })
+  @prop({ ref: () => IngredientSchema, default: [] })
   @ApiProperty({ type: String, isArray: true })
   ingredients: Ref<IngredientSchema>[];
 
-  @prop({ ref: () => AddonSchema, default: [], autopopulate: true })
+  @prop({ ref: () => AddonSchema, default: [] })
   @ApiProperty({ type: String, isArray: true })
   addons: Ref<AddonSchema>[];
 
