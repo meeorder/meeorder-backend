@@ -61,6 +61,8 @@ export class OrdersService {
         path: 'menu',
         populate: { path: 'category' },
       })
+      .populate('cancel.ingredients')
+      .populate('cancel.addons')
       .lean()
       .exec();
   }
