@@ -28,6 +28,7 @@ async function bootstrap() {
     secret: 'my-secret', // for cookies signature
     parseOptions: {
       sameSite: false,
+      secure: true,
     },
   });
 
