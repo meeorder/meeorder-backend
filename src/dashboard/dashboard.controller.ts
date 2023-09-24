@@ -29,9 +29,8 @@ export class DashboardController {
   @HttpCode(HttpStatus.OK)
   @Role(UserRole.Owner)
   async getDashboard(@Param('date') date: number) {
-    const parseDate = new ParseMongoDatePipe();
     return await this.dashboardService.getAllUserAmount(
-      parseDate.transform(date),
+      new ParseMongoDatePipe().transform(date),
     );
   }
 }
