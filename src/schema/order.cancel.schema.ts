@@ -7,6 +7,7 @@ import { Ref, modelOptions, prop } from '@typegoose/typegoose';
   schemaOptions: {
     timestamps: {
       createdAt: 'cancelled_at',
+      updatedAt: false,
     },
   },
 })
