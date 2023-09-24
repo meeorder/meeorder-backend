@@ -12,13 +12,20 @@ export const configuration = () => {
   const DEFAULT_PORT = 3000;
   const DEFAULT_MONGO_DB = 'meeorder';
   const DEFAULT_BASE_URL = 'http://localhost:3000';
+  console.log(process.env.MEEORDER_PRIVATE_KEY);
   return {
     [Config.PORT]: +(process.env.PORT ?? DEFAULT_PORT),
     [Config.MONGO_URI]: process.env.MONGO_URI,
     [Config.NODE_ENV]: process.env.NODE_ENV,
     [Config.MONGO_DB_NAME]: process.env.MONGO_DB_NAME ?? DEFAULT_MONGO_DB,
     [Config.BASE_URL]: process.env.BASE_URL ?? DEFAULT_BASE_URL,
-    [Config.MEEORDER_PUBLIC_KEY]: process.env.MEEORDER_PUBLIC_KEY,
-    [Config.MEEORDER_PRIVATE_KEY]: process.env.MEEORDER_PRIVATE_KEY,
+    [Config.MEEORDER_PUBLIC_KEY]: process.env.MEEORDER_PUBLIC_KEY?.replace(
+      /\\n/g,
+      '\n',
+    ),
+    [Config.MEEORDER_PRIVATE_KEY]: process.env.MEEORDER_PRIVATE_KEY?.replace(
+      /\\n/g,
+      '\n',
+    ),
   };
 };
