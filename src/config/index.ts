@@ -18,7 +18,13 @@ export const configuration = () => {
     [Config.NODE_ENV]: process.env.NODE_ENV,
     [Config.MONGO_DB_NAME]: process.env.MONGO_DB_NAME ?? DEFAULT_MONGO_DB,
     [Config.BASE_URL]: process.env.BASE_URL ?? DEFAULT_BASE_URL,
-    [Config.MEEORDER_PUBLIC_KEY]: process.env.MEEORDER_PUBLIC_KEY,
-    [Config.MEEORDER_PRIVATE_KEY]: process.env.MEEORDER_PRIVATE_KEY,
+    [Config.MEEORDER_PUBLIC_KEY]: process.env.MEEORDER_PUBLIC_KEY?.replace(
+      /\\n/g,
+      '\n',
+    ).trim(),
+    [Config.MEEORDER_PRIVATE_KEY]: process.env.MEEORDER_PRIVATE_KEY?.replace(
+      /\\n/g,
+      '\n',
+    ).trim(),
   };
 };
