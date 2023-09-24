@@ -10,8 +10,8 @@ import { Types } from 'mongoose';
 @binding([Workspace])
 export class MenuTest {
   private readonly menuModel: ReturnModelType<typeof MenuSchema>;
-  private readonly categoryModel: ReturnModelType<typeof CategorySchema>;
 
+  private readonly categoryModel: ReturnModelType<typeof CategorySchema>;
 
   constructor(private readonly workspace: Workspace) {
     this.menuModel = this.workspace.datasource.getModel(MenuSchema);
@@ -20,13 +20,13 @@ export class MenuTest {
 
   async createOtherCategory() {
     const otherCategory = await this.categoryModel
-        .findById("64ef35bbe6c66d526b0981f0")
-        .exec();
+      .findById('64ef35bbe6c66d526b0981f0')
+      .exec();
 
     if (!otherCategory) {
-      this.categoryModel.create({
+      await this.categoryModel.create({
         title: 'Others',
-        _id: "64ef35bbe6c66d526b0981f0",
+        _id: '64ef35bbe6c66d526b0981f0',
       });
     }
     return otherCategory;
@@ -53,15 +53,20 @@ export class MenuTest {
     await this.createOtherCategory();
 
     for (const doc of req) {
-      const categoryId = doc.category ? new Types.ObjectId(doc.category) : new Types.ObjectId("64ef35bbe6c66d526b0981f0");
+      const categoryId = doc.category
+        ? new Types.ObjectId(doc.category)
+        : new Types.ObjectId('64ef35bbe6c66d526b0981f0');
 
-      await this.categoryModel.updateOne({
-        _id: categoryId,
-      }, {
-        $push: {
-          menus: new Types.ObjectId(doc._id),
-        }
-      })
+      await this.categoryModel.updateOne(
+        {
+          _id: categoryId,
+        },
+        {
+          $push: {
+            menus: new Types.ObjectId(doc._id),
+          },
+        },
+      );
 
       await this.menuModel.create({
         _id: new Types.ObjectId(doc._id),
@@ -70,8 +75,12 @@ export class MenuTest {
         description: doc.description,
         price: doc.price,
         category: categoryId,
-        addons: doc.addons ? doc.addons.split(',').map((v) => new Types.ObjectId(v)) : [],
-        ingredients: doc.ingredients ? doc.ingredients.split(',').map((v) => new Types.ObjectId(v)) : [],
+        addons: doc.addons
+          ? doc.addons.split(',').map((v) => new Types.ObjectId(v))
+          : [],
+        ingredients: doc.ingredients
+          ? doc.ingredients.split(',').map((v) => new Types.ObjectId(v))
+          : [],
         published_at: doc.published_at ? new Date(doc.published_at) : null,
       });
     }

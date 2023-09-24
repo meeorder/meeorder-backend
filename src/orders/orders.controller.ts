@@ -153,10 +153,15 @@ export class OrdersController {
   @Role(UserRole.Employee)
   @HttpCode(HttpStatus.NO_CONTENT)
   async cancelOrder(
-    @Body() { ingredients, addons, reason }: CancelOrderDto,
+    @Body() { ingredients, addons, reasons }: CancelOrderDto,
     @Param('id', new ParseMongoIdPipe()) id: Types.ObjectId,
   ) {
-    const op = await this.ordersService.cancel(id, reason);
+    const op = await this.ordersService.cancel(
+      id,
+      reasons,
+      ingredients,
+      addons,
+    );
     if (op.matchedCount === 0) {
       throw new NotFoundException({ message: 'Order not found' });
     }

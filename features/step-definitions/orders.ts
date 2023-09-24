@@ -97,7 +97,8 @@ export class OrderStepDefination {
   @then('order {string} should be cancelled')
   async expectOrderShouldBeCancelled(id: string) {
     const order = await this.orderModel.findById(id).lean().exec();
-    expect(order.cancelled_at).toBeTruthy();
+    console.log(JSON.stringify(order));
+    expect(order.cancel).toBeTruthy();
   }
 
   @after()
