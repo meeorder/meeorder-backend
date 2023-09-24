@@ -22,10 +22,10 @@ export const configuration = () => {
     [Config.MEEORDER_PUBLIC_KEY]: process.env.MEEORDER_PUBLIC_KEY?.replace(
       /\\n/g,
       '\n',
-    ),
+    ).trim(),
     [Config.MEEORDER_PRIVATE_KEY]: process.env.MEEORDER_PRIVATE_KEY?.replace(
       /\\n/g,
       '\n',
-    ),
+    ).trim(),
   };
 };
