@@ -1,4 +1,5 @@
 import { CreateAddonDto } from '@/addons/dto/addon.dto';
+import { GetAddonDto } from '@/addons/dto/getaddon.dto';
 import { UpdateAddonDto } from '@/addons/dto/update-addon.dto';
 import { Role } from '@/decorator/roles.decorator';
 import { ParseMongoIdPipe } from '@/pipes/mongo-id.pipe';
@@ -50,7 +51,7 @@ export class AddonsController {
 
   @ApiResponse({
     status: HttpStatus.OK,
-    type: () => AddonSchema,
+    type: () => GetAddonDto,
     isArray: true,
   })
   @Get()
@@ -63,7 +64,7 @@ export class AddonsController {
   @HttpCode(HttpStatus.OK)
   @ApiResponse({
     status: HttpStatus.OK,
-    type: () => AddonSchema,
+    type: () => GetAddonDto,
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
