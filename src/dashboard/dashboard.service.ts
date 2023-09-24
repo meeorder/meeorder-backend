@@ -22,14 +22,18 @@ export class DashboardService {
         $group: { _id: null, count: { $sum: 1 } },
       },
     ]);
+
     const total = await this.userModel.countDocuments({
       deleted_at: null,
       role: 1,
     });
+
+    const old_user = calculate[0].count;
+
     return {
       total_user: total,
-      old_user: calculate[0].count,
-      new_user: total - calculate[0].count,
+      old_user,
+      new_user: total - old_user,
     };
   }
 }
