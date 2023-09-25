@@ -23,7 +23,7 @@ export class IngredientsService {
       $lookup: {
         from: 'menus',
         localField: '_id',
-        foreignField: 'Ingredients',
+        foreignField: 'ingredients',
         as: 'menus',
       },
     },
