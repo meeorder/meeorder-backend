@@ -84,6 +84,33 @@ Feature: Menus
       | title   | Nooooo                   | string |
       | price   | 100                      | number |
 
+  Scenario: Get menu by id (With ingredients)
+    When login as
+      | id                       | username       | role |
+      | 64ff1bbf76e1dfabe0337a1b | meeorder_owner | 100  |
+    Given menus
+      | _id                      | title  | price | ingredients                                       |
+      | 64c5485a510698e8c9e7bdc0 | Menu_1 | 100   | 6511318ac1dda7d2d846eb15,651131a2e048924f426da594 |
+      | 64c5485a510698e8c9e7bdc1 | Menu_2 | 200 |  |
+    And ingredients
+      | _id                      | title |
+      | 6511318ac1dda7d2d846eb15 | bbbbb |
+      | 651131a2e048924f426da594 | aaaaa |
+    When get menu by id "64c5485a510698e8c9e7bdc0"
+    Then should return status code 200
+    Then should response data be
+      | key   | value                    | type   |
+      | _id   | 64c5485a510698e8c9e7bdc0 | string |
+      | title | Menu_1                   | string |
+      | ingredients | 6511318ac1dda7d2d846eb15,651131a2e048924f426da594 | array  |
+    When get menu by id "64c5485a510698e8c9e7bdc1"
+    Then should return status code 200
+    Then should response data be
+      | key         | value                    | type   |
+      | _id         | 64c5485a510698e8c9e7bdc1 | string |
+      | title       | Menu_2                   | string |
+      | ingredients |                          | array  |
+
     Scenario: Get all menus (Status All)
       When login as
         | id                       | username       | role |

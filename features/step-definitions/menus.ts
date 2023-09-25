@@ -199,6 +199,18 @@ export class MenuTest {
     }
   }
 
+  @then('should ingredients data be')
+  async shouldIngredientsDataBe(dt: DataTable) {
+    const expected = Workspace.responseDtMapType(
+      <{ key: string; value: string; type: string }[]>dt.hashes(),
+    );
+    for (const expectItem of expected) {
+      expect(
+        this.workspace.response.data.ingredients[expectItem.key],
+      ).toEqual(expectItem.value);
+    }
+  }
+
   @then('should menu data at index [{int}][{int}] be')
   shouldMenuDataBe(firstIndex: number, secondIndex: number, dt: DataTable) {
     const expected = Workspace.responseDtMapType(
