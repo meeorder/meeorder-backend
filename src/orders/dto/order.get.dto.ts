@@ -28,9 +28,6 @@ export class OrderGetDto {
   @ApiProperty({ type: Date, description: 'for cancel status' })
   cancelled_at: Date;
 
-  @ApiProperty({ type: String, isArray: true })
-  cancel_reason: string[];
-
   @ApiProperty({
     type: () => SessionWithTableDto,
     description: 'Session (table populated)',
