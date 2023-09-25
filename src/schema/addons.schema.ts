@@ -32,7 +32,7 @@ export class AddonSchema {
   })
   deleted_at: Date;
 
-  @ApiProperty({ type: Date })
+  @ApiProperty({ type: Date, default: new Date() })
   created_at: Date;
 
   @Prop({ default: true })

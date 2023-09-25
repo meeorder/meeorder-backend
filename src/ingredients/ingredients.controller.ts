@@ -1,7 +1,10 @@
+import { Role } from '@/decorator/roles.decorator';
 import { CreateIngredientDto } from '@/ingredients/dto/create.ingredient.dto';
+import { GetIngredientDto } from '@/ingredients/dto/get.ingredient.dto';
 import { UpdateIngredientDto } from '@/ingredients/dto/update.ingredient.dto';
 import { IngredientsService } from '@/ingredients/ingredients.service';
 import { IngredientSchema } from '@/schema/ingredients.schema';
+import { UserRole } from '@/schema/users.schema';
 import {
   Body,
   Controller,
@@ -13,7 +16,12 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 @Controller({ path: 'ingredients', version: '1' })
 @ApiTags('ingredients')
@@ -34,6 +42,8 @@ export class IngredientsController {
     summary: 'Create a ingredient',
   })
   @Post()
+  @ApiBearerAuth()
+  @Role(UserRole.Owner)
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() createIngredientDto: CreateIngredientDto) {
     return await this.ingredientsService.createIngredient(createIngredientDto);
@@ -42,7 +52,7 @@ export class IngredientsController {
   // Get all ingredients
   @ApiResponse({
     status: HttpStatus.OK,
-    type: () => IngredientSchema,
+    type: () => GetIngredientDto,
     isArray: true,
   })
   @ApiOperation({
@@ -57,7 +67,7 @@ export class IngredientsController {
   // Get a ingredient by id
   @ApiResponse({
     status: HttpStatus.OK,
-    type: () => IngredientSchema,
+    type: () => GetIngredientDto,
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
@@ -89,6 +99,8 @@ export class IngredientsController {
   @ApiOperation({
     summary: 'Update a ingredient by id',
   })
+  @ApiBearerAuth()
+  @Role(UserRole.Owner)
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
   async updateIngredient(
@@ -113,6 +125,8 @@ export class IngredientsController {
   @ApiOperation({
     summary: 'Delete a ingredient by id',
   })
+  @ApiBearerAuth()
+  @Role(UserRole.Owner)
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
   async remove(@Param('id') id: string) {
@@ -127,6 +141,8 @@ export class IngredientsController {
   @ApiOperation({
     summary: 'Make all ingredient available',
   })
+  @ApiBearerAuth()
+  @Role(UserRole.Owner)
   @Post('/activate/all')
   @HttpCode(HttpStatus.NO_CONTENT)
   async activateAllIngredient() {

@@ -1,4 +1,5 @@
 import { CreateIngredientDto } from '@/ingredients/dto/create.ingredient.dto';
+import { GetIngredientDto } from '@/ingredients/dto/get.ingredient.dto';
 import { UpdateIngredientDto } from '@/ingredients/dto/update.ingredient.dto';
 import { IngredientSchema } from '@/schema/ingredients.schema';
 import {
@@ -16,6 +17,31 @@ export class IngredientsService {
     @InjectModel(IngredientSchema)
     private ingredientModel: ReturnModelType<typeof IngredientSchema>,
   ) {}
+
+  private readonly countIngredientInMenusAggregation = [
+    {
+      $lookup: {
+        from: 'menus',
+        localField: '_id',
+        foreignField: 'ingredients',
+        as: 'menus',
+      },
+    },
+    {
+      $lookup: {
+        from: 'ingredients',
+        localField: '_id',
+        foreignField: '_id',
+        as: 'ingredient',
+      },
+    },
+    {
+      $project: {
+        ingredient: { $arrayElemAt: ['$ingredient', 0] },
+        menus: { $sum: { $size: '$menus' } },
+      },
+    },
+  ];
 
   async createIngredient(ingredientInfo: CreateIngredientDto) {
     try {
@@ -35,16 +61,25 @@ export class IngredientsService {
     }
   }
 
-  async getAllIngredient() {
-    return await this.ingredientModel.find().exec();
+  async getAllIngredient(): Promise<GetIngredientDto[]> {
+    const agg = await this.ingredientModel
+      .aggregate([
+        {
+          $match: { _id: { $exists: true } },
+        },
+        ...this.countIngredientInMenusAggregation,
+      ])
+      .exec();
+
+    return agg.map((Ingredients) => {
+      return new GetIngredientDto(Ingredients.ingredient, Ingredients.menus);
+    });
   }
 
-  async getIngredientById(id: string) {
-    const doc = await this.ingredientModel.findById(id).exec();
-    if (!doc) {
-      throw new NotFoundException('Ingredient not found');
-    }
-    return doc;
+  async getIngredientById(id: string): Promise<GetIngredientDto> {
+    return await this.getAllIngredient().then((Ingredients) => {
+      return Ingredients.find((ingredient) => ingredient._id.toString() === id);
+    });
   }
 
   async updateIngredient(id: string, ingredientInfo: UpdateIngredientDto) {
