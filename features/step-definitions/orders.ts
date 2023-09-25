@@ -89,7 +89,7 @@ export class OrderStepDefination {
       {
         addons: payload.addons?.split(',') ?? [],
         ingredients: payload.ingredients?.split(',') ?? [],
-        reason: payload.reason ?? 'Reason',
+        reasons: payload.reasons?.split(',') ?? [],
       },
     );
   }
