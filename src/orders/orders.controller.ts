@@ -142,7 +142,6 @@ export class OrdersController {
   }
 
   @Patch(':id/cancel')
-  @ApiParam({ name: 'id' })
   @ApiNotFoundResponse()
   @ApiNoContentResponse()
   @ApiOperation({
@@ -150,6 +149,7 @@ export class OrdersController {
     description: 'Cancel order and disable addons, ingredients if included',
   })
   @ApiBearerAuth()
+  @ApiParam({ name: 'id', type: String })
   @Role(UserRole.Employee)
   @HttpCode(HttpStatus.NO_CONTENT)
   async cancelOrder(
