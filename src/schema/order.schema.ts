@@ -60,12 +60,8 @@ export class OrdersSchema {
   cancelled_at: Date;
 
   @Prop({ default: null })
-  @ApiProperty({
-    type: String,
-    description: 'Reason for cancel order',
-    isArray: true,
-  })
-  cancel_reason: string[];
+  @ApiProperty({ type: String, description: 'Reason for cancel order' })
+  cancel_reason: string;
 
   @Prop({ default: null })
   @ApiProperty({

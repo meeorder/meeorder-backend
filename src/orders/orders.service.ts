@@ -81,7 +81,7 @@ export class OrdersService {
       .exec();
   }
 
-  cancel(id: Types.ObjectId, reason: string[]) {
+  cancel(id: Types.ObjectId, reason: string) {
     return this.orderModel
       .updateOne(
         { _id: id },
