@@ -123,7 +123,7 @@ export class OrdersController {
   }
 
   @Patch('/:id/done')
-  @ApiParam({ name: 'id', type: String, description: 'Session ID (ObjectId)' })
+  @ApiParam({ name: 'id', type: String, description: 'Order ID (ObjectId)' })
   @ApiResponse({
     status: HttpStatus.NO_CONTENT,
     description: 'Set order status to done',
