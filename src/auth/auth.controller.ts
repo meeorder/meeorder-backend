@@ -1,3 +1,4 @@
+import { AuthGuard } from '@/auth/auth.guard';
 import { LoginDto } from '@/auth/dto/login.dto';
 import { LoginResponseDto } from '@/auth/dto/login.response.dto';
 import { RegisterDto } from '@/auth/dto/register.dto';
@@ -14,6 +15,7 @@ import {
   HttpStatus,
   Post,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { FastifyReply } from 'fastify';
@@ -64,6 +66,7 @@ export class AuthController {
   @Get('me')
   @ApiOperation({ summary: 'Get current user' })
   @ApiResponse({ type: () => UserResponseDto, status: HttpStatus.OK })
+  @UseGuards(AuthGuard)
   async getMe(@User() { id }: UserJwt) {
     const user = await this.userService.getUserById(new Types.ObjectId(id));
     if (!user) {
