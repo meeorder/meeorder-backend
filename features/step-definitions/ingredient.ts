@@ -1,7 +1,7 @@
 import { IngredientSchema } from '@/schema/ingredients.schema';
 import { DataTable } from '@cucumber/cucumber';
 import { ReturnModelType } from '@typegoose/typegoose';
-import { after, binding, given, then, when } from 'cucumber-tsflow';
+import { binding, given, then, when } from 'cucumber-tsflow';
 import expect from 'expect';
 import { Workspace } from 'features/step-definitions/workspace';
 import { Types } from 'mongoose';
@@ -38,6 +38,35 @@ export class IngredientSteps {
     );
   }
 
+  @when('get ingredient by id {string}')
+  async getIngredientById(id: string) {
+    this.workspace.response = await this.workspace.axiosInstance.get(
+      `/ingredients/${id}`,
+    );
+  }
+
+  @when('get all ingredients')
+  async getAllIngredients() {
+    this.workspace.response = await this.workspace.axiosInstance.get(
+      '/ingredients',
+    );
+
+    console.log(this.workspace.response.data);
+  }
+
+  @then("should ingredient at index {int} be")
+  async shouldIngredientAtIndex(index: number, dt: DataTable) {
+    const expected = Workspace.responseDtMapType(
+      <{ key: string; value: string; type: string }[]>dt.hashes(),
+    );
+
+    for (const expectItem of expected) {
+      expect(
+        this.workspace.response.data[index][expectItem.key],
+      ).toEqual(expectItem.value);
+    }
+  }
+
   @then('ingredient {string} should be disabled')
   async shouldBeDisabled(id: string) {
     const doc = await this.ingredientModel
@@ -48,8 +77,8 @@ export class IngredientSteps {
     expect(doc.available).toBeFalsy();
   }
 
-  @after()
-  async cleanUpDb() {
-    await this.ingredientModel.deleteMany({});
-  }
+  // @after()
+  // async cleanUpDb() {
+  //   await this.ingredientModel.deleteMany({});
+  // }
 }
