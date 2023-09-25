@@ -75,7 +75,13 @@ export class OrdersService {
     await element.updateOne({ status }).exec();
   }
 
-  cancel(id: Types.ObjectId, reason: string) {
+  async deleteOrder(id: Types.ObjectId) {
+    await this.orderModel
+      .updateOne({ _id: id }, { deleted_at: new Date() })
+      .exec();
+  }
+
+  cancel(id: Types.ObjectId, reason: string[]) {
     return this.orderModel
       .updateOne(
         { _id: id },

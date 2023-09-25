@@ -12,6 +12,7 @@ import { UserRole } from '@/schema/users.schema';
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -84,6 +85,25 @@ export class OrdersController {
     return doc.toObject();
   }
 
+  @Patch('/:id/in_queue')
+  @ApiParam({ name: 'id', type: String, description: 'Order ID (ObjectId)' })
+  @ApiResponse({
+    status: HttpStatus.NO_CONTENT,
+    description: 'Set order status to in_queue',
+  })
+  @ApiOperation({
+    summary: 'Change order status to in_queue',
+  })
+  @ApiBearerAuth()
+  @Role(UserRole.Employee)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async inQueue(@Param('id', new ParseMongoIdPipe()) id: Types.ObjectId) {
+    await this.ordersService.setStatus(
+      new Types.ObjectId(id),
+      OrderStatus.InQueue,
+    );
+  }
+
   @Patch('/:id/preparing')
   @ApiParam({ name: 'id', type: String, description: 'Order ID (ObjectId)' })
   @ApiResponse({
@@ -141,8 +161,8 @@ export class OrdersController {
     );
   }
 
-  @Patch(':id/cancel')
-  @ApiParam({ name: 'id' })
+  @Patch('/:id/cancel')
+  @ApiParam({ name: 'id', type: String, description: 'Order ID (ObjectId)' })
   @ApiNotFoundResponse()
   @ApiNoContentResponse()
   @ApiOperation({
@@ -162,5 +182,19 @@ export class OrdersController {
     }
     await this.addonsService.disableAddons(addons);
     await this.ingredientService.disableIngredients(ingredients);
+  }
+
+  @Delete('/:id')
+  @ApiParam({ name: 'id', type: String, description: 'Order ID (ObjectId)' })
+  @ApiNoContentResponse()
+  @ApiOperation({
+    summary: 'Delete order',
+    description: 'Delete order',
+  })
+  @ApiBearerAuth()
+  @Role(UserRole.Employee)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async deleteOrder(@Param('id', new ParseMongoIdPipe()) id: Types.ObjectId) {
+    await this.ordersService.deleteOrder(id);
   }
 }

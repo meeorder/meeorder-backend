@@ -60,6 +60,13 @@ export class OrderStepDefination {
     this.workspace.response = await this.workspace.axiosInstance.get('/orders');
   }
 
+  @when('update order {string} to in queue')
+  async updateOrderStatusToInQueue(order: string) {
+    this.workspace.response = await this.workspace.axiosInstance.patch(
+      `/orders/${order}/in_queue`,
+    );
+  }
+
   @when('update order {string} to preparing')
   async updateOrderStatus(order: string) {
     this.workspace.response = await this.workspace.axiosInstance.patch(
@@ -89,15 +96,34 @@ export class OrderStepDefination {
       {
         addons: payload.addons?.split(',') ?? [],
         ingredients: payload.ingredients?.split(',') ?? [],
-        reason: payload.reason ?? 'Reason',
+        reason: payload.reason?.split(',') ?? [],
       },
     );
+  }
+
+  @when('delete order {string}')
+  async deleteOrder(id: string) {
+    this.workspace.response = await this.workspace.axiosInstance.delete(
+      `/orders/${id}`,
+    );
+  }
+
+  @then('order {string} status should be {string}')
+  async expectOrderShouldBeInQueue(id: string, status: string) {
+    const order = await this.orderModel.findById(id).lean().exec();
+    expect(order.status).toBe(status);
   }
 
   @then('order {string} should be cancelled')
   async expectOrderShouldBeCancelled(id: string) {
     const order = await this.orderModel.findById(id).lean().exec();
     expect(order.cancelled_at).toBeTruthy();
+  }
+
+  @then('order {string} should be deleted')
+  async expectOrderShouldBeDeleted(id: string) {
+    const order = await this.orderModel.findById(id).lean().exec();
+    expect(order.deleted_at).toBeTruthy();
   }
 
   @after()
