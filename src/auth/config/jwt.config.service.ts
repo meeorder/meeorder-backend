@@ -9,13 +9,13 @@ export class JwtConfigService implements JwtOptionsFactory {
 
   createJwtOptions(): JwtModuleOptions {
     const privateKey = this.configService
-      .get<string>(Config.MEEORDER_PRIVATE_KEY)
-      .replace(/\\n/g, '\n')
+      .get<string | undefined>(Config.MEEORDER_PRIVATE_KEY)
+      ?.replace(/\\n/g, '\n')
       .trim();
 
     const publicKey = this.configService
-      .get<string>(Config.MEEORDER_PUBLIC_KEY)
-      .replace(/\\n/g, '\n')
+      .get<string | undefined>(Config.MEEORDER_PUBLIC_KEY)
+      ?.replace(/\\n/g, '\n')
       .trim();
 
     return {
