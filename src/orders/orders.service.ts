@@ -1,4 +1,3 @@
-import { AddonsService } from '@/addons/addons.service';
 import { CreateOrderDto } from '@/orders/dto/order.create.dto';
 import { OrderStatus } from '@/orders/enums/orders.status';
 import { OrdersSchema } from '@/schema/order.schema';
@@ -21,7 +20,6 @@ export class OrdersService {
     private readonly orderModel: ReturnModelType<typeof OrdersSchema>,
     @Inject(forwardRef(() => SessionService))
     private readonly sessionService: SessionService,
-    private readonly addonsService: AddonsService,
   ) {}
 
   async createOrder(createOrderDto: CreateOrderDto) {
