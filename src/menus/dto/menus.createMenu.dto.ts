@@ -23,6 +23,9 @@ export class CreateMenuDto {
   @ApiProperty({ type: String, required: false, description: 'Menu Category' })
   category?: Types.ObjectId;
 
+  @ApiProperty({ type: String, isArray: true, description: 'Menu Ingredients' })
+  ingredients: Types.ObjectId[];
+
   @ApiProperty({ type: String, isArray: true, description: 'Menu Addons' })
   @Transform(new MongoTransform().array())
   addons: Types.ObjectId[];
