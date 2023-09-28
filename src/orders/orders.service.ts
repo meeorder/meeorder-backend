@@ -1,6 +1,7 @@
 import { AddonsService } from '@/addons/addons.service';
 import { CreateOrderDto } from '@/orders/dto/order.create.dto';
 import { OrderStatus } from '@/orders/enums/orders.status';
+import { OrderCancelSchema } from '@/schema/order.cancel.schema';
 import { OrdersSchema } from '@/schema/order.schema';
 import { SessionService } from '@/session/session.service';
 import {
@@ -60,36 +61,46 @@ export class OrdersService {
         path: 'menu',
         populate: { path: 'category' },
       })
+      .populate('cancel.ingredients')
+      .populate('cancel.addons')
       .lean()
       .exec();
   }
 
   async setStatus(id: Types.ObjectId, status: OrderStatus) {
     const element = await this.orderModel.findById(id).exec();
-    if (element.cancelled_at !== null) {
+    if (element.cancel !== null) {
       throw new HttpException(
         'Order has been cancelled',
         HttpStatus.BAD_REQUEST,
       );
     }
-    await element.updateOne({ status }).exec();
+    element.status = status;
+
+    await element.save();
   }
 
-  cancel(id: Types.ObjectId, reason: string) {
+  cancel(
+    id: Types.ObjectId,
+    reasons: string[],
+    ingredients: Types.ObjectId[],
+    addons: Types.ObjectId[],
+  ) {
     return this.orderModel
       .updateOne(
         { _id: id },
         {
           $set: {
-            cancelled_at: new Date(),
-            cancel_reason: reason,
+            cancel: new OrderCancelSchema({ reasons, ingredients, addons }),
           },
         },
       )
       .exec();
   }
 
-  async getOrdersBySession(session: Types.ObjectId) {
+  async getOrdersBySession(
+    session: Types.ObjectId,
+  ): Promise<DocumentType<OrdersSchema>[]> {
     return await this.orderModel
       .find({ session })
       .populate('menu addons')

@@ -25,6 +25,6 @@ export class CancelOrderDto {
   @Transform(new MongoTransform().array())
   addons: Types.ObjectId[] = [];
 
-  @ApiProperty({ default: null, description: 'Reason for cancel order' })
-  reason: string = null;
+  @ApiProperty({ default: [], description: 'Reason for cancel order' })
+  reasons: string[] = [];
 }

@@ -1,4 +1,5 @@
 import { MenusResponseDto } from '@/menus/dto/menus.response.dto';
+import { OrderCancelResponseDto } from '@/orders/dto/order.cancel.response.dto';
 import { OrderStatus } from '@/orders/enums/orders.status';
 import { AddonSchema } from '@/schema/addons.schema';
 import { ApiProperty } from '@nestjs/swagger';
@@ -30,6 +31,6 @@ export class OrdersResponseDto {
   @ApiProperty({ type: String, nullable: true, description: 'Additional info' })
   additional_info: string;
 
-  @ApiProperty({ type: Date, description: 'for cancel status' })
-  cancelled_at: Date;
+  @ApiProperty({ type: () => OrderCancelResponseDto, nullable: true })
+  cancel: OrderCancelResponseDto;
 }
