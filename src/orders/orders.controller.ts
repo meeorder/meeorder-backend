@@ -134,7 +134,7 @@ export class OrdersController {
   }
 
   @Patch('/:id/done')
-  @ApiParam({ name: 'id', type: String, description: 'Session ID (ObjectId)' })
+  @ApiParam({ name: 'id', type: String, description: 'Order ID (ObjectId)' })
   @ApiResponse({
     status: HttpStatus.NO_CONTENT,
     description: 'Set order status to done',
@@ -158,13 +158,19 @@ export class OrdersController {
     description: 'Cancel order and disable addons, ingredients if included',
   })
   @ApiBearerAuth()
+  @ApiParam({ name: 'id', type: String })
   @Role(UserRole.Employee)
   @HttpCode(HttpStatus.NO_CONTENT)
   async cancelOrder(
-    @Body() { ingredients, addons, reason }: CancelOrderDto,
+    @Body() { ingredients, addons, reasons }: CancelOrderDto,
     @Param('id', new ParseMongoIdPipe()) id: Types.ObjectId,
   ) {
-    const op = await this.ordersService.cancel(id, reason);
+    const op = await this.ordersService.cancel(
+      id,
+      reasons,
+      ingredients,
+      addons,
+    );
     if (op.matchedCount === 0) {
       throw new NotFoundException({ message: 'Order not found' });
     }

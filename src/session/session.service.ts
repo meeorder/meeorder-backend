@@ -220,9 +220,7 @@ export class SessionService {
 
   async listOrdersBySession(id: Types.ObjectId): Promise<OrdersListDto> {
     const res = new OrdersListDto();
-    const orders = <OrdersResponseDto[]>(
-      await this.ordersService.getOrdersBySession(id)
-    );
+    const orders = await this.ordersService.getOrdersBySession(id);
     // find total price
     res.total_price = orders
       .map(({ menu, addons }) => {
@@ -242,7 +240,7 @@ export class SessionService {
     res.discount_price = coupon ? coupon.discount : 0;
     res.net_price = res.total_price - res.discount_price;
     res.table = session.table._id;
-    res.orders = orders;
+    res.orders = <OrdersResponseDto[]>orders;
     return res;
   }
 

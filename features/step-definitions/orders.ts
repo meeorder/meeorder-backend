@@ -96,7 +96,7 @@ export class OrderStepDefination {
       {
         addons: payload.addons?.split(',') ?? [],
         ingredients: payload.ingredients?.split(',') ?? [],
-        reason: payload.reason ?? 'Reason',
+        reasons: payload.reasons?.split(',') ?? [],
       },
     );
   }
@@ -117,7 +117,7 @@ export class OrderStepDefination {
   @then('order {string} should be cancelled')
   async expectOrderShouldBeCancelled(id: string) {
     const order = await this.orderModel.findById(id).lean().exec();
-    expect(order.cancelled_at).toBeTruthy();
+    expect(order.cancel).toBeTruthy();
   }
 
   @then('order {string} should be deleted')

@@ -51,8 +51,8 @@ Feature: Orders
       | _id                      | session                  | menu                     | addons                   | additional_info |
       | 64fb0700ab4bb1fde967f3b1 | 64fb0700ab4bb1fde967e3b1 | 64fb0952ab4bb1fde967f3b3 | 64fb0605ab4bb1fde967f3b0 | Test Menu       |
     When cancel order "64fb0700ab4bb1fde967f3b1"
-      | reason | ingredients              |
-      | 1      | 6504aeab9a22c9b19517a35b |
+      | reasons | ingredients              |
+      | 1       | 6504aeab9a22c9b19517a35b |
     Then should return status code 204
     And order "64fb0700ab4bb1fde967f3b1" should be cancelled
     And ingredient "6504aeab9a22c9b19517a35b" should be disabled
