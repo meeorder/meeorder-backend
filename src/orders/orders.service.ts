@@ -1,4 +1,3 @@
-import { AddonsService } from '@/addons/addons.service';
 import { CreateOrderDto } from '@/orders/dto/order.create.dto';
 import { OrderStatus } from '@/orders/enums/orders.status';
 import { OrderCancelSchema } from '@/schema/order.cancel.schema';
@@ -22,7 +21,6 @@ export class OrdersService {
     private readonly orderModel: ReturnModelType<typeof OrdersSchema>,
     @Inject(forwardRef(() => SessionService))
     private readonly sessionService: SessionService,
-    private readonly addonsService: AddonsService,
   ) {}
 
   async createOrder(createOrderDto: CreateOrderDto) {
@@ -78,6 +76,12 @@ export class OrdersService {
     element.status = status;
 
     await element.save();
+  }
+
+  async deleteOrder(id: Types.ObjectId) {
+    await this.orderModel
+      .updateOne({ _id: id }, { deleted_at: new Date() })
+      .exec();
   }
 
   cancel(

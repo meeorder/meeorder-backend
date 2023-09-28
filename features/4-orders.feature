@@ -56,3 +56,34 @@ Feature: Orders
     Then should return status code 204
     And order "64fb0700ab4bb1fde967f3b1" should be cancelled
     And ingredient "6504aeab9a22c9b19517a35b" should be disabled
+
+  Scenario: Delete order
+    Given login as
+      | id                       | username          | role |
+      | 64ff1bbf76e1dfabe0337a1b | meeorder_employee | 25   |
+    And orders
+      | _id                      | session                  | menu                     | addons                   | additional_info |
+      | 64fb0700ab4bb1fde967f3b1 | 64fb0700ab4bb1fde967e3b1 | 64fb0952ab4bb1fde967f3b3 | 64fb0605ab4bb1fde967f3b0 | Test Menu       |
+    When delete order "64fb0700ab4bb1fde967f3b1"
+    Then should return status code 204
+    And order "64fb0700ab4bb1fde967f3b1" should be deleted
+
+  Scenario: Test Update Order status
+    Given login as
+      | id                       | username          | role |
+      | 64ff1bbf76e1dfabe0337a1b | meeorder_employee | 25   |
+    And orders
+      | _id                      | session                  | menu                     | addons                   | additional_info |
+      | 64fb0700ab4bb1fde967f3b1 | 64fb0700ab4bb1fde967e3b1 | 64fb0952ab4bb1fde967f3b3 | 64fb0605ab4bb1fde967f3b0 | Test Menu       |
+    When update order "64fb0700ab4bb1fde967f3b1" to in queue
+    Then should return status code 204
+    And order "64fb0700ab4bb1fde967f3b1" status should be "IN_QUEUE"
+    When update order "64fb0700ab4bb1fde967f3b1" to preparing
+    Then should return status code 204
+    And order "64fb0700ab4bb1fde967f3b1" status should be "PREPARING"
+    When update order "64fb0700ab4bb1fde967f3b1" to ready to serve
+    Then should return status code 204
+    And order "64fb0700ab4bb1fde967f3b1" status should be "READY_TO_SERVE"
+    When update order "64fb0700ab4bb1fde967f3b1" to done
+    Then should return status code 204
+    And order "64fb0700ab4bb1fde967f3b1" status should be "DONE"

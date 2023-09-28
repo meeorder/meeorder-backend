@@ -56,6 +56,14 @@ export class OrdersSchema {
   @ApiProperty({ type: String, description: 'Additional info' })
   additional_info: string;
 
+  @Prop({ default: null })
+  @ApiProperty({
+    type: Date,
+    nullable: true,
+    description: 'Order deletion date',
+  })
+  deleted_at: Date;
+
   @Prop({ default: null, type: () => OrderCancelSchema })
   @ApiProperty({ type: () => OrderCancelSchema, nullable: true })
   cancel: OrderCancelSchema;
