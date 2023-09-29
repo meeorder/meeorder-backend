@@ -1,0 +1,102 @@
+@ingredients
+Feature: Ingredients # features/9-ingredients.feature:2
+
+  @ingredients
+  Scenario: Get all menus # features/9-ingredients.feature:3
+    When login as
+      │ id                       │ username       │ role │
+      │ 64ff1bbf76e1dfabe0337a1b │ meeorder_owner │ 100  │
+    Given menus
+      │ _id                      │ title  │ price │ ingredients                                       │
+      │ 64c5485a510698e8c9e7bdc0 │ Menu_1 │ 100   │ 65108ab9fc6b88fc8675700e,65108ac252a822bfd77730f2 │
+      │ 65108acc42fcb6893910736a │ Menu_2 │ 100   │ 65108ab9fc6b88fc8675700e                          │
+    And ingredients
+      │ _id                      │ title        │
+      │ 65108ab9fc6b88fc8675700e │ Ingredient_1 │
+      │ 65108ac252a822bfd77730f2 │ Ingredient_2 │
+    When get all ingredients
+[
+  {
+    _id: '65108ab9fc6b88fc8675700e',
+    title: 'Ingredient_1',
+    available: true,
+    created_at: '2023-09-24T20:04:31.498Z',
+    __v: 0,
+    menus_applied: 0
+  },
+  {
+    _id: '65108ac252a822bfd77730f2',
+    title: 'Ingredient_2',
+    available: true,
+    created_at: '2023-09-24T20:04:31.521Z',
+    __v: 0,
+    menus_applied: 0
+  }
+]
+    Then should return status code 200
+    And should ingredient at index 0 be
+      │ key           │ value                    │ type   │
+      │ _id           │ 65108ab9fc6b88fc8675700e │ string │
+      │ title         │ Ingredient_1             │ string │
+      │ menus_applied │ 2                        │ number │
+    ✖ failed
+      Error: expect(received).toEqual(expected) // deep equality
+
+      Expected: 2
+      Received: 0
+          at IngredientSteps.shouldIngredientAtIndex (/root/workspace/meeorder/meeorder-backend/features/step-definitions/ingredient.ts:66:9)
+          at World.bindingFunc (/root/workspace/meeorder/meeorder-backend/node_modules/cucumber-tsflow/src/binding-decorator.ts:194:8)
+    And should ingredient at index 1 be
+      │ key           │ value                    │ type   │
+      │ _id           │ 65108ac252a822bfd77730f2 │ string │
+      │ title         │ Ingredient_2             │ string │
+      │ menus_applied │ 1                        │ number │
+    - skipped
+
+Failures:
+
+1) Scenario: Get all menus # features/9-ingredients.feature:3
+   ✔ Before # node_modules/cucumber-tsflow/src/binding-decorator.ts:98
+   ✔ When login as # features/step-definitions/auth.ts:4
+       | id                       | username       | role |
+       | 64ff1bbf76e1dfabe0337a1b | meeorder_owner | 100  |
+   ✔ Given menus # features/step-definitions/menus.ts:4
+       | _id                      | title  | price | ingredients                                       |
+       | 64c5485a510698e8c9e7bdc0 | Menu_1 | 100   | 65108ab9fc6b88fc8675700e,65108ac252a822bfd77730f2 |
+       | 65108acc42fcb6893910736a | Menu_2 | 100   | 65108ab9fc6b88fc8675700e                          |
+   ✔ And ingredients # features/step-definitions/ingredient.ts:4
+       | _id                      | title        |
+       | 65108ab9fc6b88fc8675700e | Ingredient_1 |
+       | 65108ac252a822bfd77730f2 | Ingredient_2 |
+   ✔ When get all ingredients # features/step-definitions/ingredient.ts:4
+   ✔ Then should return status code 200 # features/step-definitions/workspace.ts:4
+   ✖ And should ingredient at index 0 be # features/step-definitions/ingredient.ts:4
+       | key           | value                    | type   |
+       | _id           | 65108ab9fc6b88fc8675700e | string |
+       | title         | Ingredient_1             | string |
+       | menus_applied | 2                        | number |
+       Error: expect(received).toEqual(expected) // deep equality
+
+       Expected: 2
+       Received: 0
+           at IngredientSteps.shouldIngredientAtIndex (/root/workspace/meeorder/meeorder-backend/features/step-definitions/ingredient.ts:66:9)
+           at World.bindingFunc (/root/workspace/meeorder/meeorder-backend/node_modules/cucumber-tsflow/src/binding-decorator.ts:194:8)
+   - And should ingredient at index 1 be # features/step-definitions/ingredient.ts:4
+       | key           | value                    | type   |
+       | _id           | 65108ac252a822bfd77730f2 | string |
+       | title         | Ingredient_2             | string |
+       | menus_applied | 1                        | number |
+   ✔ After # features/step-definitions/user.ts:4
+   ✔ After # features/step-definitions/table.ts:4
+   ✔ After # features/step-definitions/session.ts:4
+   ✔ After # features/step-definitions/orders.ts:4
+   ✔ After # features/step-definitions/menus.ts:4
+   ✔ After # features/step-definitions/coupon.ts:4
+   ✔ After # features/step-definitions/categories.ts:4
+   ✔ After # features/step-definitions/addons.ts:4
+   ✔ After # features/step-definitions/workspace.ts:4
+   ✔ After # node_modules/cucumber-tsflow/src/binding-decorator.ts:121
+
+1 scenario (1 failed)
+7 steps (1 failed, 1 skipped, 5 passed)
+0m00.223s (executing steps: 0m00.132s)

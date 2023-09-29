@@ -1,50 +1,31 @@
-import { OrderStatus } from '@/orders/enums/orders.status';
+import { PopulatedCategoryMenuDto } from '@/menus/dto/populated-category.menu.dto';
+import { OrderCancelResponseDto } from '@/orders/dto/order.cancel.response.dto';
+import { AddonSchema } from '@/schema/addons.schema';
 import { MenuSchema } from '@/schema/menus.schema';
+import { OrderCancelSchema } from '@/schema/order.cancel.schema';
+import { OrdersSchema } from '@/schema/order.schema';
+import { SessionSchema } from '@/schema/session.schema';
+import { SessionWithTableDto } from '@/session/dto/session[table].dto';
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
-import {
-  IsArray,
-  IsDate,
-  IsEnum,
-  IsMongoId,
-  IsString,
-  ValidateNested,
-} from 'class-validator';
-import { Types } from 'mongoose';
-import { SessionSchema } from './../../schema/session.schema';
+import { Ref } from '@typegoose/typegoose';
 
-export class OrderGetDto {
-  @ApiProperty({ type: String, description: 'Orders ID' })
-  @IsMongoId()
-  '_id': Types.ObjectId;
+export class OrderGetDto extends OrdersSchema {
+  @ApiProperty({
+    type: () => AddonSchema,
+    isArray: true,
+    description: 'Array of MenuID',
+  })
+  addons: Ref<AddonSchema>[];
 
-  @ApiProperty({ type: Date })
-  @IsDate()
-  created_at: Date;
+  @ApiProperty({
+    type: () => SessionWithTableDto,
+    description: 'Session (table populated)',
+  })
+  session: Ref<SessionSchema>;
 
-  @ApiProperty({ type: String, enum: OrderStatus })
-  @IsEnum(OrderStatus)
-  status: OrderStatus;
+  @ApiProperty({ type: () => PopulatedCategoryMenuDto })
+  menu: Ref<MenuSchema>;
 
-  @ApiProperty({ type: [String], description: 'Array of MenuID' })
-  @IsArray()
-  @ValidateNested({ each: true })
-  @IsMongoId({ each: true })
-  addons: Types.ObjectId[];
-
-  @ApiProperty({ type: String, description: 'Additional info' })
-  @IsString()
-  additional_info: string;
-
-  @ApiProperty({ type: Date, description: 'for cancel status' })
-  @IsDate()
-  cancelled_at: Date;
-
-  @ApiProperty({ type: SessionSchema })
-  @Type(() => SessionSchema)
-  session: SessionSchema;
-
-  @ApiProperty({ type: MenuSchema })
-  @Type(() => MenuSchema)
-  menu: MenuSchema;
+  @ApiProperty({ type: () => OrderCancelResponseDto })
+  cancel: OrderCancelSchema;
 }

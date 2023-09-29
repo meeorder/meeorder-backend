@@ -22,7 +22,8 @@
     "test:cucumber": "cucumber-js",
     "start:pm2": "pm2 --name meeorder-backend start dist/main.js",
     "stop:pm2": "pm2 delete meeorder-backend",
-    "generate:jwt" : "node scripts/generate-token.js"
+    "restart:pm2": "pm2 restart meeorder-backend",
+    "generate:jwt": "node scripts/generate-token.js"
   },
   "dependencies": {
     "@fastify/cookie": "^9.0.4",
@@ -31,7 +32,6 @@
     "@nestjs/config": "3.0.1",
     "@nestjs/core": "10.2.3",
     "@nestjs/jwt": "^10.1.0",
-    "@nestjs/mongoose": "^10.0.1",
     "@nestjs/platform-fastify": "10.2.3",
     "@nestjs/swagger": "7.1.10",
     "@typegoose/typegoose": "11.4.1",

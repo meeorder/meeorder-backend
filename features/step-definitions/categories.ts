@@ -22,6 +22,7 @@ export class CategoriesStepDefination {
         title: category.title,
         _id: new Types.ObjectId(category._id),
         rank: category.rank ? +category.rank : null,
+        menus: category.menus?.split(',') ?? [],
       });
 
       expect(doc._id.toHexString()).toBe(category._id);
@@ -63,6 +64,13 @@ export class CategoriesStepDefination {
         title: category.title,
         rank: +category.rank,
       },
+    );
+  }
+
+  @when('delete category at id {string}')
+  async deleteCategoryAtId(id: string) {
+    this.workspace.response = await this.workspace.axiosInstance.delete(
+      `/categories/${id}`,
     );
   }
 

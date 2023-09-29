@@ -7,6 +7,8 @@ services:
       - 'mongo:database'
     environment:
       MONGO_URI: mongodb://database/meeorder
+      MEEORDER_PRIVATE_KEY: "-----BEGIN EC PARAMETERS-----\nBggqhkjOPQMBBw==\n-----END EC PARAMETERS-----\n-----BEGIN EC PRIVATE KEY-----\nMHcCAQEEIJLdEnQOssaVeoDOR+F+L5TFfYWkCgxkv5fqMsOQbLYpoAoGCCqGSM49\nAwEHoUQDQgAEgSZ90gdltEHCGEelvcfc5KAZJrBJ25skRaOloMdi43Y3BJDFxvfD\nxBrItXlZ2+UYPIOTbCiPLv5qMwwM/2SRgQ==\n-----END EC PRIVATE KEY-----"
+      MEEORDER_PUBLIC_KEY:  "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEgSZ90gdltEHCGEelvcfc5KAZJrBJ\n25skRaOloMdi43Y3BJDFxvfDxBrItXlZ2+UYPIOTbCiPLv5qMwwM/2SRgQ==\n-----END PUBLIC KEY-----"
 
   mongo:
     image: mongo

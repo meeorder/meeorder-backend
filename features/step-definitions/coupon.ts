@@ -23,6 +23,7 @@ export class SessionStepDefination {
         discount: +coupon.discount,
         required_point: +coupon.required_point,
         quota: +coupon.quota,
+        required_menus: coupon.required_menus ? coupon.required_menus.split(',') : [],
         _id: new Types.ObjectId(coupon._id),
         activated: coupon.activated ?? true,
       });
@@ -53,6 +54,32 @@ export class SessionStepDefination {
     expect(coupon).toBeTruthy();
   }
 
+  @then('should required_menus at index {int} be')
+  async shouldRequiredMenusAtIndexBe(index: number, dt: DataTable) {
+    const expected = Workspace.responseDtMapType(
+      <{ key: string; value: string; type: string }[]>dt.hashes(),
+    );
+
+    for (const expectItem of expected) {
+      expect(
+        this.workspace.response.data.required_menus[index][expectItem.key],
+      ).toEqual(expectItem.value);
+    }
+  }
+
+  @then('should required_menus at index [{int}][{int}] be')
+  async shouldRequiredMenusAtIndexBeDeep(firstIndex: number, secondIndex: number, dt: DataTable) {
+    const expected = Workspace.responseDtMapType(
+      <{ key: string; value: string; type: string }[]>dt.hashes(),
+    );
+
+    for (const expectItem of expected) {
+      expect(
+        this.workspace.response.data[firstIndex].required_menus[secondIndex][expectItem.key],
+      ).toEqual(expectItem.value);
+    }
+  }
+
   @when('get coupon by id {string}')
   async getCouponById(id: string) {
     this.workspace.response = await this.workspace.axiosInstance.get(
@@ -60,8 +87,8 @@ export class SessionStepDefination {
     );
   }
 
-  @when('get all coupons by owner')
-  async getAllCouponsByOwner() {
+  @when('get all coupons')
+  async getAllCoupons() {
     this.workspace.response =
       await this.workspace.axiosInstance.get('/coupons');
   }
@@ -71,7 +98,6 @@ export class SessionStepDefination {
     this.workspace.response = await this.workspace.axiosInstance.get(
       `/sessions/${session}/coupon/all`,
     );
-    console.log(this.workspace.response.data);
   }
 
   @then('response size should equal to {int}')

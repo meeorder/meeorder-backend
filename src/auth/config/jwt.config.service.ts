@@ -8,9 +8,19 @@ export class JwtConfigService implements JwtOptionsFactory {
   constructor(private readonly configService: ConfigService) {}
 
   createJwtOptions(): JwtModuleOptions {
+    const privateKey = this.configService
+      .get<string | undefined>(Config.MEEORDER_PRIVATE_KEY)
+      ?.replace(/\\n/g, '\n')
+      .trim();
+
+    const publicKey = this.configService
+      .get<string | undefined>(Config.MEEORDER_PUBLIC_KEY)
+      ?.replace(/\\n/g, '\n')
+      .trim();
+
     return {
-      publicKey: this.configService.get<string>(Config.MEEORDER_PUBLIC_KEY),
-      privateKey: this.configService.get<string>(Config.MEEORDER_PRIVATE_KEY),
+      publicKey,
+      privateKey,
       signOptions: {
         algorithm: 'ES256',
       },

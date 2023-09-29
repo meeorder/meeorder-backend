@@ -20,22 +20,16 @@ Feature: Orders
       | session                  | menu                     | addon                    |
       | 64c5485a510698e8c9e7bdc0 | 000000014aaec6eb813e8bc0 | 000000014aaec6eb813e8bc0 |
     Then should return status code 201
-    When get all orders
-    Then should return status code 200
-    Then should response be length 2
-    When update order "64f5707f6d126db5cc098a36" to preparing
-    Then should return status code 204
-    When update order "64f5707f6d126db5cc098a36" to ready to serve
-    Then should return status code 204
-    When update order "64f5707f6d126db5cc098a36" to done
-    Then should return status code 204
 
   Scenario: Cancel order with reason lack of addons
-    Given addons
+    Given login as
+      | id                       | username          | role |
+      | 64ff1bbf76e1dfabe0337a1b | meeorder_employee | 25   |
+    And addons
       | _id                      | title   | price | available |
       | 64fb0605ab4bb1fde967f3b0 | addon_1 | 100   | true      |
       | 64fb0605ab4bb1fde967f3b1 | addon_2 | 200   | true      |
-    Given orders
+    And orders
       | _id                      | session                  | menu                     | addons                   | additional_info |
       | 64fb0700ab4bb1fde967f3b1 | 64fb0700ab4bb1fde967e3b1 | 64fb0952ab4bb1fde967f3b3 | 64fb0605ab4bb1fde967f3b0 | Test Menu       |
     When cancel order "64fb0700ab4bb1fde967f3b1"
@@ -44,3 +38,52 @@ Feature: Orders
     Then should return status code 204
     And order "64fb0700ab4bb1fde967f3b1" should be cancelled
     And addon "64fb0605ab4bb1fde967f3b0" should be disabled
+
+  Scenario: Cancel order with reason lack of ingredients
+    Given login as
+      | id                       | username          | role |
+      | 64ff1bbf76e1dfabe0337a1b | meeorder_employee | 25   |
+    And ingredients
+      | _id                      | title | available |
+      | 6504aeab9a22c9b19517a35b | Moo   | 1         |
+      | 6504aeab9a22c9b19517a35c | Kai   | 1         |
+    And orders
+      | _id                      | session                  | menu                     | addons                   | additional_info |
+      | 64fb0700ab4bb1fde967f3b1 | 64fb0700ab4bb1fde967e3b1 | 64fb0952ab4bb1fde967f3b3 | 64fb0605ab4bb1fde967f3b0 | Test Menu       |
+    When cancel order "64fb0700ab4bb1fde967f3b1"
+      | reasons | ingredients              |
+      | 1       | 6504aeab9a22c9b19517a35b |
+    Then should return status code 204
+    And order "64fb0700ab4bb1fde967f3b1" should be cancelled
+    And ingredient "6504aeab9a22c9b19517a35b" should be disabled
+
+  Scenario: Delete order
+    Given login as
+      | id                       | username          | role |
+      | 64ff1bbf76e1dfabe0337a1b | meeorder_employee | 25   |
+    And orders
+      | _id                      | session                  | menu                     | addons                   | additional_info |
+      | 64fb0700ab4bb1fde967f3b1 | 64fb0700ab4bb1fde967e3b1 | 64fb0952ab4bb1fde967f3b3 | 64fb0605ab4bb1fde967f3b0 | Test Menu       |
+    When delete order "64fb0700ab4bb1fde967f3b1"
+    Then should return status code 204
+    And order "64fb0700ab4bb1fde967f3b1" should be deleted
+
+  Scenario: Test Update Order status
+    Given login as
+      | id                       | username          | role |
+      | 64ff1bbf76e1dfabe0337a1b | meeorder_employee | 25   |
+    And orders
+      | _id                      | session                  | menu                     | addons                   | additional_info |
+      | 64fb0700ab4bb1fde967f3b1 | 64fb0700ab4bb1fde967e3b1 | 64fb0952ab4bb1fde967f3b3 | 64fb0605ab4bb1fde967f3b0 | Test Menu       |
+    When update order "64fb0700ab4bb1fde967f3b1" to in queue
+    Then should return status code 204
+    And order "64fb0700ab4bb1fde967f3b1" status should be "IN_QUEUE"
+    When update order "64fb0700ab4bb1fde967f3b1" to preparing
+    Then should return status code 204
+    And order "64fb0700ab4bb1fde967f3b1" status should be "PREPARING"
+    When update order "64fb0700ab4bb1fde967f3b1" to ready to serve
+    Then should return status code 204
+    And order "64fb0700ab4bb1fde967f3b1" status should be "READY_TO_SERVE"
+    When update order "64fb0700ab4bb1fde967f3b1" to done
+    Then should return status code 204
+    And order "64fb0700ab4bb1fde967f3b1" status should be "DONE"

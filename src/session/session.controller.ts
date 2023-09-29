@@ -1,8 +1,14 @@
+import { UserJwt } from '@/auth/user.jwt.payload';
+import { Role } from '@/decorator/roles.decorator';
+import { User } from '@/decorator/user.decorator';
 import { ParseMongoIdPipe } from '@/pipes/mongo-id.pipe';
+import { ReceiptService } from '@/receipt/receipt.service';
+import { ReceiptSchema } from '@/schema/receipt.schema';
 import { SessionSchema } from '@/schema/session.schema';
+import { UserRole } from '@/schema/users.schema';
 import { CreateSessionDto } from '@/session/dto/create-session.dto';
+import { GetSessionDto } from '@/session/dto/get-session.dto';
 import { OrdersListDto } from '@/session/dto/listorders.dto';
-import { SessionUserUpdateDto } from '@/session/dto/update-sessionUser.dto';
 import { UpdateSessionCouponDto } from '@/session/dto/updatecoupon.dto';
 import { SessionService } from '@/session/session.service';
 import {
@@ -20,6 +26,7 @@ import {
   Query,
 } from '@nestjs/common';
 import {
+  ApiBearerAuth,
   ApiOperation,
   ApiParam,
   ApiQuery,
@@ -32,17 +39,22 @@ import { CouponDto } from './dto/getcoupon.dto';
 @Controller({ path: 'sessions', version: '1' })
 @ApiTags('sessions')
 export class SessionController {
-  constructor(private readonly sessionService: SessionService) {}
+  constructor(
+    private readonly sessionService: SessionService,
+    private readonly receiptService: ReceiptService,
+  ) {}
 
   @ApiQuery({ name: 'finished', type: Boolean, required: false })
   @ApiResponse({
     status: HttpStatus.OK,
-    type: () => SessionSchema,
+    type: () => GetSessionDto,
     isArray: true,
   })
   @ApiOperation({
     summary: 'Get all sessions',
   })
+  @ApiBearerAuth()
+  @Role(UserRole.Employee)
   @Get()
   getSessions(@Query('finished') finished?: boolean) {
     return this.sessionService.getSessions(finished);
@@ -52,7 +64,7 @@ export class SessionController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Session',
-    type: () => SessionSchema,
+    type: () => GetSessionDto,
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
@@ -73,7 +85,7 @@ export class SessionController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Session',
-    type: () => SessionSchema,
+    type: () => GetSessionDto,
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
@@ -110,6 +122,8 @@ export class SessionController {
   @ApiOperation({
     summary: 'Create a session',
   })
+  @ApiBearerAuth()
+  @Role(UserRole.Employee)
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async createSession(@Body() dto: CreateSessionDto) {
@@ -119,8 +133,9 @@ export class SessionController {
   }
 
   @ApiResponse({
-    status: HttpStatus.NO_CONTENT,
-    description: 'Session finished',
+    status: HttpStatus.OK,
+    description: 'Receipt of session',
+    type: () => ReceiptSchema,
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
@@ -130,18 +145,15 @@ export class SessionController {
   @ApiOperation({
     summary: 'Finish a session',
   })
+  @ApiBearerAuth()
+  @Role(UserRole.Employee)
   @Patch(':id/finish')
-  @HttpCode(HttpStatus.NO_CONTENT)
+  @HttpCode(HttpStatus.OK)
   async finishSession(@Param('id', new ParseMongoIdPipe()) id: Types.ObjectId) {
-    try {
-      await this.sessionService.finishSession(id);
-    } catch (e) {
-      if (e instanceof MongooseError) {
-        throw new HttpException('Session not found', HttpStatus.NOT_FOUND);
-      } else {
-        throw e;
-      }
-    }
+    const session = await this.sessionService.finishSession(id);
+    const receipt = await this.receiptService.generateReceipt(session);
+
+    return receipt.toObject({ virtuals: true });
   }
 
   @ApiResponse({
@@ -157,6 +169,8 @@ export class SessionController {
     summary: 'Delete a session by id',
   })
   @Delete(':id')
+  @ApiBearerAuth()
+  @Role(UserRole.Employee)
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteSession(@Param('id', new ParseMongoIdPipe()) id: Types.ObjectId) {
     try {
@@ -188,20 +202,22 @@ export class SessionController {
 
   @ApiResponse({
     description: 'Updated session user',
-    type: () => SessionUserUpdateDto,
-    status: HttpStatus.OK,
+    status: HttpStatus.NO_CONTENT,
   })
   @ApiOperation({
     summary: 'Updated session user',
+    description: 'user in header will be used as session user',
   })
   @HttpCode(HttpStatus.OK)
   @ApiParam({ name: 'id', type: String, description: 'Session ID (ObjectId)' })
   @Patch(':id/user')
+  @ApiBearerAuth()
+  @Role(UserRole.Customer)
   async updateSessionUser(
     @Param('id', new ParseMongoIdPipe()) id: Types.ObjectId,
-    @Body() doc: SessionUserUpdateDto,
+    @User() user: UserJwt,
   ) {
-    return await this.sessionService.updateSessionUser(id, doc);
+    await this.sessionService.updateSessionUser(id, user);
   }
 
   @ApiResponse({
@@ -215,9 +231,16 @@ export class SessionController {
   })
   @HttpCode(HttpStatus.OK)
   @ApiParam({ name: 'id', type: String, description: 'Session ID (ObjectId)' })
+  @ApiBearerAuth()
   @Get(':id/coupon/all')
-  async getCoupons(@Param('id', new ParseMongoIdPipe()) id: Types.ObjectId) {
-    return await this.sessionService.getAllCoupon(id);
+  async getCoupons(
+    @Param('id', new ParseMongoIdPipe()) id: Types.ObjectId,
+    @User() user?: UserJwt,
+  ) {
+    return await this.sessionService.getAllCoupon(
+      id,
+      user?.id ? new Types.ObjectId(user?.id) : null,
+    );
   }
 
   @ApiResponse({

@@ -1,9 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { modelOptions, Prop } from '@typegoose/typegoose';
+import { modelOptions } from '@typegoose/typegoose';
 import { Types } from 'mongoose';
 
 @modelOptions({
-  schemaOptions: { collection: 'healths' },
+  schemaOptions: {
+    collection: 'healths',
+    timestamps: {
+      createdAt: 'created_at',
+      updatedAt: false,
+    },
+  },
 })
 export class HealthSchema {
   _id: Types.ObjectId;
@@ -11,7 +17,6 @@ export class HealthSchema {
   @ApiProperty()
   id?: string;
 
-  @Prop({ name: 'created_at', default: new Date() })
   @ApiProperty()
-  createdAt: Date;
+  created_at: Date;
 }

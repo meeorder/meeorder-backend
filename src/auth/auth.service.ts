@@ -1,7 +1,11 @@
 import { RegisterDto } from '@/auth/dto/register.dto';
 import { RegisterResponseDto } from '@/auth/dto/register.response.dto';
 import { UserRole, UserSchema } from '@/schema/users.schema';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ReturnModelType } from '@typegoose/typegoose';
 import * as argon2 from 'argon2';
@@ -46,11 +50,22 @@ export class AuthService {
 
   async register(registerDto: RegisterDto): Promise<RegisterResponseDto> {
     const hash = await argon2.hash(registerDto.password);
-    const registerUser = await this.userModel.create({
-      username: registerDto.username,
-      password: hash,
-      role: UserRole.Customer,
-    });
-    return registerUser.toObject();
+    try {
+      const registerUser = await this.userModel.create({
+        username: registerDto.username,
+        password: hash,
+        role: UserRole.Customer,
+      });
+      return registerUser.toObject();
+    } catch (err) {
+      const duplicateErrorCode = 11000;
+      if (err.code === duplicateErrorCode) {
+        throw new BadRequestException({
+          message: 'Username is already taken',
+        });
+      } else {
+        throw err;
+      }
+    }
   }
 }

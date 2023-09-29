@@ -10,11 +10,12 @@ export class AuthStep {
   @given('login as')
   async loginAs(dt: DataTable) {
     const req = dt.hashes()[0];
-    const response = await this.login(req.username, req.password);
-    this.workspace.setHeader(
-      'Authorization',
-      `Bearer ${response.access_token}`,
-    );
+    const token = await this.workspace.jwtService.signAsync({
+      id: req.id,
+      username: req.username,
+      role: +req.role,
+    });
+    this.workspace.setHeader('Authorization', `Bearer ${token}`);
   }
 
   @when('login with username {string} and password {string}')
@@ -32,4 +33,28 @@ export class AuthStep {
 
   @then('cookie should have jwt-meeorder')
   cookieShouldHaveJwtMeeorder() {}
+
+  @when('register with username {string} and password {string}')
+  async register(username: string, password: string) {
+    this.workspace.response = await this.workspace.axiosInstance.post(
+      '/auth/register',
+      {
+        username,
+        password,
+      },
+    );
+  }
+
+  @when('login with username and password')
+  async login_with_jwt(dt: DataTable) {
+    const req = dt.hashes()[0];
+    const token = await this.workspace.axiosInstance.post('/auth/login', {
+      username: req.username,
+      password: req.password,
+    });
+    this.workspace.setHeader(
+      'Authorization',
+      `Bearer ${token.data.access_token}`,
+    );
+  }
 }

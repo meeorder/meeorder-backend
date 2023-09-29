@@ -5,7 +5,7 @@ import { GetMenuByIdResponseDto } from '@/menus/dto/menus.getMenuByIdReponse.dto
 import { MenuSchema } from '@/schema/menus.schema';
 import { Injectable } from '@nestjs/common';
 import { ReturnModelType } from '@typegoose/typegoose';
-import { Types } from 'mongoose';
+import { PipelineStage, Types } from 'mongoose';
 import { InjectModel } from 'nest-typegoose';
 @Injectable()
 export class MenusService {
@@ -107,6 +107,17 @@ export class MenusService {
       },
     },
     {
+      $addFields: {
+        menus: {
+          $filter: {
+            input: '$menus',
+            as: 'menu',
+            cond: { $ne: ['$$menu', null] },
+          },
+        },
+      },
+    },
+    {
       $sort: {
         'category.rank': 1 as any,
       },
@@ -128,9 +139,35 @@ export class MenusService {
     } else if (status === 'all') {
       scriptForStatus = { deleted_at: null };
     }
-    const script = [
+    const script: PipelineStage[] = [
       { $match: { _id: { $exists: true } } },
       { $match: scriptForStatus },
+      {
+        $lookup: {
+          from: 'ingredients',
+          localField: 'ingredients',
+          foreignField: '_id',
+          as: '_ingredients',
+        },
+      },
+      {
+        $addFields: {
+          can_order: {
+            $reduce: {
+              input: '$_ingredients',
+              initialValue: true,
+              in: {
+                $and: ['$$value', '$$this.available'],
+              },
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          _ingredients: 0,
+        },
+      },
       ...this.getAddonInfoAggregation,
       ...this.groupCategoryAggregation,
     ];
@@ -151,33 +188,29 @@ export class MenusService {
   async createMenu(menuData: CreateMenuDto): Promise<MenuSchema> {
     if (!menuData.category) {
       // If category is not exist, set category to 'other' category
+      await this.categoriesService.createOtherCategory();
+
       menuData.category = this.categoriesService.othersCategoryID;
     }
 
     const createdMenu = await this.menuModel.create(menuData);
-    if (menuData.category) {
-      await this.categoriesService.pushMenuToCategory(
-        menuData.category,
-        createdMenu._id,
-      );
-    }
+
+    await this.categoriesService.pushMenuToCategory(
+      menuData.category,
+      createdMenu._id,
+    );
 
     return createdMenu;
   }
 
   async updateOne(id: string, menuData: CreateMenuDto) {
-    if (!menuData.category) {
-      // If category is not exist, set category to 'other' category
-      menuData.category = this.categoriesService.othersCategoryID;
-    }
-
     const oldMenu = await this.menuModel.findByIdAndUpdate(id, menuData).exec();
 
     if (oldMenu.category._id.equals(menuData.category)) {
       return;
     }
 
-    await this.categoriesService.pullMenuFromCategory(
+    await this.categoriesService.popMenuFromCategory(
       oldMenu.category._id,
       oldMenu._id,
     );
@@ -200,7 +233,7 @@ export class MenusService {
       )
       .exec();
     if (<Types.ObjectId>menu.category) {
-      await this.categoriesService.pullMenuFromCategory(
+      await this.categoriesService.popMenuFromCategory(
         menu.category._id,
         menu._id,
       );
@@ -217,7 +250,7 @@ export class MenusService {
       .exec();
 
     if (categories.length > 0) {
-      await this.categoriesService.pullManyMenusFromCategories(categories, ids);
+      await this.categoriesService.popManyMenusFromCategories(categories, ids);
     }
   }
 

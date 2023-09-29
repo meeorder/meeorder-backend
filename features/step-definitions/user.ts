@@ -26,8 +26,8 @@ export class UserSteps {
         _id: new Types.ObjectId(user._id),
         username: user.username,
         password: await this.hashPassword(user.password),
-        role: +user.role ?? UserRole.Owner,
-        point: +user.point ?? 0,
+        role: user.role ? +user.role : UserRole.Owner,
+        point: user.point ? +user.point : 0,
       });
     }
   }
@@ -42,6 +42,46 @@ export class UserSteps {
         password: req.password,
         role: req.role,
       },
+    );
+  }
+
+  @when('update user role')
+  async updateUserRole(dt: DataTable) {
+    const req = dt.hashes()[0];
+    this.workspace.response = await this.workspace.axiosInstance.patch(
+      `/users/${req.id}/role`,
+      {
+        role: req.role,
+      },
+    );
+  }
+
+  @when('update user info')
+  async updateUserInfo(dt: DataTable) {
+    const req = dt.hashes()[0];
+    this.workspace.response = await this.workspace.axiosInstance.patch(
+      `/users`,
+      {
+        newUsername: req.newUsername,
+        oldPassword: req.oldPassword,
+        newPassword: req.newPassword,
+      },
+    );
+  }
+
+  @when('delete user')
+  async deleteUser(dt: DataTable) {
+    const req = dt.hashes()[0];
+    this.workspace.response = await this.workspace.axiosInstance.delete(
+      `/users?id=${req.id}`,
+    );
+  }
+
+  @when('reset password')
+  async resetPassword(dt: DataTable) {
+    const req = dt.hashes()[0];
+    this.workspace.response = await this.workspace.axiosInstance.post(
+      `/users/reset/password?id=${req.id}`,
     );
   }
 

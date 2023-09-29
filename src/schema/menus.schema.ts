@@ -1,11 +1,18 @@
 import { AddonSchema } from '@/schema/addons.schema';
 import { CategorySchema } from '@/schema/categories.schema';
+import { IngredientSchema } from '@/schema/ingredients.schema';
 import { ApiProperty } from '@nestjs/swagger';
 import { modelOptions, Prop, Ref } from '@typegoose/typegoose';
 import { Types } from 'mongoose';
 
 @modelOptions({
-  schemaOptions: { collection: 'menus' },
+  schemaOptions: {
+    collection: 'menus',
+    timestamps: {
+      createdAt: 'created_at',
+      updatedAt: false,
+    },
+  },
 })
 export class MenuSchema {
   @Prop({ auto: true })
@@ -34,7 +41,7 @@ export class MenuSchema {
 
   @Prop({ default: null, ref: () => CategorySchema })
   @ApiProperty({
-    type: () => CategorySchema,
+    type: String,
     nullable: true,
     description: 'Menu category',
   })
@@ -44,7 +51,11 @@ export class MenuSchema {
   @ApiProperty({ description: 'Menu addons' })
   addons: Ref<AddonSchema>[];
 
-  @Prop({ required: true, default: new Date() })
+  @Prop({ ref: () => IngredientSchema, default: [] })
+  @ApiProperty({ description: 'Menu ingredients' })
+  ingredients: Ref<IngredientSchema>[];
+
+  @Prop({ default: new Date() })
   @ApiProperty({ type: Date, description: 'Menu publication date' })
   published_at: Date;
 

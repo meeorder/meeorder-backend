@@ -1,7 +1,6 @@
-import { AddonsService } from '@/addons/addons.service';
 import { CreateOrderDto } from '@/orders/dto/order.create.dto';
-import { OrderGetDto } from '@/orders/dto/order.get.dto';
 import { OrderStatus } from '@/orders/enums/orders.status';
+import { OrderCancelSchema } from '@/schema/order.cancel.schema';
 import { OrdersSchema } from '@/schema/order.schema';
 import { SessionService } from '@/session/session.service';
 import {
@@ -11,7 +10,7 @@ import {
   Injectable,
   forwardRef,
 } from '@nestjs/common';
-import { ReturnModelType } from '@typegoose/typegoose';
+import { DocumentType, ReturnModelType } from '@typegoose/typegoose';
 import { Types } from 'mongoose';
 import { InjectModel } from 'nest-typegoose';
 
@@ -22,7 +21,6 @@ export class OrdersService {
     private readonly orderModel: ReturnModelType<typeof OrdersSchema>,
     @Inject(forwardRef(() => SessionService))
     private readonly sessionService: SessionService,
-    private readonly addonsService: AddonsService,
   ) {}
 
   async createOrder(createOrderDto: CreateOrderDto) {
@@ -48,92 +46,85 @@ export class OrdersService {
     await this.orderModel.insertMany(insertObject);
   }
 
-  async getOrders(): Promise<OrderGetDto[]> {
-    // join orders and session with session id
-    return await this.orderModel
-      .aggregate([
-        {
-          $lookup: {
-            from: 'sessions',
-            localField: 'session',
-            foreignField: '_id',
-            as: 'session',
-          },
-        },
-        {
-          $project: {
-            _id: 1,
-            created_at: 1,
-            status: 1,
-            menu: 1,
-            addons: 1,
-            additional_info: 1,
-            cancelled_at: 1,
-            session: {
-              $arrayElemAt: ['$session', 0],
-            },
-          },
-        },
-        {
-          $match: {
-            'session.finished_at': null,
-          },
-        },
-        {
-          $lookup: {
-            from: 'menus',
-            localField: 'menu',
-            foreignField: '_id',
-            as: 'menu',
-          },
-        },
-        {
-          $project: {
-            _id: 1,
-            created_at: 1,
-            status: 1,
-            menu: {
-              $arrayElemAt: ['$menu', 0],
-            },
-            addons: 1,
-            additional_info: 1,
-            cancelled_at: 1,
-            session: 1,
-          },
-        },
-      ])
+  getOrders() {
+    return this.orderModel
+      .find({ deleted_at: null })
+      .populate('addons')
+      .populate({
+        path: 'session',
+        match: { finished_at: null },
+        populate: { path: 'table' },
+      })
+      .populate({
+        path: 'menu',
+        populate: { path: 'category' },
+      })
+      .populate('cancel.ingredients')
+      .populate('cancel.addons')
+      .lean()
       .exec();
   }
 
   async setStatus(id: Types.ObjectId, status: OrderStatus) {
     const element = await this.orderModel.findById(id).exec();
-    if (element.cancelled_at !== null) {
+    if (element.cancel !== null) {
       throw new HttpException(
         'Order has been cancelled',
         HttpStatus.BAD_REQUEST,
       );
     }
-    await element.updateOne({ status }).exec();
+    element.status = status;
+
+    await element.save();
   }
 
-  cancel(id: Types.ObjectId, reason: string) {
+  async deleteOrder(id: Types.ObjectId) {
+    await this.orderModel
+      .updateOne({ _id: id }, { deleted_at: new Date() })
+      .exec();
+  }
+
+  cancel(
+    id: Types.ObjectId,
+    reasons: string[],
+    ingredients: Types.ObjectId[],
+    addons: Types.ObjectId[],
+  ) {
     return this.orderModel
       .updateOne(
         { _id: id },
         {
           $set: {
-            cancelled_at: new Date(),
-            cancel_reason: reason,
+            cancel: new OrderCancelSchema({ reasons, ingredients, addons }),
           },
         },
       )
       .exec();
   }
 
-  async getOrdersBySession(session: Types.ObjectId) {
+  async getOrdersBySession(
+    session: Types.ObjectId,
+  ): Promise<DocumentType<OrdersSchema>[]> {
     return await this.orderModel
       .find({ session })
       .populate('menu addons')
+      .exec();
+  }
+
+  updateOrder(
+    id: Types.ObjectId,
+    doc: Partial<OrdersSchema>,
+  ): Promise<DocumentType<OrdersSchema>> {
+    return this.orderModel
+      .findByIdAndUpdate(
+        id,
+        {
+          $set: doc,
+        },
+        {
+          new: true,
+        },
+      )
       .exec();
   }
 }

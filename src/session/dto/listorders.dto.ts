@@ -1,4 +1,5 @@
 import { OrdersResponseDto } from '@/orders/dto/orders.response.dto';
+import { MongoTransform } from '@/utils/mongo-transform';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform, Type } from 'class-transformer';
 import { IsArray, IsNumber, ValidateNested } from 'class-validator';
@@ -6,7 +7,7 @@ import { Types } from 'mongoose';
 
 export class OrdersListDto {
   @ApiProperty({ type: String, description: 'table id' })
-  @Transform(({ value }) => new Types.ObjectId(value))
+  @Transform(new MongoTransform().value())
   table: Types.ObjectId;
 
   @ApiProperty({ type: Number, description: 'total price' })

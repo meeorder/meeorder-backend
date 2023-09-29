@@ -1,4 +1,6 @@
 import { AddonsService } from '@/addons/addons.service';
+import { UserJwt } from '@/auth/user.jwt.payload';
+import { CouponsService } from '@/coupons/coupons.service';
 import { MenusService } from '@/menus/menus.service';
 import { OrdersResponseDto } from '@/orders/dto/orders.response.dto';
 import { OrderStatus } from '@/orders/enums/orders.status';
@@ -9,7 +11,6 @@ import { MenuSchema } from '@/schema/menus.schema';
 import { SessionSchema } from '@/schema/session.schema';
 import { UserSchema } from '@/schema/users.schema';
 import { CouponDto } from '@/session/dto/getcoupon.dto';
-import { SessionUserUpdateDto } from '@/session/dto/update-sessionUser.dto';
 import { UpdateSessionCouponDto } from '@/session/dto/updatecoupon.dto';
 import {
   ConflictException,
@@ -17,6 +18,7 @@ import {
   HttpStatus,
   Inject,
   Injectable,
+  NotFoundException,
   forwardRef,
 } from '@nestjs/common';
 import { DocumentType, ReturnModelType } from '@typegoose/typegoose';
@@ -33,6 +35,7 @@ export class SessionService {
     private readonly userModel: ReturnModelType<typeof UserSchema>,
     @InjectModel(CouponSchema)
     private readonly couponModel: ReturnModelType<typeof CouponSchema>,
+    private readonly couponsService: CouponsService,
     private readonly menusService: MenusService,
     private readonly addonsService: AddonsService,
     @Inject(forwardRef(() => OrdersService))
@@ -47,7 +50,9 @@ export class SessionService {
     return session;
   }
 
-  async finishSession(id: Types.ObjectId) {
+  async finishSession(
+    id: Types.ObjectId,
+  ): Promise<DocumentType<SessionSchema>> {
     if (
       !(await this.ordersService.getOrdersBySession(id)).every(
         ({ status }) => status === OrderStatus.Done,
@@ -58,23 +63,38 @@ export class SessionService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    const result = await this.sessionModel
-      .updateOne(
-        { _id: id, deleted_at: null },
+    const session = await this.sessionModel
+      .findByIdAndUpdate(
+        { _id: id, deleted_at: null, finished_at: null },
         {
-          finished_at: new Date(),
+          $set: {
+            finished_at: new Date(),
+          },
+        },
+        {
+          new: true,
         },
       )
-      .orFail()
+      .orFail(() => new NotFoundException('Session not found or finished'))
       .exec();
 
-    const session = await this.sessionModel.findById({ _id: id });
-    await this.userModel.updateOne(
-      { _id: session.user, deleted_at: null },
-      { point: session.point },
-    );
+    if (session.coupon) {
+      const coupon = await this.couponModel
+        .findById(session.coupon)
+        .select('required_point')
+        .lean()
+        .exec();
+      await this.userModel
+        .updateOne(
+          { _id: session.user, deleted_at: null },
+          {
+            $inc: { point: -coupon.required_point },
+          },
+        )
+        .exec();
+    }
 
-    return result;
+    return session;
   }
 
   async getSessionByTable(
@@ -92,8 +112,10 @@ export class SessionService {
     return session;
   }
 
-  getSessionById(id: Types.ObjectId): Promise<DocumentType<SessionSchema>> {
-    return this.sessionModel
+  async getSessionById(
+    id: Types.ObjectId,
+  ): Promise<DocumentType<SessionSchema>> {
+    return await this.sessionModel
       .findOne({
         _id: id,
         deleted_at: null,
@@ -198,9 +220,7 @@ export class SessionService {
 
   async listOrdersBySession(id: Types.ObjectId): Promise<OrdersListDto> {
     const res = new OrdersListDto();
-    const orders = <OrdersResponseDto[]>(
-      await this.ordersService.getOrdersBySession(id)
-    );
+    const orders = await this.ordersService.getOrdersBySession(id);
     // find total price
     res.total_price = orders
       .map(({ menu, addons }) => {
@@ -220,98 +240,99 @@ export class SessionService {
     res.discount_price = coupon ? coupon.discount : 0;
     res.net_price = res.total_price - res.discount_price;
     res.table = session.table._id;
-    res.orders = orders;
+    res.orders = <OrdersResponseDto[]>orders;
     return res;
   }
 
-  async updateSessionUser(id: Types.ObjectId, userbody: SessionUserUpdateDto) {
-    const new_user = userbody.user;
-    const new_point = (await this.userModel.findById(new_user)).point;
-    await this.sessionModel
-      .updateOne({ _id: id }, { user: new_user, point: new_point })
-      .orFail()
-      .exec();
+  async updateSessionUser(
+    id: Types.ObjectId,
+    { id: user }: Pick<UserJwt, 'id'>,
+  ) {
+    await this.sessionModel.updateOne(
+      { _id: id, deleted_at: null },
+      { user, coupon: null },
+    );
   }
 
-  async getAllCoupon(id: Types.ObjectId): Promise<CouponDto[]> {
+  async getAllCoupon(
+    id: Types.ObjectId,
+    userId?: Types.ObjectId,
+  ): Promise<CouponDto[]> {
+    const session = await this.sessionModel.findById(id).exec();
     const orders = await this.ordersService.getOrdersBySession(id);
-    const session = await this.getSessionById(id);
     const menu_arr = orders.map((order) => order.menu);
     const coupon_arr = await this.couponModel.find({ activated: true }).exec();
+
+    if (!session.user && !userId) {
+      return coupon_arr.map(
+        (coupon) => new CouponDto(coupon.toObject(), false),
+      );
+    }
+
+    const user = await this.userModel.findById(userId ?? session.user).exec();
 
     return coupon_arr.map(
       (coupon) =>
         new CouponDto(
           coupon.toObject(),
-          this.isRedeemableCoupon(session, coupon, menu_arr),
+          this.isRedeemableCoupon(user, coupon, menu_arr),
         ),
     );
   }
 
   isRedeemableCoupon(
-    session: Pick<SessionSchema, 'point'>,
+    user: Pick<UserSchema, 'point'>,
     coupon: Pick<CouponSchema, 'required_point' | 'required_menus'>,
     menus: Pick<MenuSchema, '_id'>[],
   ) {
-    const menus_ = <Types.ObjectId[]>coupon.required_menus;
+    const coupon_required_menus = <Types.ObjectId[]>coupon.required_menus;
 
-    if (coupon.required_point > session.point) {
+    if (!user) {
       return false;
     }
 
-    if (menus_.length === 0) {
+    if (coupon.required_point > user.point) {
+      return false;
+    }
+
+    if (coupon_required_menus.length === 0) {
       return true;
     }
 
-    for (let k = 0; k < menus_.length; k++) {
-      for (let i = 0; i < menus.length; i++) {
-        if (menus[i]._id.equals(menus_[k])) {
-          return true;
-        }
-      }
-    }
-
-    return false;
+    return coupon_required_menus.some((menu) =>
+      menus.some((order) => order._id.equals(menu)),
+    );
   }
 
-  async updateSessionCoupon(
-    id: Types.ObjectId,
-    couponBody: UpdateSessionCouponDto,
-  ) {
-    const session = await this.sessionModel.findById(id);
-    const currentCoupon = await this.couponModel.findById(session.coupon);
-    const newCouponId = couponBody.coupon_id;
-    let newPoint = 0;
+  async updateSessionCoupon(id: Types.ObjectId, body: UpdateSessionCouponDto) {
+    const session = await this.sessionModel.findById(id).exec();
 
-    if (newCouponId === null) {
-      const couponPoint = currentCoupon.required_point;
-      newPoint = session.point + couponPoint;
+    const currentCouponId = session.coupon?._id;
+    const newCouponId = body.coupon_id;
 
-      currentCoupon.redeemed -= 1;
-      await currentCoupon.save();
-    } else if (session.coupon === null || newCouponId !== session.coupon._id) {
-      const newCoupon = await this.couponModel.findById(newCouponId);
-
-      if (newCoupon.quota === newCoupon.redeemed) {
-        throw new ConflictException('Coupon quota has been reached');
-      }
-
-      newCoupon.redeemed += 1;
-      await newCoupon.save();
-
-      const oldCouponPoint = session.coupon ? currentCoupon.required_point : 0;
-      const newCouponPoint = newCoupon.required_point;
-      newPoint = session.point + oldCouponPoint - newCouponPoint;
+    if (currentCouponId?.equals(newCouponId)) {
+      return;
     }
 
-    const updateData = {
-      coupon: newCouponId,
-      point: newPoint,
-    };
+    if (!session.user) {
+      throw new ConflictException('Session has no user');
+    }
 
-    await this.sessionModel
-      .findByIdAndUpdate(id, updateData, { new: true })
-      .orFail()
-      .exec();
+    if (session.finished_at) {
+      throw new ConflictException('Session has already finished');
+    }
+
+    if (currentCouponId) {
+      await this.couponsService.refundCoupon(currentCouponId.toString());
+    }
+
+    if (newCouponId) {
+      await this.couponsService.redeemCoupon(newCouponId.toString());
+    }
+
+    session.coupon = newCouponId;
+    await session.save();
+
+    return session;
   }
 }

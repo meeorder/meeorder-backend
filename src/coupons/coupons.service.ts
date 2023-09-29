@@ -1,5 +1,9 @@
 import { CouponSchema } from '@/schema/coupons.schema';
-import { Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { ReturnModelType } from '@typegoose/typegoose';
 import { InjectModel } from 'nest-typegoose';
 import { CreateCouponDto } from './dto/create-coupon.dto';
@@ -17,26 +21,59 @@ export class CouponsService {
     return doc;
   }
 
-  async getAllCouponByOwner() {
-    const docs = await this.couponModel.find();
+  async getAllCoupons() {
+    const docs = await this.couponModel
+      .find()
+      .populate('required_menus')
+      .exec();
     return docs;
   }
 
-  async getCouponByIdByOwner(id: string) {
-    const doc = await this.couponModel.findById(id);
-    return doc;
+  async getCouponById(id: string) {
+    return await this.couponModel
+      .findById(id)
+      .populate('required_menus')
+      .orFail(new NotFoundException('Coupon not found'))
+      .exec();
   }
 
   async updateCoupon(id: string, couponData: UpdateCouponDto) {
-    const doc = await this.couponModel.findByIdAndUpdate(id, couponData);
-    return doc;
+    return await this.couponModel
+      .findByIdAndUpdate(id, couponData)
+      .orFail(new NotFoundException('Coupon not found'));
   }
 
   async deleteCoupon(id: string) {
-    const doc = await this.couponModel.findByIdAndRemove(id);
-    if (!doc) {
-      throw new Error('Coupon not found');
-    }
+    await this.couponModel
+      .findByIdAndRemove(id)
+      .orFail(new NotFoundException('Coupon not found'));
     return { message: 'Coupon deleted' };
+  }
+
+  async redeemCoupon(id: string) {
+    const doc = await this.getCouponById(id);
+
+    if (doc.redeemed === doc.quota) {
+      throw new ConflictException('Coupon quota reached');
+    }
+
+    doc.redeemed += 1;
+    await doc.save();
+
+    return doc;
+  }
+
+  async refundCoupon(id: string) {
+    const doc = await this.getCouponById(id);
+
+    if (doc.redeemed === 0) {
+      throw new ConflictException(
+        'Coupon cannot be refunded, redeemed:' + doc.redeemed,
+      );
+    }
+
+    doc.redeemed -= 1;
+    await doc.save();
+    return doc;
   }
 }

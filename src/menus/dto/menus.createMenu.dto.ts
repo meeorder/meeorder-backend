@@ -1,3 +1,4 @@
+import { MongoTransform } from '@/utils/mongo-transform';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { Types } from 'mongoose';
@@ -18,10 +19,14 @@ export class CreateMenuDto {
   @ApiProperty({ type: Number, required: true, description: 'Menu Price' })
   price: number;
 
+  @Transform(new MongoTransform(true).value())
   @ApiProperty({ type: String, required: false, description: 'Menu Category' })
   category?: Types.ObjectId;
 
+  @ApiProperty({ type: String, isArray: true, description: 'Menu Ingredients' })
+  ingredients: Types.ObjectId[];
+
   @ApiProperty({ type: String, isArray: true, description: 'Menu Addons' })
-  @Transform(({ value }) => value.map((v) => new Types.ObjectId(v)))
+  @Transform(new MongoTransform().array())
   addons: Types.ObjectId[];
 }

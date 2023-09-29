@@ -1,4 +1,5 @@
 import { CouponSchema } from '@/schema/coupons.schema';
+import { OrdersSchema } from '@/schema/order.schema';
 import { TablesSchema } from '@/schema/tables.schema';
 import { UserSchema } from '@/schema/users.schema';
 import { ApiProperty } from '@nestjs/swagger';
@@ -8,6 +9,10 @@ import { Types } from 'mongoose';
 @modelOptions({
   schemaOptions: {
     collection: 'sessions',
+    timestamps: {
+      createdAt: 'created_at',
+      updatedAt: false,
+    },
   },
 })
 export class SessionSchema {
@@ -15,7 +20,6 @@ export class SessionSchema {
   @ApiProperty({ type: String, description: 'Session ID' })
   _id: Types.ObjectId;
 
-  @Prop({ default: new Date() })
   @ApiProperty({ type: Date, description: 'Session creation date' })
   created_at: Date;
 
@@ -29,26 +33,22 @@ export class SessionSchema {
 
   @Prop({ default: null, ref: () => UserSchema })
   @ApiProperty({
-    type: () => UserSchema,
+    type: String,
     description: 'Current head user of session',
     nullable: true,
   })
   user: Ref<UserSchema>;
 
-  @Prop({ default: 0 })
-  @ApiProperty({ description: 'User point' })
-  point: number;
-
   @Prop({ default: null, ref: () => CouponSchema })
   @ApiProperty({
-    type: () => CouponSchema,
+    type: String,
     nullable: true,
     description: 'Current coupon in session',
   })
   coupon: Ref<CouponSchema>;
 
   @Prop({ required: true, ref: () => TablesSchema })
-  @ApiProperty({ type: () => TablesSchema, description: "Session's Table" })
+  @ApiProperty({ type: String, description: "Session's Table" })
   table: Ref<TablesSchema>;
 
   @Prop({ default: null })
@@ -58,4 +58,11 @@ export class SessionSchema {
     description: 'Session deletion date',
   })
   deleted_at: Date;
+
+  @Prop({
+    ref: () => OrdersSchema,
+    localField: '_id',
+    foreignField: 'session',
+  })
+  orders: Ref<OrdersSchema>[];
 }

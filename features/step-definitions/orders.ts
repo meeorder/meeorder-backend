@@ -29,6 +29,7 @@ export class OrderStepDefination {
         addons: order.addons?.split(',') ?? [],
         additional_info: order.additional_info,
         _id: new Types.ObjectId(order._id),
+        status: order.status,
       });
 
       expect(doc).toBeDefined();
@@ -45,7 +46,8 @@ export class OrderStepDefination {
         orders: [
           {
             menu: order.menu,
-            addons: [order.addon],
+            addons: order.addon?.split(',') ?? [],
+            ingredients: order.ingredient?.split(',') ?? [],
             additional_info: 'info',
           },
         ],
@@ -56,6 +58,13 @@ export class OrderStepDefination {
   @when('get all orders')
   async getAllOrders() {
     this.workspace.response = await this.workspace.axiosInstance.get('/orders');
+  }
+
+  @when('update order {string} to in queue')
+  async updateOrderStatusToInQueue(order: string) {
+    this.workspace.response = await this.workspace.axiosInstance.patch(
+      `/orders/${order}/in_queue`,
+    );
   }
 
   @when('update order {string} to preparing')
@@ -86,15 +95,35 @@ export class OrderStepDefination {
       `/orders/${id}/cancel`,
       {
         addons: payload.addons?.split(',') ?? [],
-        reason: payload.reason ?? 'Reason',
+        ingredients: payload.ingredients?.split(',') ?? [],
+        reasons: payload.reasons?.split(',') ?? [],
       },
     );
+  }
+
+  @when('delete order {string}')
+  async deleteOrder(id: string) {
+    this.workspace.response = await this.workspace.axiosInstance.delete(
+      `/orders/${id}`,
+    );
+  }
+
+  @then('order {string} status should be {string}')
+  async expectOrderShouldBeInQueue(id: string, status: string) {
+    const order = await this.orderModel.findById(id).lean().exec();
+    expect(order.status).toBe(status);
   }
 
   @then('order {string} should be cancelled')
   async expectOrderShouldBeCancelled(id: string) {
     const order = await this.orderModel.findById(id).lean().exec();
-    expect(order.cancelled_at).toBeTruthy();
+    expect(order.cancel).toBeTruthy();
+  }
+
+  @then('order {string} should be deleted')
+  async expectOrderShouldBeDeleted(id: string) {
+    const order = await this.orderModel.findById(id).lean().exec();
+    expect(order.deleted_at).toBeTruthy();
   }
 
   @after()

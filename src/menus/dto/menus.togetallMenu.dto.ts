@@ -1,7 +1,7 @@
 import { AddonSchema } from '@/schema/addons.schema';
+import { IngredientSchema } from '@/schema/ingredients.schema';
 import { ApiProperty } from '@nestjs/swagger';
 import { Types } from 'mongoose';
-
 export class MenuDtoForAllMenu {
   @ApiProperty({ type: String, description: 'Menu ID' })
   _id: Types.ObjectId;
@@ -21,6 +21,13 @@ export class MenuDtoForAllMenu {
 
   @ApiProperty({ type: Number, description: 'Menu Price' })
   price: number;
+
+  @ApiProperty({
+    type: String,
+    isArray: true,
+    description: 'Menu Ingredients ID',
+  })
+  ingredients: IngredientSchema[];
 
   @ApiProperty({
     type: AddonSchema,
