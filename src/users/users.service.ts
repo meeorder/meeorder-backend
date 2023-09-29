@@ -30,7 +30,7 @@ export class UsersService {
       const duplicateErrorCode = 11000;
       if (err.code === duplicateErrorCode) {
         throw new BadRequestException({
-          message: 'username นี้ถูกใช้ไปแล้ว',
+          message: 'ชื่อผู้ใช้นี้ถูกใช้ไปแล้ว',
         });
       } else {
         throw err;

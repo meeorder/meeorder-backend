@@ -25,7 +25,7 @@ export class AuthService {
     const user = await this.usersService.getUserByUsername(username);
     if (!user) {
       throw new UnauthorizedException({
-        message: 'Username หรือ Password ไม่ถูกต้อง',
+        message: 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง',
       });
     }
     const isMatched = await argon2.verify(user.password, password);
@@ -43,7 +43,7 @@ export class AuthService {
       return token;
     } else {
       throw new UnauthorizedException({
-        message: 'Username หรือ Password ไม่ถูกต้อง',
+        message: 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง',
       });
     }
   }
@@ -61,7 +61,7 @@ export class AuthService {
       const duplicateErrorCode = 11000;
       if (err.code === duplicateErrorCode) {
         throw new BadRequestException({
-          message: 'username นี้ถูกใช้ไปแล้ว',
+          message: 'ชื่อผู้ใช้นี้ถูกใช้ไปแล้ว',
         });
       } else {
         throw err;
