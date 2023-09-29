@@ -30,7 +30,7 @@ export class UsersService {
       const duplicateErrorCode = 11000;
       if (err.code === duplicateErrorCode) {
         throw new BadRequestException({
-          message: 'Username is already taken',
+          message: 'username นี้ถูกใช้ไปแล้ว',
         });
       } else {
         throw err;
@@ -107,7 +107,7 @@ export class UsersService {
         .exec();
     } else {
       throw new BadRequestException({
-        message: 'Wrong password',
+        message: 'รหัสผ่านไม่ถูกต้อง',
       });
     }
   }
