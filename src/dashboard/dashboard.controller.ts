@@ -1,4 +1,5 @@
 import { DashboardService } from '@/dashboard/dashboard.service';
+import { ChartDataDailyDto } from '@/dashboard/dto/chartData.daily.dto';
 import { GetUserAmountDto } from '@/dashboard/dto/getAllUserAmount.dto';
 import { Role } from '@/decorator/roles.decorator';
 import { ParseMongoDatePipe } from '@/pipes/mongo-date.pipe';
@@ -32,5 +33,17 @@ export class DashboardController {
     return await this.dashboardService.getAllUserAmount(
       new ParseMongoDatePipe().transform(date),
     );
+  }
+
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: () => ChartDataDailyDto,
+    description: '.',
+  })
+  @Get('/net_income/chart_data/daily')
+  @HttpCode(HttpStatus.OK)
+  @Role(UserRole.Customer)
+  async getDailyNetIncome() {
+    return await this.dashboardService.getAllDailyNetIncome();
   }
 }
