@@ -148,4 +148,9 @@ export class IngredientsController {
   async activateAllIngredient() {
     await this.ingredientsService.activateAllIngredient();
   }
+
+  // @ApiNoContentResponse()
+  // @ApiOperation({
+  //   summary: 'Make ingredient available'
+  // })
 }
