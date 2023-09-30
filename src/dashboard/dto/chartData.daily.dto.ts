@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class ChartDataDailyDto {
   @ApiProperty({
-    description: 'Date',
+    description: 'Date (Unix timestamp)',
     type: Number,
   })
   date: number;
