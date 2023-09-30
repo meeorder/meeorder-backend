@@ -233,10 +233,7 @@ export class SessionController {
   @ApiParam({ name: 'id', type: String, description: 'Session ID (ObjectId)' })
   @ApiBearerAuth()
   @Get(':id/coupon/all')
-  async getCoupons(
-    @Param('id', new ParseMongoIdPipe()) id: Types.ObjectId,
-    @User() user?: UserJwt,
-  ) {
+  async getCoupons(@Param('id') id: string, @User() user?: UserJwt) {
     return await this.sessionService.getAllCoupon(
       id,
       user?.id ? new Types.ObjectId(user?.id) : null,

@@ -255,17 +255,19 @@ export class SessionService {
   }
 
   async getAllCoupon(
-    id: Types.ObjectId,
+    id: string,
     userId?: Types.ObjectId,
   ): Promise<CouponDto[]> {
-    const session = await this.sessionModel.findById(id).select('user').exec();
     const coupon_arr = await this.couponModel.find({ activated: true }).exec();
-    if (!session) {
+    if (id === '0') {
       return coupon_arr.map(
         (coupon) => new CouponDto(coupon.toObject(), false),
       );
     }
-    const orders = await this.ordersService.getOrdersBySession(id);
+    const session = await this.sessionModel.findById(id).select('user').exec();
+    const orders = await this.ordersService.getOrdersBySession(
+      new Types.ObjectId(id),
+    );
     const menu_arr = orders.map((order) => order.menu);
 
     if (!session.user && !userId) {
