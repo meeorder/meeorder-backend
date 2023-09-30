@@ -3,8 +3,8 @@ import { Ref, index, modelOptions, prop } from '@typegoose/typegoose';
 import { Types } from 'mongoose';
 
 export enum StatusLogType {
-  Ingredient = 'ingredient',
-  Addon = 'addon',
+  Ingredient = 'INGREDIENT',
+  Addon = 'ADDON',
 }
 
 @modelOptions({
