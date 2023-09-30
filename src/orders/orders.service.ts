@@ -95,6 +95,7 @@ export class OrdersService {
         { _id: id },
         {
           $set: {
+            status: OrderStatus.Cancelled,
             cancel: new OrderCancelSchema({ reasons, ingredients, addons }),
           },
         },
