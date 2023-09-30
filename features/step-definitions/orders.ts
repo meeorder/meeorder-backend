@@ -126,6 +126,12 @@ export class OrderStepDefination {
     expect(order.deleted_at).toBeTruthy();
   }
 
+  @then('order {string} cancel schama should be null')
+  async expectOrderShouldNotHaveCancel(id: string) {
+    const order = await this.orderModel.findById(id).lean().exec();
+    expect(order.cancel).toBeFalsy();
+  }
+
   @after()
   async cleanUpDb() {
     await this.orderModel.deleteMany({});

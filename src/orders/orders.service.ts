@@ -68,10 +68,7 @@ export class OrdersService {
   async setStatus(id: Types.ObjectId, status: OrderStatus) {
     const element = await this.orderModel.findById(id).exec();
     if (element.cancel !== null) {
-      throw new HttpException(
-        'Order has been cancelled',
-        HttpStatus.BAD_REQUEST,
-      );
+      element.cancel = null;
     }
     element.status = status;
 
