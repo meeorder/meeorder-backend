@@ -38,6 +38,7 @@ Feature: Orders
     Then should return status code 204
     And order "64fb0700ab4bb1fde967f3b1" should be cancelled
     And addon "64fb0605ab4bb1fde967f3b0" should be disabled
+    And order "64fb0700ab4bb1fde967f3b1" status should be "CANCELLED"
 
   Scenario: Cancel order with reason lack of ingredients
     Given login as
@@ -56,6 +57,7 @@ Feature: Orders
     Then should return status code 204
     And order "64fb0700ab4bb1fde967f3b1" should be cancelled
     And ingredient "6504aeab9a22c9b19517a35b" should be disabled
+    And order "64fb0700ab4bb1fde967f3b1" status should be "CANCELLED"
 
   Scenario: Delete order
     Given login as
