@@ -12,6 +12,7 @@ export enum StatusLogType {
     timestamps: {
       createdAt: 'modified_at',
     },
+    collection: 'logs.status',
   },
 })
 @index({
