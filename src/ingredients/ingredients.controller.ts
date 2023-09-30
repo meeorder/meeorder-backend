@@ -1,8 +1,11 @@
+import { UserJwt } from '@/auth/user.jwt.payload';
 import { Role } from '@/decorator/roles.decorator';
+import { User } from '@/decorator/user.decorator';
 import { CreateIngredientDto } from '@/ingredients/dto/create.ingredient.dto';
 import { GetIngredientDto } from '@/ingredients/dto/get.ingredient.dto';
 import { UpdateIngredientDto } from '@/ingredients/dto/update.ingredient.dto';
 import { IngredientsService } from '@/ingredients/ingredients.service';
+import { LoggerService } from '@/logger/logger.service';
 import { IngredientSchema } from '@/schema/ingredients.schema';
 import { UserRole } from '@/schema/users.schema';
 import {
@@ -22,11 +25,15 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { Types } from 'mongoose';
 
 @Controller({ path: 'ingredients', version: '1' })
 @ApiTags('ingredients')
 export class IngredientsController {
-  constructor(private readonly ingredientsService: IngredientsService) {}
+  constructor(
+    private readonly ingredientsService: IngredientsService,
+    private readonly loggerService: LoggerService,
+  ) {}
 
   // Create a ingredient
   @ApiResponse({
@@ -145,12 +152,12 @@ export class IngredientsController {
   @Role(UserRole.Owner)
   @Post('/activate/all')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async activateAllIngredient() {
+  async activateAllIngredient(@User() { id }: UserJwt) {
     await this.ingredientsService.activateAllIngredient();
+    await this.loggerService.createIngredientLog(
+      await this.ingredientsService.getAllIds(),
+      new Types.ObjectId(id),
+      true,
+    );
   }
-
-  // @ApiNoContentResponse()
-  // @ApiOperation({
-  //   summary: 'Make ingredient available'
-  // })
 }
