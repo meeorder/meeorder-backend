@@ -57,7 +57,7 @@ export class OrdersService {
       })
       .populate({
         path: 'menu',
-        populate: { path: 'category' },
+        populate: { path: 'category ingredients' },
       })
       .populate('cancel.ingredients')
       .populate('cancel.addons')

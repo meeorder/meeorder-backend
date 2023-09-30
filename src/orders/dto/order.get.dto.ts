@@ -1,4 +1,4 @@
-import { PopulatedCategoryMenuDto } from '@/menus/dto/populated-category.menu.dto';
+import { PopulatedCategoryIngredientMenuDto } from '@/menus/dto/populated-category-ingredients.menu.dto';
 import { OrderCancelResponseDto } from '@/orders/dto/order.cancel.response.dto';
 import { OrderStatus } from '@/orders/enums/orders.status';
 import { AddonSchema } from '@/schema/addons.schema';
@@ -35,6 +35,6 @@ export class OrderGetDto {
   })
   session: SessionWithTableDto;
 
-  @ApiProperty({ type: () => PopulatedCategoryMenuDto })
-  menu: PopulatedCategoryMenuDto;
+  @ApiProperty({ type: () => PopulatedCategoryIngredientMenuDto })
+  menu: PopulatedCategoryIngredientMenuDto;
 }
