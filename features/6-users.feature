@@ -107,6 +107,19 @@ Feature: Users
       | vjump       | xxx         |
     Then should return status code 400
 
+  Scenario: Update new username but username is not unique
+    Given users
+      | _id                      | username   | password   | role | point |
+      | 64f87576dced99c4e4e93468 | nath       | ixq        | 50   | 0     |
+      | 6502b725500e48f9ce46f838 | meeorder01 | meeorder01 | 1    | 999   |
+    When login with username and password
+      | username | password |
+      | nath     | ixq      |
+    When update user info
+      | newUsername | oldPassword |
+      | meeorder01  | ixq         |
+    Then should return status code 400
+
   Scenario: Update new password with corrected password
     Given users
       | _id                      | username | password | role | point |

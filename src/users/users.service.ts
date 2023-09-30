@@ -91,6 +91,14 @@ export class UsersService {
       .exec();
     if (await argon2.verify(user.password, updateInfo.oldPassword)) {
       if (updateInfo.newUsername) {
+        const isExist = await this.userModel
+          .findOne({ username: updateInfo.newUsername })
+          .exec();
+        if (isExist) {
+          throw new BadRequestException({
+            message: 'ชื่อผู้ใช้นี้ถูกใช้ไปแล้ว',
+          });
+        }
         user.username = updateInfo.newUsername;
       }
       if (updateInfo.newPassword) {
