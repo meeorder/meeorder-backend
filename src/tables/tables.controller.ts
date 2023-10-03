@@ -2,6 +2,7 @@ import { Role } from '@/decorator/roles.decorator';
 import { TablesSchema } from '@/schema/tables.schema';
 import { UserRole } from '@/schema/users.schema';
 import { TablesDto } from '@/tables/dto/tables.dto';
+import { TableResponseDto } from '@/tables/dto/tables.response.dto';
 import { TablesService } from '@/tables/tables.service';
 import { Body, Controller, Get, HttpStatus, Post } from '@nestjs/common';
 import {
@@ -33,12 +34,12 @@ export class TablesController {
 
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Get tables',
-    type: () => TablesSchema,
+    description: 'Get all tables with information',
+    type: () => TableResponseDto,
     isArray: true,
   })
   @ApiOperation({
-    summary: 'Get all tables',
+    summary: 'Get all tables with information',
   })
   @Role(UserRole.Employee)
   @Get()

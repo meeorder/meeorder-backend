@@ -1,5 +1,6 @@
+import { SessionSchema } from '@/schema/session.schema';
 import { ApiProperty } from '@nestjs/swagger';
-import { modelOptions, Prop } from '@typegoose/typegoose';
+import { modelOptions, Prop, Ref } from '@typegoose/typegoose';
 import { Types } from 'mongoose';
 
 @modelOptions({
@@ -22,4 +23,12 @@ export class TablesSchema {
 
   @ApiProperty({ type: Date })
   created_at: Date;
+
+  @Prop({
+    ref: () => SessionSchema,
+    localField: '_id',
+    foreignField: 'table',
+    justOne: true,
+  })
+  session: Ref<SessionSchema>;
 }
