@@ -107,9 +107,26 @@ export class DashboardController {
     @Query('startTime') startTime: number,
     @Query('endTime') endTime: number,
   ) {
-    return await this.dashboardService.getAllGroupedNetIncome(
+        await this.dashboardService.getHourGroupedNetIncome(
       new ParseMongoDatePipe().transform(startTime),
       new ParseMongoDatePipe().transform(endTime),
     );
+
+     await this.dashboardService.getDayGroupedNetIncome(
+      new ParseMongoDatePipe().transform(startTime),
+      new ParseMongoDatePipe().transform(endTime),
+    );
+    
+     await this.dashboardService.getMonthGroupedNetIncome(
+      new ParseMongoDatePipe().transform(startTime),
+      new ParseMongoDatePipe().transform(endTime),
+    );
+
+     await this.dashboardService.getQuarterGroupedNetIncome(
+      new ParseMongoDatePipe().transform(startTime),
+      new ParseMongoDatePipe().transform(endTime),
+    );
+
+    
   }
 }

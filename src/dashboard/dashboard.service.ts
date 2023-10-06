@@ -109,7 +109,7 @@ export class DashboardService {
   }
 
   // To be continued
-  async getAllGroupedNetIncome(startTime: Date, endTime: Date) {
+  async getDayGroupedNetIncome(startTime: Date, endTime: Date) {
     console.log(startTime, endTime);
     const days = { Sun: 1, Mon: 2, Tue: 3, Wed: 4, Thu: 5, Fri: 6, Sat: 7 };
     const agg = await this.receiptModel.aggregate([
@@ -156,6 +156,114 @@ export class DashboardService {
       console.log(item);
       return {
         dayOfWeek: item.dayOfWeek,
+        netIncome: item.total_price - item.discount_price,
+      };
+    });
+  }
+
+  async getHourGroupedNetIncome(startTime: Date, endTime: Date) {
+    const agg = await this.receiptModel.aggregate([
+      {
+        $match: {
+          created_at: {
+            $gte: startTime,
+            $lte: endTime,
+          },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            hour: { $hour: '$created_at' },
+          },
+          total_price: { $sum: '$total_price' },
+          discount_price: { $sum: '$discount_price' },
+        },
+      },
+      {
+        $project: {
+          total_price: 1,
+          discount_price: 1,
+          _id: 1,
+          hour: '$_id.hour',
+        },
+      },
+    ]);
+    return agg.map((item) => {
+      return {
+        hour: item.hour,
+        netIncome: item.total_price - item.discount_price,
+      };
+    });
+  }
+
+  async getMonthGroupedNetIncome(startTime: Date, endTime: Date) {
+    const agg = await this.receiptModel.aggregate([
+      {
+        $match: {
+          created_at: {
+            $gte: startTime,
+            $lte: endTime,
+          },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            month: { $month: '$created_at' },
+          },
+          total_price: { $sum: '$total_price' },
+          discount_price: { $sum: '$discount_price' },
+        },
+      },
+      {
+        $project: {
+          total_price: 1,
+          discount_price: 1,
+          _id: 1,
+          month: '$_id.month',
+        },
+      },
+    ]);
+    return agg.map((item) => {
+      return {
+        month: item.month,
+        netIncome: item.total_price - item.discount_price,
+      };
+    });
+  }
+
+  async getQuarterGroupedNetIncome(startTime: Date, endTime: Date) {
+    const agg = await this.receiptModel.aggregate([
+      {
+        $match: {
+          created_at: {
+            $gte: startTime,
+            $lte: endTime,
+          },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            quarter: { $quarter: '$created_at' },
+          },
+          total_price: { $sum: '$total_price' },
+          discount_price: { $sum: '$discount_price' },
+        },
+      },
+      {
+        $project: {
+          total_price: 1,
+          discount_price: 1,
+          _id: 1,
+          quarter: '$_id.quarter',
+        },
+      },
+    ]);
+    return agg.map((item) => {
+      return {
+        quarter: item.quarter,
         netIncome: item.total_price - item.discount_price,
       };
     });
