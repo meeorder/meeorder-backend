@@ -18,6 +18,8 @@ export class DashboardService {
   constructor(
     @InjectModel(UserSchema)
     private readonly userModel: ReturnModelType<typeof UserSchema>,
+    @InjectModel(ReceiptSchema)
+    private readonly receiptModel: ReturnModelType<typeof ReceiptSchema>,
     private readonly userService: UsersService,
     @InjectModel(ReceiptSchema)
     private readonly receiptModel: ReturnModelType<typeof ReceiptSchema>,
