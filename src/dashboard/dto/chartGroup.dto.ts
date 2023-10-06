@@ -28,16 +28,4 @@ export class ChartGroupResponseDto {
     type: QuarterlySubDto,
   })
   quarterly: QuarterlySubDto;
-
-  constructor(
-    hourly: HourlySubDto,
-    daysOfWeek: DaysOfWeekSubDto,
-    monthly: MonthlySubDto,
-    quarterly: QuarterlySubDto,
-  ) {
-    this.hourly = hourly;
-    this.daysOfWeek = daysOfWeek;
-    this.monthly = monthly;
-    this.quarterly = quarterly;
-  }
 }

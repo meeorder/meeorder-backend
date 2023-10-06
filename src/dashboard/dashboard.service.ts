@@ -1,6 +1,11 @@
 import { ChartDataDailyDto } from '@/dashboard/dto/chartData.daily.dto';
 import { ChartDataMonthlyDto } from '@/dashboard/dto/chartData.monthly.dto';
+import { ChartDataYearlyDto } from '@/dashboard/dto/chartData.yearly.dto';
+import { DaysOfWeekSubDto } from '@/dashboard/dto/daysOfWeek.sub.dto';
 import { GetUserAmountDto } from '@/dashboard/dto/getAllUserAmount.dto';
+import { HourlySubDto } from '@/dashboard/dto/hourly.sub.dto';
+import { MonthlySubDto } from '@/dashboard/dto/monthly.sub.dto';
+import { QuarterlySubDto } from '@/dashboard/dto/quarterly.sub.dto';
 import { ReceiptSchema } from '@/schema/receipt.schema';
 import { UserSchema } from '@/schema/users.schema';
 import { UsersService } from '@/users/users.service';
@@ -86,7 +91,7 @@ export class DashboardService {
     });
   }
 
-  async getAllYearlyNetIncome(): Promise<ChartDataMonthlyDto[]> {
+  async getAllYearlyNetIncome(): Promise<ChartDataYearlyDto[]> {
     const agg = await this.receiptModel.aggregate([
       {
         $group: {
@@ -102,15 +107,14 @@ export class DashboardService {
     ]);
     return agg.map((item) => {
       return {
-        month: +new Date(item._id.year),
+        year: +new Date(item._id.year),
         netIncome: item.total_price - item.discount_price,
       };
     });
   }
 
-  // To be continued
+  // All grouped net income
   async getDayGroupedNetIncome(startTime: Date, endTime: Date) {
-    console.log(startTime, endTime);
     const days = { Sun: 1, Mon: 2, Tue: 3, Wed: 4, Thu: 5, Fri: 6, Sat: 7 };
     const agg = await this.receiptModel.aggregate([
       {
@@ -152,13 +156,11 @@ export class DashboardService {
         },
       },
     ]);
-    return agg.map((item) => {
-      console.log(item);
-      return {
-        dayOfWeek: item.dayOfWeek,
-        netIncome: item.total_price - item.discount_price,
-      };
+    const dto = new DaysOfWeekSubDto();
+    agg.forEach((item) => {
+      dto[item.dayOfWeek] = item.total_price - item.discount_price;
     });
+    return dto;
   }
 
   async getHourGroupedNetIncome(startTime: Date, endTime: Date) {
@@ -189,15 +191,28 @@ export class DashboardService {
         },
       },
     ]);
-    return agg.map((item) => {
-      return {
-        hour: item.hour,
-        netIncome: item.total_price - item.discount_price,
-      };
+    const dto = new HourlySubDto();
+    agg.forEach((item) => {
+      dto[item.hour] = item.total_price - item.discount_price;
     });
+    return dto;
   }
 
   async getMonthGroupedNetIncome(startTime: Date, endTime: Date) {
+    const month = {
+      Jan: 1,
+      Feb: 2,
+      Mar: 3,
+      Apr: 4,
+      May: 5,
+      Jun: 6,
+      Jul: 7,
+      Aug: 8,
+      Sep: 9,
+      Oct: 10,
+      Nov: 11,
+      Dec: 12,
+    };
     const agg = await this.receiptModel.aggregate([
       {
         $match: {
@@ -221,19 +236,37 @@ export class DashboardService {
           total_price: 1,
           discount_price: 1,
           _id: 1,
-          month: '$_id.month',
+          month: {
+            $switch: {
+              branches: [
+                { case: { $eq: ['$_id.month', month.Jan] }, then: 'Jan' },
+                { case: { $eq: ['$_id.month', month.Feb] }, then: 'Feb' },
+                { case: { $eq: ['$_id.month', month.Mar] }, then: 'Mar' },
+                { case: { $eq: ['$_id.month', month.Apr] }, then: 'Apr' },
+                { case: { $eq: ['$_id.month', month.May] }, then: 'May' },
+                { case: { $eq: ['$_id.month', month.Jun] }, then: 'Jun' },
+                { case: { $eq: ['$_id.month', month.Jul] }, then: 'Jul' },
+                { case: { $eq: ['$_id.month', month.Aug] }, then: 'Aug' },
+                { case: { $eq: ['$_id.month', month.Sep] }, then: 'Sep' },
+                { case: { $eq: ['$_id.month', month.Oct] }, then: 'Oct' },
+                { case: { $eq: ['$_id.month', month.Nov] }, then: 'Nov' },
+                { case: { $eq: ['$_id.month', month.Dec] }, then: 'Dec' },
+              ],
+              default: 'Unknown',
+            },
+          },
         },
       },
     ]);
-    return agg.map((item) => {
-      return {
-        month: item.month,
-        netIncome: item.total_price - item.discount_price,
-      };
+    const dto = new MonthlySubDto();
+    agg.forEach((item) => {
+      dto[item.month] = item.total_price - item.discount_price;
     });
+    return dto;
   }
 
   async getQuarterGroupedNetIncome(startTime: Date, endTime: Date) {
+    const three = 3;
     const agg = await this.receiptModel.aggregate([
       {
         $match: {
@@ -246,7 +279,11 @@ export class DashboardService {
       {
         $group: {
           _id: {
-            quarter: { $quarter: '$created_at' },
+            quarter: {
+              $ceil: {
+                $divide: [{ $subtract: [{ $month: '$created_at' }, 1] }, three],
+              },
+            },
           },
           total_price: { $sum: '$total_price' },
           discount_price: { $sum: '$discount_price' },
@@ -261,11 +298,11 @@ export class DashboardService {
         },
       },
     ]);
-    return agg.map((item) => {
-      return {
-        quarter: item.quarter,
-        netIncome: item.total_price - item.discount_price,
-      };
+    const dto = new QuarterlySubDto();
+    agg.forEach((item) => {
+      dto['Q' + item.quarter.toString()] =
+        item.total_price - item.discount_price;
     });
+    return dto;
   }
 }

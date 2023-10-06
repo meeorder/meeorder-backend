@@ -107,26 +107,32 @@ export class DashboardController {
     @Query('startTime') startTime: number,
     @Query('endTime') endTime: number,
   ) {
-        await this.dashboardService.getHourGroupedNetIncome(
-      new ParseMongoDatePipe().transform(startTime),
-      new ParseMongoDatePipe().transform(endTime),
-    );
+    const allGroupedNetIncome = new ChartGroupResponseDto();
 
-     await this.dashboardService.getDayGroupedNetIncome(
-      new ParseMongoDatePipe().transform(startTime),
-      new ParseMongoDatePipe().transform(endTime),
-    );
-    
-     await this.dashboardService.getMonthGroupedNetIncome(
-      new ParseMongoDatePipe().transform(startTime),
-      new ParseMongoDatePipe().transform(endTime),
-    );
+    allGroupedNetIncome.hourly =
+      await this.dashboardService.getHourGroupedNetIncome(
+        new ParseMongoDatePipe().transform(startTime),
+        new ParseMongoDatePipe().transform(endTime),
+      );
 
-     await this.dashboardService.getQuarterGroupedNetIncome(
-      new ParseMongoDatePipe().transform(startTime),
-      new ParseMongoDatePipe().transform(endTime),
-    );
+    allGroupedNetIncome.daysOfWeek =
+      await this.dashboardService.getDayGroupedNetIncome(
+        new ParseMongoDatePipe().transform(startTime),
+        new ParseMongoDatePipe().transform(endTime),
+      );
 
-    
+    allGroupedNetIncome.monthly =
+      await this.dashboardService.getMonthGroupedNetIncome(
+        new ParseMongoDatePipe().transform(startTime),
+        new ParseMongoDatePipe().transform(endTime),
+      );
+
+    allGroupedNetIncome.quarterly =
+      await this.dashboardService.getQuarterGroupedNetIncome(
+        new ParseMongoDatePipe().transform(startTime),
+        new ParseMongoDatePipe().transform(endTime),
+      );
+
+    return allGroupedNetIncome;
   }
 }

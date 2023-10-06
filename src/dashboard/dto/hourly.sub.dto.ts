@@ -3,66 +3,73 @@ import { ApiProperty } from '@nestjs/swagger';
 export class HourlySubDto {
   @ApiProperty({
     default: 0,
+    description: "00:00 O'clock",
+    type: Number,
+  })
+  '0': number = 0;
+
+  @ApiProperty({
+    default: 0,
     description: "01:00 O'clock",
     type: Number,
   })
-  '01': number = 0;
+  '1': number = 0;
 
   @ApiProperty({
     default: 0,
     description: "02:00 O'clock",
     type: Number,
   })
-  '02': number = 0;
+  '2': number = 0;
 
   @ApiProperty({
     default: 0,
     description: "03:00 O'clock",
     type: Number,
   })
-  '03': number = 0;
+  '3': number = 0;
 
   @ApiProperty({
     default: 0,
     description: "04:00 O'clock",
     type: Number,
   })
-  '04': number = 0;
+  '4': number = 0;
 
   @ApiProperty({
     default: 0,
     description: "05:00 O'clock",
     type: Number,
   })
-  '05': number = 0;
+  '5': number = 0;
 
   @ApiProperty({
     default: 0,
     description: "06:00 O'clock",
     type: Number,
   })
-  '06': number = 0;
+  '6': number = 0;
 
   @ApiProperty({
     default: 0,
     description: "07:00 O'clock",
     type: Number,
   })
-  '07': number = 0;
+  '7': number = 0;
 
   @ApiProperty({
     default: 0,
     description: "08:00 O'clock",
     type: Number,
   })
-  '08': number = 0;
+  '8': number = 0;
 
   @ApiProperty({
     default: 0,
     description: "09:00 O'clock",
     type: Number,
   })
-  '09': number = 0;
+  '9': number = 0;
 
   @ApiProperty({
     default: 0,
@@ -161,11 +168,4 @@ export class HourlySubDto {
     type: Number,
   })
   '23': number = 0;
-
-  @ApiProperty({
-    default: 0,
-    description: "24:00 O'clock",
-    type: Number,
-  })
-  '24': number = 0;
 }
