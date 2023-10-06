@@ -30,7 +30,7 @@ export class UsersService {
       const duplicateErrorCode = 11000;
       if (err.code === duplicateErrorCode) {
         throw new BadRequestException({
-          message: 'Username is already taken',
+          message: 'ชื่อผู้ใช้นี้ถูกใช้ไปแล้ว',
         });
       } else {
         throw err;
@@ -91,6 +91,14 @@ export class UsersService {
       .exec();
     if (await argon2.verify(user.password, updateInfo.oldPassword)) {
       if (updateInfo.newUsername) {
+        const isExist = await this.userModel
+          .findOne({ username: updateInfo.newUsername })
+          .exec();
+        if (isExist) {
+          throw new BadRequestException({
+            message: 'ชื่อผู้ใช้นี้ถูกใช้ไปแล้ว',
+          });
+        }
         user.username = updateInfo.newUsername;
       }
       if (updateInfo.newPassword) {
@@ -107,7 +115,7 @@ export class UsersService {
         .exec();
     } else {
       throw new BadRequestException({
-        message: 'Wrong password',
+        message: 'รหัสผ่านไม่ถูกต้อง',
       });
     }
   }

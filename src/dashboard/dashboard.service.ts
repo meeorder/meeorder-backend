@@ -47,6 +47,44 @@ export class DashboardService {
     };
   }
 
+  async getIncomeReport(date_from: Date, date_end: Date) {
+    console.log(date_from, date_end);
+    const data = await this.receiptModel.aggregate([
+      {
+        $match: {
+          created_at: { $gte: date_from, $lte: date_end },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalIncome: {
+            $sum: '$total_price',
+          },
+          totalDiscount: {
+            $sum: '$discount_price',
+          },
+        },
+      },
+    ]);
+
+    let netIncome = 0;
+    let totalIncome = 0;
+    let totalDiscount = 0;
+
+    if (data.length !== 0) {
+      netIncome = data[0].totalIncome - data[0].totalDiscount;
+      totalIncome = data[0].totalIncome;
+      totalDiscount = data[0].totalDiscount;
+    }
+
+    return {
+      netIncome,
+      totalIncome,
+      totalDiscount,
+    };
+  }
+
   async getAllDailyNetIncome(): Promise<ChartDataDailyDto[]> {
     const agg = await this.receiptModel.aggregate([
       {
