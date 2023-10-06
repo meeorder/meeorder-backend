@@ -21,8 +21,6 @@ export class DashboardService {
     @InjectModel(ReceiptSchema)
     private readonly receiptModel: ReturnModelType<typeof ReceiptSchema>,
     private readonly userService: UsersService,
-    @InjectModel(ReceiptSchema)
-    private readonly receiptModel: ReturnModelType<typeof ReceiptSchema>,
   ) {}
 
   async getAllUserAmount(date: Date): Promise<GetUserAmountDto> {
