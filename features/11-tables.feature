@@ -19,6 +19,9 @@ Feature: Tables
       | _id                      | title  | price |
       | 64f5f6b25c81011f9748ba46 | Yesss  | 55    |
       | 64fc724bbb111885fcaf555a | Nooooo | 100   |
+    And coupons
+      | _id                      | title   | discount | required_point | quota |
+      | 64f09e7476b02c5ea04be8ea | Coupon1 | 100      | 0              | 1     |
     And orders
       | _id                      | session                  | menu                     | additional_info |
       | 64fb0700ab4bb1fde967f3b1 | 64c5485a510698e8c9e7bdc0 | 650b3e2a668b84ca2f65f8f3 | Test Menu       |
@@ -41,6 +44,15 @@ Feature: Tables
       | 64c5485a510698e8c9e7bdc0 | 650b3e13e57d82a5170a5b2a | 64fc724bbb111885fcaf555a |
     Then should return status code 201
     When get all tables
+    Then should return status code 200
     And table allOrdersCount should be 2
     And table unfinishOrdersCount should be 1
     And table total price should be 150
+    When apply user to session "64c5485a510698e8c9e7bdc0"
+    Then should return status code 200
+    When session "64c5485a510698e8c9e7bdc0" use coupon "64f09e7476b02c5ea04be8ea"
+    Then should return status code 204
+    Then session "64c5485a510698e8c9e7bdc0" should have coupon
+    When get all tables
+    Then should return status code 200
+    And table total price should be 50

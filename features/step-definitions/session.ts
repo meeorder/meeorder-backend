@@ -75,6 +75,29 @@ export class SessionStepDefination {
     );
   }
 
+  @when('apply user to session {string}')
+  async applyUserToSession(id: string) {
+    this.workspace.response = await this.workspace.axiosInstance.patch(
+      `/sessions/${id}/user`,
+    );
+  }
+
+  @when('session {string} use coupon {string}')
+  async whenSessionUseCoupon(sessionId: string, couponId: string) {
+    this.workspace.response = await this.workspace.axiosInstance.patch(
+      `/sessions/${sessionId}/coupon`,
+      {
+        coupon_id: couponId,
+      },
+    );
+  }
+
+  @then('session {string} should have coupon')
+  async thenSessionShouldHaveCoupon(sessionId: string) {
+    const session = await this.sessionModel.findById(sessionId);
+    expect(session.coupon).not.toBeNull();
+  }
+
   @then('should session appear in database')
   async shouldSessionAppearInDatabase() {
     const session = await this.sessionModel.findById(
