@@ -28,6 +28,8 @@ export class UserSteps {
         password: await this.hashPassword(user.password),
         role: user.role ? +user.role : UserRole.Owner,
         point: user.point ? +user.point : 0,
+        created_at: user.created_at ? new Date(user.created_at) : new Date(),
+        deleted_at: user.deleted_at ? new Date(user.deleted_at) : null,
       });
     }
   }
