@@ -15,6 +15,7 @@ import {
 import {
   ApiBearerAuth,
   ApiOperation,
+  ApiParam,
   ApiQuery,
   ApiResponse,
   ApiTags,
@@ -34,13 +35,12 @@ export class DashboardController {
   @ApiOperation({
     summary: 'Get total registered users',
   })
+  @ApiParam({ name: 'date', type: Number })
   @Get('/customer_report/:date')
   @HttpCode(HttpStatus.OK)
   @Role(UserRole.Owner)
-  async getDashboard(@Param('date') date: number) {
-    return await this.dashboardService.getAllUserAmount(
-      new ParseMongoDatePipe().transform(date),
-    );
+  async getDashboard(@Param('date', new ParseMongoDatePipe()) date: Date) {
+    return await this.dashboardService.getAllUserAmount(date);
   }
 
   @ApiResponse({

@@ -89,3 +89,26 @@ Feature: Orders
     When update order "64fb0700ab4bb1fde967f3b1" to done
     Then should return status code 204
     And order "64fb0700ab4bb1fde967f3b1" status should be "DONE"
+
+  Scenario: Cancel order and change status back to IN_QUEUE
+    Given login as
+      | id                       | username          | role |
+      | 64ff1bbf76e1dfabe0337a1b | meeorder_employee | 25   |
+    And addons
+      | _id                      | title   | price | available |
+      | 64fb0605ab4bb1fde967f3b0 | addon_1 | 100   | true      |
+      | 64fb0605ab4bb1fde967f3b1 | addon_2 | 200   | true      |
+    And orders
+      | _id                      | session                  | menu                     | addons                   | additional_info |
+      | 64fb0700ab4bb1fde967f3b1 | 64fb0700ab4bb1fde967e3b1 | 64fb0952ab4bb1fde967f3b3 | 64fb0605ab4bb1fde967f3b0 | Test Menu       |
+    When cancel order "64fb0700ab4bb1fde967f3b1"
+      | reason | addons                   |
+      | 1      | 64fb0605ab4bb1fde967f3b0 |
+    Then should return status code 204
+    And order "64fb0700ab4bb1fde967f3b1" should be cancelled
+    And addon "64fb0605ab4bb1fde967f3b0" should be disabled
+    And order "64fb0700ab4bb1fde967f3b1" status should be "CANCELLED"
+    When update order "64fb0700ab4bb1fde967f3b1" to in queue
+    Then should return status code 204
+    And order "64fb0700ab4bb1fde967f3b1" status should be "IN_QUEUE"
+    And order "64fb0700ab4bb1fde967f3b1" cancel schama should be null

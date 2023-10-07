@@ -31,4 +31,7 @@ export class TablesSchema {
     justOne: true,
   })
   session: Ref<SessionSchema>;
+
+  @Prop({ default: null, select: false })
+  deleted_at: Date;
 }

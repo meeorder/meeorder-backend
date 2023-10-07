@@ -1,7 +1,6 @@
 import { GetUserAmountDto } from '@/dashboard/dto/getAllUserAmount.dto';
 import { ReceiptSchema } from '@/schema/receipt.schema';
 import { UserSchema } from '@/schema/users.schema';
-import { UsersService } from '@/users/users.service';
 import { Injectable } from '@nestjs/common';
 import { ReturnModelType } from '@typegoose/typegoose';
 import { InjectModel } from 'nest-typegoose';
@@ -13,7 +12,6 @@ export class DashboardService {
     private readonly userModel: ReturnModelType<typeof UserSchema>,
     @InjectModel(ReceiptSchema)
     private readonly receiptModel: ReturnModelType<typeof ReceiptSchema>,
-    private readonly userService: UsersService,
   ) {}
 
   async getAllUserAmount(date: Date): Promise<GetUserAmountDto> {
@@ -31,7 +29,11 @@ export class DashboardService {
       role: 1,
     });
 
-    const old_user = calculate[0].count;
+    let old_user = 0;
+
+    if (calculate.length !== 0) {
+      old_user = calculate[0].count;
+    }
 
     return {
       total_user: total,
@@ -41,7 +43,6 @@ export class DashboardService {
   }
 
   async getIncomeReport(date_from: Date, date_end: Date) {
-    console.log(date_from, date_end);
     const data = await this.receiptModel.aggregate([
       {
         $match: {

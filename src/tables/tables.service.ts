@@ -6,8 +6,10 @@ import { OrdersSchema } from '@/schema/order.schema';
 import { SessionSchema } from '@/schema/session.schema';
 import { TablesSchema } from '@/schema/tables.schema';
 import { TableResponseDto } from '@/tables/dto/tables.response.dto';
-import { Injectable } from '@nestjs/common';
-import { ReturnModelType } from '@typegoose/typegoose';
+import { ErrorDto } from '@/utils/errors/error.dto';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { DocumentType, ReturnModelType } from '@typegoose/typegoose';
+import { Types } from 'mongoose';
 import { InjectModel } from 'nest-typegoose';
 
 @Injectable()
@@ -23,7 +25,7 @@ export class TablesService {
 
   async getTables(): Promise<TableResponseDto[]> {
     const tables = await this.tablesModel
-      .find()
+      .find({ deleted_at: null })
       .populate({
         path: 'session',
         match: { finished_at: null },
@@ -94,5 +96,35 @@ export class TablesService {
     });
 
     return res;
+  }
+
+  deleteTable(id: Types.ObjectId) {
+    return this.tablesModel
+      .updateOne(
+        { _id: id },
+        {
+          $set: {
+            deleted_at: new Date(),
+          },
+        },
+      )
+      .orFail(new NotFoundException(new ErrorDto('Table not found')))
+      .exec();
+  }
+
+  updateTable(
+    id: Types.ObjectId,
+    table: Partial<TablesSchema>,
+  ): Promise<DocumentType<TablesSchema>> {
+    return this.tablesModel
+      .findByIdAndUpdate(
+        id,
+        {
+          $set: table,
+        },
+        { new: true },
+      )
+      .orFail(new NotFoundException(new ErrorDto('Table not found')))
+      .exec();
   }
 }
