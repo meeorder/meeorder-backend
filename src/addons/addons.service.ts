@@ -109,4 +109,9 @@ export class AddonsService {
   activateAllAddon() {
     return this.addonModel.updateMany({}, { $set: { available: true } }).exec();
   }
+
+  async getAllIds() {
+    const ids = await this.addonModel.find({}, '_id').lean().exec();
+    return ids.map(({ _id }) => _id);
+  }
 }

@@ -1,7 +1,10 @@
 import { CreateAddonDto } from '@/addons/dto/addon.dto';
 import { GetAddonDto } from '@/addons/dto/getaddon.dto';
 import { UpdateAddonDto } from '@/addons/dto/update-addon.dto';
+import { UserJwt } from '@/auth/user.jwt.payload';
 import { Role } from '@/decorator/roles.decorator';
+import { User } from '@/decorator/user.decorator';
+import { LoggerService } from '@/logger/logger.service';
 import { ParseMongoIdPipe } from '@/pipes/mongo-id.pipe';
 import { AddonSchema } from '@/schema/addons.schema';
 import { UserRole } from '@/schema/users.schema';
@@ -33,7 +36,10 @@ import { AddonsService } from './addons.service';
 @Controller({ path: 'addons', version: '1' })
 @ApiTags('addons')
 export class AddonsController {
-  constructor(private readonly addonService: AddonsService) {}
+  constructor(
+    private readonly addonService: AddonsService,
+    private readonly loggerService: LoggerService,
+  ) {}
 
   @HttpCode(HttpStatus.CREATED)
   @ApiResponse({
@@ -139,8 +145,16 @@ export class AddonsController {
   @ApiBearerAuth()
   @Role(UserRole.Owner)
   @HttpCode(HttpStatus.NO_CONTENT)
-  async setAvailable(@Param('id', new ParseMongoIdPipe()) id: Types.ObjectId) {
+  async setAvailable(
+    @Param('id', new ParseMongoIdPipe()) id: Types.ObjectId,
+    @User() { id: userId }: UserJwt,
+  ) {
     await this.addonService.setAvailable(id, true);
+    await this.loggerService.createAddonLog(
+      [id],
+      new Types.ObjectId(userId),
+      true,
+    );
   }
 
   @Patch('/:id/deactivate')
@@ -153,8 +167,14 @@ export class AddonsController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async setUnavailable(
     @Param('id', new ParseMongoIdPipe()) id: Types.ObjectId,
+    @User() { id: userId }: UserJwt,
   ) {
     await this.addonService.setAvailable(id, false);
+    await this.loggerService.createAddonLog(
+      [id],
+      new Types.ObjectId(userId),
+      false,
+    );
   }
 
   @ApiResponse({
@@ -166,7 +186,12 @@ export class AddonsController {
   })
   @Post('/activate/all')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async activateAllAddon() {
+  async activateAllAddon(@User() { id: userId }: UserJwt) {
     await this.addonService.activateAllAddon();
+    await this.loggerService.createAddonLog(
+      await this.addonService.getAllIds(),
+      new Types.ObjectId(userId),
+      true,
+    );
   }
 }

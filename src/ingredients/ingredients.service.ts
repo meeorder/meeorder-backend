@@ -139,4 +139,9 @@ export class IngredientsService {
       .updateMany({}, { $set: { available: true } })
       .exec();
   }
+
+  async getAllIds() {
+    const docs = await this.ingredientModel.find({}, '_id').lean().exec();
+    return docs.map(({ _id }) => _id);
+  }
 }
