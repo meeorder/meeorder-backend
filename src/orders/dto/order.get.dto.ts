@@ -1,31 +1,40 @@
-import { PopulatedCategoryMenuDto } from '@/menus/dto/populated-category.menu.dto';
+import { PopulatedCategoryIngredientMenuDto } from '@/menus/dto/populated-category-ingredients.menu.dto';
 import { OrderCancelResponseDto } from '@/orders/dto/order.cancel.response.dto';
+import { OrderStatus } from '@/orders/enums/orders.status';
 import { AddonSchema } from '@/schema/addons.schema';
-import { MenuSchema } from '@/schema/menus.schema';
-import { OrderCancelSchema } from '@/schema/order.cancel.schema';
-import { OrdersSchema } from '@/schema/order.schema';
-import { SessionSchema } from '@/schema/session.schema';
 import { SessionWithTableDto } from '@/session/dto/session[table].dto';
 import { ApiProperty } from '@nestjs/swagger';
-import { Ref } from '@typegoose/typegoose';
+import { Types } from 'mongoose';
 
-export class OrderGetDto extends OrdersSchema {
+export class OrderGetDto {
+  @ApiProperty({ type: String, description: 'Orders ID' })
+  '_id': Types.ObjectId;
+
+  @ApiProperty({ type: Date })
+  created_at: Date;
+
+  @ApiProperty({ type: String, enum: OrderStatus })
+  status: OrderStatus;
+
   @ApiProperty({
     type: () => AddonSchema,
     isArray: true,
     description: 'Array of MenuID',
   })
-  addons: Ref<AddonSchema>[];
+  addons: AddonSchema[];
+
+  @ApiProperty({ type: String, description: 'Additional info' })
+  additional_info: string;
+
+  @ApiProperty({ type: () => OrderCancelResponseDto, nullable: true })
+  cancel: OrderCancelResponseDto;
 
   @ApiProperty({
     type: () => SessionWithTableDto,
     description: 'Session (table populated)',
   })
-  session: Ref<SessionSchema>;
+  session: SessionWithTableDto;
 
-  @ApiProperty({ type: () => PopulatedCategoryMenuDto })
-  menu: Ref<MenuSchema>;
-
-  @ApiProperty({ type: () => OrderCancelResponseDto })
-  cancel: OrderCancelSchema;
+  @ApiProperty({ type: () => PopulatedCategoryIngredientMenuDto })
+  menu: PopulatedCategoryIngredientMenuDto;
 }

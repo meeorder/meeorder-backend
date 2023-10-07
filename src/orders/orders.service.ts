@@ -57,7 +57,7 @@ export class OrdersService {
       })
       .populate({
         path: 'menu',
-        populate: { path: 'category' },
+        populate: { path: 'category ingredients' },
       })
       .populate('cancel.ingredients')
       .populate('cancel.addons')
@@ -68,10 +68,7 @@ export class OrdersService {
   async setStatus(id: Types.ObjectId, status: OrderStatus) {
     const element = await this.orderModel.findById(id).exec();
     if (element.cancel !== null) {
-      throw new HttpException(
-        'Order has been cancelled',
-        HttpStatus.BAD_REQUEST,
-      );
+      element.cancel = null;
     }
     element.status = status;
 
@@ -95,6 +92,7 @@ export class OrdersService {
         { _id: id },
         {
           $set: {
+            status: OrderStatus.Cancelled,
             cancel: new OrderCancelSchema({ reasons, ingredients, addons }),
           },
         },

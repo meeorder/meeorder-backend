@@ -2,7 +2,7 @@ import {
   maxUsernameLength,
   minUsernameLength,
 } from '@/users/dto/user.create.dto';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsAlphanumeric,
   IsOptional,
@@ -12,7 +12,7 @@ import {
 } from 'class-validator';
 
 export class UpdateInfoDto {
-  @ApiProperty({ type: String, description: 'New Username' })
+  @ApiPropertyOptional({ type: String, description: 'New Username' })
   @IsString()
   @IsOptional()
   @MaxLength(maxUsernameLength)
@@ -24,7 +24,7 @@ export class UpdateInfoDto {
   @IsString()
   oldPassword: string;
 
-  @ApiProperty({ type: String, description: 'New Password' })
+  @ApiPropertyOptional({ type: String, description: 'New Password' })
   @IsOptional()
   @IsString()
   newPassword?: string;
