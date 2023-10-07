@@ -27,6 +27,7 @@ import {
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
+  ApiOkResponse,
   ApiOperation,
   ApiParam,
   ApiQuery,
@@ -200,9 +201,8 @@ export class SessionController {
     return await this.sessionService.listOrdersBySession(id);
   }
 
-  @ApiResponse({
+  @ApiOkResponse({
     description: 'Updated session user',
-    status: HttpStatus.NO_CONTENT,
   })
   @ApiOperation({
     summary: 'Updated session user',
