@@ -16,7 +16,7 @@ Feature: Dashboard
       | total_user | old_user | new_user |
       | 3          | 1        | 2        |
 
-  Scenario: Get Customer Report (Given date before minimum created_at)
+  Scenario: Get Customer Report (Out of range)
     Given login as
       | id                       | username       | role |
       | 64ff1bbf76e1dfabe0337a1b | meeorder_owner | 100  |
