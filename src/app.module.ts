@@ -18,6 +18,7 @@ import { ReceiptModule } from './receipt/receipt.module';
 import { SessionModule } from './session/session.module';
 import { TablesModule } from './tables/tables.module';
 import { UsersModule } from './users/users.module';
+import { LoggerModule } from './logger/logger.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { UsersModule } from './users/users.module';
     IngredientsModule,
     ReceiptModule,
     DashboardModule,
+    LoggerModule,
   ],
   providers: [
     {
