@@ -50,4 +50,15 @@ export class TablesService {
       .orFail(new NotFoundException(new ErrorDto('Table not found')))
       .exec();
   }
+
+  getTableById(id: Types.ObjectId) {
+    return this.tablesModel
+      .findOne({ _id: id, deleted_at: null })
+      .populate({
+        path: 'session',
+        populate: ['orders', 'coupon', 'user'],
+      })
+      .lean()
+      .exec();
+  }
 }
