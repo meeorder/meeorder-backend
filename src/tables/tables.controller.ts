@@ -1,15 +1,18 @@
 import { Role } from '@/decorator/roles.decorator';
+import { ParseMongoIdPipe } from '@/pipes/mongo-id.pipe';
 import { TablesSchema } from '@/schema/tables.schema';
 import { UserRole } from '@/schema/users.schema';
 import { TablesDto } from '@/tables/dto/tables.dto';
 import { TablesService } from '@/tables/tables.service';
-import { Body, Controller, Get, HttpStatus, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Param, Post } from '@nestjs/common';
 import {
   ApiBearerAuth,
+  ApiOkResponse,
   ApiOperation,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { Types } from 'mongoose';
 
 @Controller({ path: 'tables', version: '1' })
 @ApiTags('tables')
@@ -45,4 +48,12 @@ export class TablesController {
   getTables() {
     return this.tablesService.getTables();
   }
+
+  @ApiOkResponse()
+  @ApiOperation({
+    summary: 'Get table by id',
+  })
+  @Role(UserRole.Employee)
+  @Get(':id')
+  getTableById(@Param('id', new ParseMongoIdPipe()) id: Types.ObjectId) {}
 }
