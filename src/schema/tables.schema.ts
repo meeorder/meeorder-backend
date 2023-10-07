@@ -22,4 +22,7 @@ export class TablesSchema {
 
   @ApiProperty({ type: Date })
   created_at: Date;
+
+  @Prop({ default: null, select: false })
+  deleted_at: Date;
 }
