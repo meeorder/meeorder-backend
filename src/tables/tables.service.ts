@@ -59,6 +59,8 @@ export class TablesService {
       if (table.session) {
         const session = <SessionSchema>table.session;
         const coupon = <CouponSchema>session.coupon;
+        t.session = session._id;
+        t.session_create_at = session.created_at;
         t.allOrdersCount = session.orders.length;
         t.unfinishOrdersCount = session.orders.filter((o) => {
           const order = <OrdersSchema>o;
@@ -79,6 +81,8 @@ export class TablesService {
             .reduce((acc, price) => acc + price, 0) -
           (coupon ? coupon.discount : 0);
       } else {
+        t.session = null;
+        t.session_create_at = null;
         t.allOrdersCount = 0;
         t.unfinishOrdersCount = 0;
         t.totalPrice = 0;

@@ -32,6 +32,7 @@ Feature: Tables
       | 64ff1bbf76e1dfabe0337a1b | meeorder_owner | 100  |
     And get all tables
     Then should return status code 200
+    And table should have session and session_create_at
     And table total price should be 40
     And table allOrdersCount should be 1
     And table unfinishOrdersCount should be 1
