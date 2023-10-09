@@ -3,6 +3,7 @@ import { ParseMongoDatePipe } from '@/pipes/mongo-date.pipe';
 import { ParseMongoIdPipe } from '@/pipes/mongo-id.pipe';
 import { TablesSchema } from '@/schema/tables.schema';
 import { UserRole } from '@/schema/users.schema';
+import { TableResponseDto } from '@/tables/dto/table.response.dto';
 import { TableUpdateRequestDto } from '@/tables/dto/table.update.request.dto';
 import { TablesDto } from '@/tables/dto/tables.dto';
 import { TableResponseDto } from '@/tables/dto/tables.response.dto';
@@ -24,6 +25,7 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiParam,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -62,6 +64,19 @@ export class TablesController {
   @Get()
   getTables() {
     return this.tablesService.getTables();
+  }
+
+  @ApiOkResponse({
+    type: () => TableResponseDto,
+  })
+  @ApiOperation({
+    summary: 'Get table by id',
+  })
+  @ApiParam({ name: 'id', type: String })
+  @Role(UserRole.Employee)
+  @Get(':id')
+  getTableById(@Param('id', new ParseMongoIdPipe()) id: Types.ObjectId) {
+    return this.tablesService.getTableById(id);
   }
 
   @ApiNoContentResponse()

@@ -1,5 +1,8 @@
+import { SessionSchema } from '@/schema/session.schema';
 import { TablesSchema } from '@/schema/tables.schema';
+import { TableResponseDto } from '@/tables/dto/table.response.dto';
 import { DataTable } from '@cucumber/cucumber';
+import { HttpStatus } from '@nestjs/common';
 import { ReturnModelType } from '@typegoose/typegoose';
 import { after, binding, given, then, when } from 'cucumber-tsflow';
 import expect from 'expect';
@@ -47,6 +50,21 @@ export class TableStep {
   tableUnfinishOrdersCountShouldBe(unfinishOrdersCount: number) {
     const { data } = this.workspace.response;
     expect(data[0].unfinishOrdersCount).toBe(unfinishOrdersCount);
+  }
+  @when('get table by id {string}')
+  async getTableById(id: string) {
+    this.workspace.response = await this.workspace.axiosInstance.get(
+      `/tables/${id}`,
+    );
+    expect(this.workspace.response.status).toBe(HttpStatus.OK);
+  }
+
+  @then('table session id will be {string}')
+  thenTableSessionId(id: string) {
+    expect(
+      (<SessionSchema>(<TableResponseDto>this.workspace.response.data).session)
+        ._id,
+    ).toBe(id);
   }
 
   @after()

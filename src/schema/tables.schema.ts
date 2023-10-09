@@ -34,4 +34,13 @@ export class TablesSchema {
 
   @Prop({ default: null, select: false })
   deleted_at: Date;
+
+  @Prop({
+    ref: () => SessionSchema,
+    foreignField: 'table',
+    localField: '_id',
+    justOne: true,
+    match: { finished_at: null },
+  })
+  session: Ref<SessionSchema>;
 }
