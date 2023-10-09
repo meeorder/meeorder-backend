@@ -23,6 +23,7 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiParam,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -61,6 +62,17 @@ export class TablesController {
   @Get()
   getTables() {
     return this.tablesService.getTables();
+  }
+
+  @ApiOkResponse()
+  @ApiOperation({
+    summary: 'Get table by id',
+  })
+  @ApiParam({ name: 'id', type: String })
+  @Role(UserRole.Employee)
+  @Get(':id')
+  getTableById(@Param('id', new ParseMongoIdPipe()) id: Types.ObjectId) {
+    return this.tablesService.getTableById(id);
   }
 
   @ApiNoContentResponse()
