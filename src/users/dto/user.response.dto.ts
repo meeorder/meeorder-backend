@@ -14,7 +14,6 @@ export class UserResponseDto {
   username: string;
 
   @ApiProperty({ type: Number, enum: UserRole, description: 'Role of user' })
-  @IsString()
   @IsEnum(UserRole)
   role: UserRole;
 
