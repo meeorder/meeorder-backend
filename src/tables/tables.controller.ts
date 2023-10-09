@@ -6,7 +6,6 @@ import { UserRole } from '@/schema/users.schema';
 import { TableResponseDto } from '@/tables/dto/table.response.dto';
 import { TableUpdateRequestDto } from '@/tables/dto/table.update.request.dto';
 import { TablesDto } from '@/tables/dto/tables.dto';
-import { TableResponseDto } from '@/tables/dto/tables.response.dto';
 import { TablesService } from '@/tables/tables.service';
 import { ErrorDto } from '@/utils/errors/error.dto';
 import {

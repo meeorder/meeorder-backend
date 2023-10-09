@@ -24,14 +24,6 @@ export class TablesSchema {
   @ApiProperty({ type: Date })
   created_at: Date;
 
-  @Prop({
-    ref: () => SessionSchema,
-    localField: '_id',
-    foreignField: 'table',
-    justOne: true,
-  })
-  session: Ref<SessionSchema>;
-
   @Prop({ default: null, select: false })
   deleted_at: Date;
 

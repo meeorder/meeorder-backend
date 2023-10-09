@@ -5,7 +5,7 @@ import { MenuSchema } from '@/schema/menus.schema';
 import { OrdersSchema } from '@/schema/order.schema';
 import { SessionSchema } from '@/schema/session.schema';
 import { TablesSchema } from '@/schema/tables.schema';
-import { TableResponseDto } from '@/tables/dto/tables.response.dto';
+import { TablesResponseDto } from '@/tables/dto/tables.response.dto';
 import { ErrorDto } from '@/utils/errors/error.dto';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { DocumentType, ReturnModelType } from '@typegoose/typegoose';
@@ -23,7 +23,7 @@ export class TablesService {
     return await this.tablesModel.create({ title });
   }
 
-  async getTables(): Promise<TableResponseDto[]> {
+  async getTables(): Promise<TablesResponseDto[]> {
     const tables = await this.tablesModel
       .find({ deleted_at: null })
       .populate({
@@ -33,28 +33,25 @@ export class TablesService {
         populate: [
           {
             path: 'orders',
-            model: 'OrderSchema',
             populate: [
               {
                 path: 'menu',
-                model: 'MenuSchema',
               },
               {
                 path: 'addons',
-                model: 'AddonSchema',
               },
             ],
           },
           {
             path: 'coupon',
-            model: 'CouponSchema',
           },
         ],
       })
+      .lean()
       .exec();
 
     const res = tables.map((table) => {
-      const t = new TableResponseDto();
+      const t = new TablesResponseDto();
       t._id = table._id;
       t.title = table.title;
 

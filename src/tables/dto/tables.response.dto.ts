@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Types } from 'mongoose';
 
-export class TableResponseDto {
+export class TablesResponseDto {
   @ApiProperty({ type: String, description: 'Table ID (ObjectID)' })
   _id: Types.ObjectId;
 
