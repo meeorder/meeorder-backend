@@ -3,6 +3,7 @@ import { ParseMongoDatePipe } from '@/pipes/mongo-date.pipe';
 import { ParseMongoIdPipe } from '@/pipes/mongo-id.pipe';
 import { TablesSchema } from '@/schema/tables.schema';
 import { UserRole } from '@/schema/users.schema';
+import { TableResponseDto } from '@/tables/dto/table.response.dto';
 import { TableUpdateRequestDto } from '@/tables/dto/table.update.request.dto';
 import { TablesDto } from '@/tables/dto/tables.dto';
 import { TablesService } from '@/tables/tables.service';
@@ -64,7 +65,9 @@ export class TablesController {
     return this.tablesService.getTables();
   }
 
-  @ApiOkResponse()
+  @ApiOkResponse({
+    type: () => TableResponseDto,
+  })
   @ApiOperation({
     summary: 'Get table by id',
   })
