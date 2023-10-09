@@ -56,9 +56,6 @@ export class SettingController {
   @Role(UserRole.Owner)
   @Patch()
   async updateSettings(@Body() settingDto: SettingDto) {
-    return await this.settingService.updateSettings(
-      settingDto.name,
-      settingDto.logo,
-    );
+    return await this.settingService.updateSettings(settingDto);
   }
 }

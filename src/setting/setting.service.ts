@@ -1,4 +1,5 @@
 import { SettingSchema } from '@/schema/setting.schema';
+import { SettingDto } from '@/setting/dto/setting.dto';
 import { Injectable } from '@nestjs/common';
 import { ReturnModelType } from '@typegoose/typegoose';
 import { InjectModel } from 'nest-typegoose';
@@ -11,8 +12,8 @@ export class SettingService {
   ) {}
 
   async getSettings() {
-    const settings = await this.settingModel.find();
-    return settings[0];
+    const settings = await this.settingModel.find()[0];
+    return settings;
   }
 
   async createSettings(name: string, logo: string) {
@@ -23,15 +24,12 @@ export class SettingService {
     return settings;
   }
 
-  async updateSettings(name: string, logo: string) {
+  async updateSettings(settingDto: SettingDto) {
     const settings_id = await this.settingModel.find()[0]._id;
     const settings = await this.settingModel.findOneAndUpdate(
       { _id: settings_id },
       {
-        $set: {
-          name,
-          logo,
-        },
+        $set: settingDto,
       },
       {
         new: true,
