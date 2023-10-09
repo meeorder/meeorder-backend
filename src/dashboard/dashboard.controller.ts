@@ -3,19 +3,12 @@ import { GetUserAmountDto } from '@/dashboard/dto/getAllUserAmount.dto';
 import { GetNetIncomeDto } from '@/dashboard/dto/getNetIncom.dto';
 import { Role } from '@/decorator/roles.decorator';
 import { ParseMongoDatePipe } from '@/pipes/mongo-date.pipe';
+import { ParseMongoDateStartPipe } from '@/pipes/mongo-datestart.pipe';
 import { UserRole } from '@/schema/users.schema';
-import {
-  Controller,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Param,
-  Query,
-} from '@nestjs/common';
+import { Controller, Get, HttpCode, HttpStatus, Query } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOperation,
-  ApiParam,
   ApiQuery,
   ApiResponse,
   ApiTags,
@@ -30,17 +23,24 @@ export class DashboardController {
   @ApiResponse({
     status: HttpStatus.OK,
     type: () => GetUserAmountDto,
-    description: 'Total registered users',
+    description: 'Total recirpt amount',
   })
   @ApiOperation({
-    summary: 'Get total registered users',
+    summary: 'Get total recirpt amount',
   })
-  @ApiParam({ name: 'date', type: Number })
-  @Get('/customer_report/:date')
+  @ApiQuery({
+    name: 'date',
+    type: Number,
+    required: true,
+    description: 'Date (UnixTimeStamp)',
+  })
+  @Get('/reciept_report')
   @HttpCode(HttpStatus.OK)
   @Role(UserRole.Owner)
-  async getDashboard(@Param('date', new ParseMongoDatePipe()) date: Date) {
-    return await this.dashboardService.getAllUserAmount(date);
+  async getRecieptReport(@Query('date') date: number) {
+    return await this.dashboardService.getAllRecieptAmount(
+      new ParseMongoDateStartPipe().transform(date),
+    );
   }
 
   @ApiResponse({

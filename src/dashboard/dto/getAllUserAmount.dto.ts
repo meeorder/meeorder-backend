@@ -5,17 +5,17 @@ export class GetUserAmountDto {
     description: 'Total registered users',
     type: Number,
   })
-  total_user: number;
+  all_reciept: number;
 
   @ApiProperty({
     description: 'Total old registered users',
     type: Number,
   })
-  old_user: number;
+  reciept_user: number;
 
   @ApiProperty({
     description: 'Total new registered users',
     type: Number,
   })
-  new_user: number;
+  reciept_no_user: number;
 }

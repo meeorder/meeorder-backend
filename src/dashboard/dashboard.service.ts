@@ -14,31 +14,53 @@ export class DashboardService {
     private readonly receiptModel: ReturnModelType<typeof ReceiptSchema>,
   ) {}
 
-  async getAllUserAmount(date: Date): Promise<GetUserAmountDto> {
-    const calculate = await this.userModel.aggregate([
+  async getAllRecieptAmount(date: Date): Promise<GetUserAmountDto> {
+    let reciept_no_user = 0;
+
+    const no_reciept_user = await this.receiptModel.aggregate([
       {
-        $match: { _id: { $exists: true }, role: 1, created_at: { $lte: date } },
+        $match: {
+          created_at: { $gte: date },
+        },
       },
       {
-        $group: { _id: null, count: { $sum: 1 } },
+        $lookup: {
+          from: 'sessions',
+          localField: 'session',
+          foreignField: '_id',
+          as: 'session',
+        },
+      },
+      {
+        $match: {
+          'session.user': null,
+        },
+      },
+      {
+        $group: {
+          _id: '$session.user',
+          total: {
+            $sum: 1,
+          },
+        },
       },
     ]);
 
-    const total = await this.userModel.countDocuments({
-      deleted_at: null,
-      role: 1,
-    });
-
-    let old_user = 0;
-
-    if (calculate.length !== 0) {
-      old_user = calculate[0].count;
+    if (no_reciept_user.length > 0) {
+      reciept_no_user = no_reciept_user[0].total;
     }
 
+    const reciept_all = await this.receiptModel.countDocuments({
+      created_at: { $gte: date },
+    });
+
+    const all_reciept = reciept_all;
+    const reciept_user = reciept_all - reciept_no_user;
+
     return {
-      total_user: total,
-      old_user,
-      new_user: total - old_user,
+      all_reciept,
+      reciept_user,
+      reciept_no_user,
     };
   }
 
