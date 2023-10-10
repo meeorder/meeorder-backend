@@ -1,5 +1,5 @@
 import { DashboardService } from '@/dashboard/dashboard.service';
-import { GetRecieptAmountDto } from '@/dashboard/dto/getAllRecieptAmount.dto';
+import { GetreceiptAmountDto } from '@/dashboard/dto/getAllreceiptAmount.dto';
 import { GetNetIncomeDto } from '@/dashboard/dto/getNetIncom.dto';
 import { Role } from '@/decorator/roles.decorator';
 import { ParseMongoDatePipe } from '@/pipes/mongo-date.pipe';
@@ -22,7 +22,7 @@ export class DashboardController {
 
   @ApiResponse({
     status: HttpStatus.OK,
-    type: () => GetRecieptAmountDto,
+    type: () => GetreceiptAmountDto,
     description: 'Total recirpt amount',
   })
   @ApiOperation({
@@ -34,11 +34,11 @@ export class DashboardController {
     required: true,
     description: 'Date (UnixTimeStamp)',
   })
-  @Get('/reciept_report')
+  @Get('/receipt_report')
   @HttpCode(HttpStatus.OK)
   @Role(UserRole.Owner)
-  async getRecieptReport(@Query('date') date: number) {
-    return await this.dashboardService.getAllRecieptAmount(
+  async getreceiptReport(@Query('date') date: number) {
+    return await this.dashboardService.getAllreceiptAmount(
       new ParseMongoDateStartPipe().transform(date),
     );
   }

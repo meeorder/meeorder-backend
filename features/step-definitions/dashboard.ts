@@ -4,10 +4,10 @@ import { Workspace } from 'features/step-definitions/workspace';
 export class DashboardSteps {
   constructor(private readonly workspace: Workspace) {}
 
-  @when('get reciept report from {int}')
+  @when('get receipt report from {int}')
   async getCustomerReport(date: number) {
     this.workspace.response = await this.workspace.axiosInstance.get(
-      `/dashboard/reciept_report`,
+      `/dashboard/receipt_report`,
       {
         params: {
           date,

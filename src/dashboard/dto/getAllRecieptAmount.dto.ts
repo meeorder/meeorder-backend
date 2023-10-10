@@ -1,21 +1,21 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class GetRecieptAmountDto {
+export class GetreceiptAmountDto {
   @ApiProperty({
     description: 'Total registered users',
     type: Number,
   })
-  all_reciept: number;
+  all_receipt: number;
 
   @ApiProperty({
     description: 'Total old registered users',
     type: Number,
   })
-  reciept_user: number;
+  receipt_user: number;
 
   @ApiProperty({
     description: 'Total new registered users',
     type: Number,
   })
-  reciept_no_user: number;
+  receipt_no_user: number;
 }

@@ -12,7 +12,7 @@ export class ReceiptSteps {
     this.receiptModel = this.workspace.datasource.getModel(ReceiptSchema);
   }
 
-  reciept_menus_dummy = [new Types.ObjectId('6520b0688a25812234451791')];
+  receipt_menus_dummy = [new Types.ObjectId('6520b0688a25812234451791')];
   recipt_session_dummy = new Types.ObjectId('6520b06cd9bb075330ce1c08');
 
   @given('receipts')
@@ -29,7 +29,7 @@ export class ReceiptSteps {
         deleted_at: receipt.deleted_at
           ? new Date(receipt.deleted_at)
           : new Date(),
-        menus: receipt.menus ? receipt.menus : this.reciept_menus_dummy,
+        menus: receipt.menus ? receipt.menus : this.receipt_menus_dummy,
         session: receipt.session ? receipt.session : this.recipt_session_dummy,
       });
     }

@@ -1,6 +1,6 @@
 @dashboard
 Feature: Dashboard
-  Scenario: Get Reciept Report
+  Scenario: Get receipt Report
     Given login as
       | id                       | username       | role |
       | 64ff1bbf76e1dfabe0337a1b | meeorder_owner | 100  |
@@ -20,10 +20,10 @@ Feature: Dashboard
       | _id                      | username           | role |
       | 64f87576dced99c4e4e93467 | meeorder_customer1 | 1    |
       | 64f87576dced99c4e4e93470 | meeorder_customer2 | 1    |
-    When get reciept report on date 1631710800
+    When get receipt report on date 1631710800
     Then should return status code 200
     And should response data be
-      | all_reciept | reciept_user | reciept_no_user |
+      | all_receipt | receipt_user | receipt_no_user |
       | 3           | 1            | 2               |
 
   Scenario: Get Income Report

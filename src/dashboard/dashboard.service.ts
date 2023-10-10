@@ -1,4 +1,4 @@
-import { GetRecieptAmountDto } from '@/dashboard/dto/getAllRecieptAmount.dto';
+import { GetreceiptAmountDto } from '@/dashboard/dto/getAllreceiptAmount.dto';
 import { ReceiptSchema } from '@/schema/receipt.schema';
 import { UserSchema } from '@/schema/users.schema';
 import { Injectable } from '@nestjs/common';
@@ -14,10 +14,10 @@ export class DashboardService {
     private readonly receiptModel: ReturnModelType<typeof ReceiptSchema>,
   ) {}
 
-  async getAllRecieptAmount(date: Date): Promise<GetRecieptAmountDto> {
-    let reciept_no_user = 0;
+  async getAllreceiptAmount(date: Date): Promise<GetreceiptAmountDto> {
+    let receipt_no_user = 0;
 
-    const no_reciept_user = await this.receiptModel.aggregate([
+    const no_receipt_user = await this.receiptModel.aggregate([
       {
         $match: {
           created_at: { $gte: date },
@@ -46,21 +46,21 @@ export class DashboardService {
       },
     ]);
 
-    if (no_reciept_user.length > 0) {
-      reciept_no_user = no_reciept_user[0].total;
+    if (no_receipt_user.length > 0) {
+      receipt_no_user = no_receipt_user[0].total;
     }
 
-    const reciept_all = await this.receiptModel.countDocuments({
+    const receipt_all = await this.receiptModel.countDocuments({
       created_at: { $gte: date },
     });
 
-    const all_reciept = reciept_all;
-    const reciept_user = reciept_all - reciept_no_user;
+    const all_receipt = receipt_all;
+    const receipt_user = receipt_all - receipt_no_user;
 
     return {
-      all_reciept,
-      reciept_user,
-      reciept_no_user,
+      all_receipt,
+      receipt_user,
+      receipt_no_user,
     };
   }
 
