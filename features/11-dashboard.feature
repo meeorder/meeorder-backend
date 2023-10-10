@@ -17,9 +17,9 @@ Feature: Dashboard
       | 6520a88a6acca5dd3b409c9f |                          | 2023-09-15 10:00 | 2023-09-15 13:00 |
       | 6a2b0b7b6a6c2a5e4b4b4b4b |                          | 2023-09-15 10:00 | 2023-09-15 13:00 |
     Given users
-      | _id                      | username           | role |
-      | 64f87576dced99c4e4e93467 | meeorder_customer1 | 1    |
-      | 64f87576dced99c4e4e93470 | meeorder_customer2 | 1    |
+      | _id                      | username           | password | role | point |
+      | 64f87576dced99c4e4e93467 | meeorder_customer1 | 1234     | 1    | 20    |
+      | 64f87576dced99c4e4e93470 | meeorder_customer2 | 12345    | 1    | 20    |
     When get receipt report on date 1631710800
     Then should return status code 200
     And should response data be
