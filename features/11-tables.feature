@@ -19,6 +19,7 @@ Feature: Tables
       | _id                      | title  | price |
       | 64f5f6b25c81011f9748ba46 | Yesss  | 55    |
       | 64fc724bbb111885fcaf555a | Nooooo | 100   |
+      | 64fb0605ab4bb1fde967f3b0 | Yee    | 69    |
     And coupons
       | _id                      | title   | discount | required_point | quota |
       | 64f09e7476b02c5ea04be8ea | Coupon1 | 100      | 0              | 1     |
@@ -57,3 +58,13 @@ Feature: Tables
     When get all tables
     Then should return status code 200
     And table total price should be 50
+    When cancel order "64fb0700ab4bb1fde967f3b1"
+      | reason |
+      | 1      |
+    Then should return status code 204
+    And order "64fb0700ab4bb1fde967f3b1" should be cancelled
+    When get all tables
+    Then should return status code 200
+    And table allOrdersCount should be 2
+    And table unfinishOrdersCount should be 1
+    And table total price should be 10

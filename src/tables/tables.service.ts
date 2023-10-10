@@ -62,18 +62,26 @@ export class TablesService {
         t.allOrdersCount = session.orders.length;
         t.unfinishOrdersCount = session.orders.filter((o) => {
           const order = <OrdersSchema>o;
-          return order.status !== OrderStatus.Done;
+          return ![OrderStatus.Done, OrderStatus.Cancelled].includes(
+            order.status,
+          );
         }).length;
         t.totalPrice =
           session.orders
             .map((o) => {
               const order = <OrdersSchema>o;
+
+              if (order.status === OrderStatus.Cancelled) {
+                return 0;
+              }
+
               const orderMenu = <MenuSchema>order.menu;
               const price = orderMenu.price;
               const totalAddonsPrice = order.addons.reduce((acc, add) => {
                 const addon = <AddonSchema>add;
                 return acc + addon.price;
               }, 0);
+
               return price + totalAddonsPrice;
             })
             .reduce((acc, price) => acc + price, 0) -

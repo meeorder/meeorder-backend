@@ -51,6 +51,7 @@ export class TableStep {
     const { data } = this.workspace.response;
     expect(data[0].unfinishOrdersCount).toBe(unfinishOrdersCount);
   }
+
   @when('get table by id {string}')
   async getTableById(id: string) {
     this.workspace.response = await this.workspace.axiosInstance.get(
