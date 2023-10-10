@@ -1,5 +1,5 @@
 import { DashboardService } from '@/dashboard/dashboard.service';
-import { GetreceiptAmountDto } from '@/dashboard/dto/getAllreceiptAmount.dto';
+import { GetReceiptAmountDto } from '@/dashboard/dto/getAllReceiptAmount.dto';
 import { GetNetIncomeDto } from '@/dashboard/dto/getNetIncom.dto';
 import { Role } from '@/decorator/roles.decorator';
 import { ParseMongoDatePipe } from '@/pipes/mongo-date.pipe';
@@ -22,7 +22,7 @@ export class DashboardController {
 
   @ApiResponse({
     status: HttpStatus.OK,
-    type: () => GetreceiptAmountDto,
+    type: () => GetReceiptAmountDto,
     description: 'Total recirpt amount',
   })
   @ApiOperation({
