@@ -52,12 +52,12 @@ export class TablesController {
 
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Get tables',
-    type: () => TablesSchema,
+    description: 'Get all tables with information',
+    type: () => TableResponseDto,
     isArray: true,
   })
   @ApiOperation({
-    summary: 'Get all tables',
+    summary: 'Get all tables with information',
   })
   @Role(UserRole.Employee)
   @Get()
