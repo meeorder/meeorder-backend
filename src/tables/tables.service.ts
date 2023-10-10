@@ -29,7 +29,6 @@ export class TablesService {
       .populate({
         path: 'session',
         match: { finished_at: null },
-        model: 'SessionSchema',
         populate: [
           {
             path: 'orders',
