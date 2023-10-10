@@ -1,4 +1,4 @@
-import { GetUserAmountDto } from '@/dashboard/dto/getAllUserAmount.dto';
+import { GetRecieptAmountDto } from '@/dashboard/dto/getAllRecieptAmount.dto';
 import { ReceiptSchema } from '@/schema/receipt.schema';
 import { UserSchema } from '@/schema/users.schema';
 import { Injectable } from '@nestjs/common';
@@ -14,7 +14,7 @@ export class DashboardService {
     private readonly receiptModel: ReturnModelType<typeof ReceiptSchema>,
   ) {}
 
-  async getAllRecieptAmount(date: Date): Promise<GetUserAmountDto> {
+  async getAllRecieptAmount(date: Date): Promise<GetRecieptAmountDto> {
     let reciept_no_user = 0;
 
     const no_reciept_user = await this.receiptModel.aggregate([

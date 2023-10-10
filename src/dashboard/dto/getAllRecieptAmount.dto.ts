@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class GetUserAmountDto {
+export class GetRecieptAmountDto {
   @ApiProperty({
     description: 'Total registered users',
     type: Number,
