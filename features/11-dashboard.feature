@@ -12,14 +12,14 @@ Feature: Dashboard
       | 6520aed555f7fc6aa48febc8 | 300         | 30             | 2023-09-15 13:00 |
     Given sessions
       | _id                      | user                     | created_at       | finished_at      |
-      | 64f87576dced99c4e4e93468 | 6520abc6fff4af6d086458dg | 2023-09-14 10:00 | 2023-09-14 11:00 |
-      | 6520abc6fff4af6d086458df | 6520abc6fff4af6d086458dg | 2023-09-15 11:00 | 2023-09-15 14:00 |
+      | 64f87576dced99c4e4e93468 | 64f87576dced99c4e4e93467 | 2023-09-14 10:00 | 2023-09-14 11:00 |
+      | 6520abc6fff4af6d086458df | 64f87576dced99c4e4e93470 | 2023-09-15 11:00 | 2023-09-15 14:00 |
       | 6520a88a6acca5dd3b409c9f |                          | 2023-09-15 10:00 | 2023-09-15 13:00 |
       | 6a2b0b7b6a6c2a5e4b4b4b4b |                          | 2023-09-15 10:00 | 2023-09-15 13:00 |
     Given users
       | _id                      | username | password | role | created_at       | deleted_at |
       | 64f87576dced99c4e4e93467 | user1    | pass1    | 1    | 2023-09-13 10:00 |            |
-      | 6520abc6fff4af6d086458dg | user2    | pass2    | 1    | 2023-09-13 11:00 |            |
+      | 64f87576dced99c4e4e93470 | user2    | pass2    | 1    | 2023-09-13 11:00 |            |
     When get reciept report on date 1631710800
     Then should return status code 200
     And should response data be
