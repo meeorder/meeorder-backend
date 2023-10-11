@@ -25,7 +25,7 @@ export class SettingService {
   }
 
   async updateSettings(settingDto: SettingDto) {
-    const settings_id = await this.getSettings();
+    const settings_id = (await this.getSettings())._id;
     const settings = await this.settingModel.findOneAndUpdate(
       { _id: settings_id },
       {
