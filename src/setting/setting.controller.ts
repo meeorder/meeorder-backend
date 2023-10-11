@@ -3,7 +3,7 @@ import { SettingSchema } from '@/schema/setting.schema';
 import { UserRole } from '@/schema/users.schema';
 import { SettingDto } from '@/setting/dto/setting.dto';
 import { SettingService } from '@/setting/setting.service';
-import { Body, Controller, Get, HttpStatus, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Patch } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -29,20 +29,6 @@ export class SettingController {
   @Get()
   async getSettings() {
     return await this.settingService.getSettings();
-  }
-
-  @ApiResponse({
-    status: HttpStatus.CREATED,
-    description: 'Create Empty Restaurant Settings',
-    type: () => SettingSchema,
-  })
-  @ApiOperation({
-    summary: 'Create Empty Restaurant Settings',
-  })
-  @Role(UserRole.Owner)
-  @Post()
-  async createSettings() {
-    return await this.settingService.createSettings(null, null);
   }
 
   @ApiResponse({

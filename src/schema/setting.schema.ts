@@ -6,8 +6,8 @@ import { Types } from 'mongoose';
   schemaOptions: {
     collection: 'settings',
     timestamps: {
-      createdAt: 'created_at',
-      updatedAt: false,
+      createdAt: false,
+      updatedAt: 'updated_at',
     },
   },
 })
@@ -16,11 +16,11 @@ export class SettingSchema {
   @ApiProperty({ type: String, description: 'Setting ID' })
   _id: Types.ObjectId;
 
-  @Prop({ default: null })
-  @ApiProperty({ type: String, description: 'Restaurant Name' })
+  @Prop({ default: null, nullable: true })
+  @ApiProperty({ type: String, description: 'Restaurant Name', nullable: true })
   name: string;
 
-  @Prop({ default: null })
-  @ApiProperty({ type: String, description: 'Restaurant Logo' })
+  @Prop({ default: null, nullable: true })
+  @ApiProperty({ type: String, description: 'Restaurant Logo', nullable: true })
   logo: string;
 }

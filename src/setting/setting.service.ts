@@ -13,13 +13,17 @@ export class SettingService {
 
   async getSettings() {
     const settings = await this.settingModel.findOne().exec();
+    if (settings === null) {
+      await this.createSettings();
+      return await this.settingModel.findOne().exec();
+    }
     return settings;
   }
 
-  async createSettings(name: string, logo: string) {
+  async createSettings() {
     const settings = await this.settingModel.create({
-      name,
-      logo,
+      name: null,
+      logo: null,
     });
     return settings;
   }
