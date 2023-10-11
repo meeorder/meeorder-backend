@@ -12,7 +12,7 @@ export class SettingService {
   ) {}
 
   async getSettings() {
-    const settings = await this.settingModel.findOne();
+    const settings = await this.settingModel.findOne().exec();
     return settings;
   }
 
@@ -26,15 +26,17 @@ export class SettingService {
 
   async updateSettings(settingDto: SettingDto) {
     const settings_id = (await this.getSettings())._id;
-    const settings = await this.settingModel.findOneAndUpdate(
-      { _id: settings_id },
-      {
-        $set: settingDto,
-      },
-      {
-        new: true,
-      },
-    );
+    const settings = await this.settingModel
+      .findOneAndUpdate(
+        { _id: settings_id },
+        {
+          $set: settingDto,
+        },
+        {
+          new: true,
+        },
+      )
+      .exec();
     return settings;
   }
 }
