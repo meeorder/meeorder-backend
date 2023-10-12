@@ -34,8 +34,6 @@ export class SessionSchema {
   @Prop({
     default: null,
     ref: () => UserSchema,
-    required: false,
-    nullable: true,
   })
   @ApiProperty({
     type: String,

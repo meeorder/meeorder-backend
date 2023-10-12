@@ -3,7 +3,6 @@ import { GetReceiptAmountDto } from '@/dashboard/dto/getAllReceiptAmount.dto';
 import { GetNetIncomeDto } from '@/dashboard/dto/getNetIncom.dto';
 import { Role } from '@/decorator/roles.decorator';
 import { ParseMongoDatePipe } from '@/pipes/mongo-date.pipe';
-import { ParseMongoDateStartPipe } from '@/pipes/mongo-datestart.pipe';
 import { UserRole } from '@/schema/users.schema';
 import { Controller, Get, HttpCode, HttpStatus, Query } from '@nestjs/common';
 import {
@@ -23,10 +22,10 @@ export class DashboardController {
   @ApiResponse({
     status: HttpStatus.OK,
     type: () => GetReceiptAmountDto,
-    description: 'Total recirpt amount',
+    description: 'Total receipt amount',
   })
   @ApiOperation({
-    summary: 'Get total recirpt amount',
+    summary: 'Get total receipt amount',
   })
   @ApiQuery({
     name: 'date',
@@ -37,9 +36,9 @@ export class DashboardController {
   @Get('/receipt_report')
   @HttpCode(HttpStatus.OK)
   @Role(UserRole.Owner)
-  async getreceiptReport(@Query('date') date: number) {
-    return await this.dashboardService.getAllreceiptAmount(
-      new ParseMongoDateStartPipe().transform(date),
+  async getReceiptReport(@Query('date') date: number) {
+    return await this.dashboardService.getAllReceiptAmount(
+      new ParseMongoDatePipe().transform(date),
     );
   }
 

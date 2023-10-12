@@ -14,7 +14,7 @@ export class DashboardService {
     private readonly receiptModel: ReturnModelType<typeof ReceiptSchema>,
   ) {}
 
-  async getAllreceiptAmount(date: Date): Promise<GetReceiptAmountDto> {
+  async getAllReceiptAmount(date: Date): Promise<GetReceiptAmountDto> {
     let receipt_no_user = 0;
 
     const no_receipt_user = await this.receiptModel.aggregate([
