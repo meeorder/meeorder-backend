@@ -137,7 +137,14 @@ export class TablesService {
       .findOne({ _id: id, deleted_at: null })
       .populate({
         path: 'session',
-        populate: ['orders', 'coupon', 'user'],
+        populate: [
+          {
+            path: 'orders',
+            populate: ['menu', 'addons'],
+          },
+          'coupon',
+          'user',
+        ],
       })
       .lean()
       .exec();

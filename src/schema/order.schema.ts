@@ -37,18 +37,15 @@ export class OrdersSchema {
 
   @Prop({ ref: () => MenuSchema })
   @ApiProperty({
-    oneOf: [{ $ref: getSchemaPath(MenuSchema) }, { type: 'string' }],
+    type: String,
     description: 'Menu of the order',
   })
   menu: Ref<MenuSchema>;
 
   @Prop({ ref: () => AddonSchema, default: [] })
   @ApiProperty({
-    type: 'array',
-    items: {
-      oneOf: [{ type: 'string' }, { $ref: getSchemaPath(AddonSchema) }],
-    },
-    description: 'Addons of the order',
+    type: String,
+    isArray: true,
   })
   addons: Ref<AddonSchema>[];
 

@@ -1,5 +1,5 @@
+import { AllPopulatedOrderDto } from '@/orders/dto/all-populated-order.dto';
 import { CouponSchema } from '@/schema/coupons.schema';
-import { OrdersSchema } from '@/schema/order.schema';
 import { UserSchema } from '@/schema/users.schema';
 import { ApiProperty } from '@nestjs/swagger';
 import { Types } from 'mongoose';
@@ -23,6 +23,6 @@ export class AllPopulatedSessionDto {
   @ApiProperty({ type: String })
   table: string | Types.ObjectId;
 
-  @ApiProperty({ type: () => OrdersSchema, isArray: true })
-  orders: OrdersSchema[];
+  @ApiProperty({ type: () => AllPopulatedOrderDto, isArray: true })
+  orders: AllPopulatedOrderDto[];
 }
