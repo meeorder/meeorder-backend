@@ -1,5 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsOptional, IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class SettingDto {
   @ApiPropertyOptional({ type: String, description: 'Restaurant Name' })
@@ -11,4 +11,13 @@ export class SettingDto {
   @IsOptional()
   @IsString()
   logo?: string;
+
+  @ApiPropertyOptional({
+    type: Number,
+    description: 'Point Ratio (in baht)',
+    example: 200,
+  })
+  @IsOptional()
+  @IsNumber()
+  point_ratio?: number;
 }

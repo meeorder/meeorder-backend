@@ -11,6 +11,7 @@ import { GetSessionDto } from '@/session/dto/get-session.dto';
 import { OrdersListDto } from '@/session/dto/listorders.dto';
 import { UpdateSessionCouponDto } from '@/session/dto/updatecoupon.dto';
 import { SessionService } from '@/session/session.service';
+import { UsersService } from '@/users/users.service';
 import {
   Body,
   ConflictException,
@@ -43,6 +44,7 @@ export class SessionController {
   constructor(
     private readonly sessionService: SessionService,
     private readonly receiptService: ReceiptService,
+    private readonly userService: UsersService,
   ) {}
 
   @ApiQuery({ name: 'finished', type: Boolean, required: false })
@@ -153,6 +155,12 @@ export class SessionController {
   async finishSession(@Param('id', new ParseMongoIdPipe()) id: Types.ObjectId) {
     const session = await this.sessionService.finishSession(id);
     const receipt = await this.receiptService.generateReceipt(session);
+    if (session.user) {
+      await this.userService.updateUserPoint(
+        <Types.ObjectId>session.user,
+        receipt.received_point,
+      );
+    }
 
     return receipt.toObject({ virtuals: true });
   }

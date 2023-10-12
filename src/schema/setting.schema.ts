@@ -23,4 +23,8 @@ export class SettingSchema {
   @Prop({ default: null, nullable: true })
   @ApiProperty({ type: String, description: 'Restaurant Logo', nullable: true })
   logo: string;
+
+  @Prop({ default: 0 })
+  @ApiProperty({ default: 0 })
+  point_ratio: number;
 }

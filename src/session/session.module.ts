@@ -6,6 +6,7 @@ import { ReceiptModule } from '@/receipt/receipt.module';
 import { CouponSchema } from '@/schema/coupons.schema';
 import { SessionSchema } from '@/schema/session.schema';
 import { UserSchema } from '@/schema/users.schema';
+import { UsersModule } from '@/users/users.module';
 import { Module, forwardRef } from '@nestjs/common';
 import { TypegooseModule } from 'nest-typegoose';
 import { SessionController } from './session.controller';
@@ -19,6 +20,7 @@ import { SessionService } from './session.service';
     MenusModule,
     AddonsModule,
     ReceiptModule,
+    UsersModule,
   ],
   providers: [SessionService],
   controllers: [SessionController],

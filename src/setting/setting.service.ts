@@ -14,16 +14,16 @@ export class SettingService {
   async getSettings() {
     const settings = await this.settingModel.findOne().exec();
     if (settings === null) {
-      await this.createSettings();
-      return await this.settingModel.findOne().exec();
+      return this.createDefaultSettings();
     }
     return settings;
   }
 
-  async createSettings() {
+  async createDefaultSettings() {
     const settings = await this.settingModel.create({
       name: null,
       logo: null,
+      point_ratio: 0,
     });
     return settings;
   }
@@ -42,5 +42,13 @@ export class SettingService {
       )
       .exec();
     return settings;
+  }
+
+  async getRatioPoint() {
+    const doc = await this.settingModel
+      .findOne({})
+      .select('point_ratio')
+      .exec();
+    return doc?.point_ratio ?? 0;
   }
 }
