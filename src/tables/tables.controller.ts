@@ -29,6 +29,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Types } from 'mongoose';
+import { TablesResponseDto } from './dto/tables.response.dto';
 
 @Controller({ path: 'tables', version: '1' })
 @ApiTags('tables')
@@ -53,7 +54,7 @@ export class TablesController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Get all tables with information',
-    type: () => TableResponseDto,
+    type: () => TablesResponseDto,
     isArray: true,
   })
   @ApiOperation({
