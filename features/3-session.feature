@@ -35,6 +35,9 @@ Feature: Session
     Given login as
       | id                       | username         | role |
       | 64ff1bbf76e1dfabe0337a1b | meeorder_cashier | 50   |
+    And setting
+      | _id                      | name | logo | point_ratio |
+      | 65281d15fa2152e505745fde | name | logo | 100         |
     And sessions
       | _id                      | finished_at | table                    |
       | 64c5485a510698e8c9e7bdb5 |             | 64f55c53561fa6a99fc45b29 |
@@ -51,6 +54,11 @@ Feature: Session
     When finish session "64c5485a510698e8c9e7bdb5"
     Then should return status code 200
     Then should session "64c5485a510698e8c9e7bdb5" update to finished
+    Then should response data be
+      | key            | value | type   |
+      | total_price    | 600   | number |
+      | received_point | 6     | number |
+
 
   Scenario: Get all sessions
     Given login as

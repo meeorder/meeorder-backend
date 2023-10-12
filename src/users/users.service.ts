@@ -119,4 +119,20 @@ export class UsersService {
       });
     }
   }
+
+  updateUserPoint(userId: Types.ObjectId, point: number) {
+    return this.userModel
+      .updateOne(
+        {
+          _id: userId,
+          deleted_at: null,
+        },
+        {
+          $inc: {
+            point,
+          },
+        },
+      )
+      .exec();
+  }
 }
