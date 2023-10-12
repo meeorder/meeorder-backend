@@ -4,9 +4,12 @@ import { MenuSchema } from '@/schema/menus.schema';
 import { OrdersSchema } from '@/schema/order.schema';
 import { ReceiptSchema } from '@/schema/receipt.schema';
 import { SessionSchema } from '@/schema/session.schema';
+import { SettingService } from '@/setting/setting.service';
 import { Test } from '@nestjs/testing';
 import { getModelForClass } from '@typegoose/typegoose';
 import { getModelToken } from 'nest-typegoose';
+
+jest.mock('@/setting/setting.service');
 
 describe('ReceiptService', () => {
   class MockReceiptModel extends ReceiptSchema {
@@ -23,6 +26,7 @@ describe('ReceiptService', () => {
     const module = await Test.createTestingModule({
       providers: [
         ReceiptService,
+        SettingService,
         {
           provide: getModelToken(ReceiptSchema.name),
           useValue: receiptModel,
