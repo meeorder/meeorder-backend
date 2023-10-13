@@ -31,7 +31,7 @@ export class DashboardController {
     name: 'date',
     type: Number,
     required: true,
-    description: 'Date (UnixTimeStamp)',
+    description: 'Date (UnixTimeStamp in seconds)',
   })
   @Get('/receipt_report')
   @HttpCode(HttpStatus.OK)
@@ -57,13 +57,13 @@ export class DashboardController {
     name: 'from',
     type: Number,
     required: true,
-    description: 'Start Date (UnixTimeStamp)',
+    description: 'Start Date (UnixTimeStamp in seconds)',
   })
   @ApiQuery({
     name: 'end',
     type: Number,
     required: true,
-    description: 'End Date (UnixTimeStamp)',
+    description: 'End Date (UnixTimeStamp in seconds)',
   })
   async getIncomeReport(
     @Query('from') date_from: number,
