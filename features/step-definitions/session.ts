@@ -20,10 +20,10 @@ export class SessionStepDefination {
     for (const session of sessions) {
       const doc = await this.sessionModel.create({
         table: new Types.ObjectId(session.table),
-        user: session.user ?? null,
+        user: session.user ? session.user : null,
         _id: new Types.ObjectId(session._id),
         finished_at: session.finished_at ? new Date(session.finished_at) : null,
-        point: session.point ?? 0,
+        point: session.point ? session.point : 0,
       });
 
       expect(doc._id.toHexString()).toBe(session._id);

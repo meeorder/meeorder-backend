@@ -1,21 +1,13 @@
 import { DashboardService } from '@/dashboard/dashboard.service';
-import { GetUserAmountDto } from '@/dashboard/dto/getAllUserAmount.dto';
+import { GetReceiptAmountDto } from '@/dashboard/dto/getAllReceiptAmount.dto';
 import { GetNetIncomeDto } from '@/dashboard/dto/getNetIncom.dto';
 import { Role } from '@/decorator/roles.decorator';
 import { ParseMongoDatePipe } from '@/pipes/mongo-date.pipe';
 import { UserRole } from '@/schema/users.schema';
-import {
-  Controller,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Param,
-  Query,
-} from '@nestjs/common';
+import { Controller, Get, HttpCode, HttpStatus, Query } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOperation,
-  ApiParam,
   ApiQuery,
   ApiResponse,
   ApiTags,
@@ -29,18 +21,25 @@ export class DashboardController {
 
   @ApiResponse({
     status: HttpStatus.OK,
-    type: () => GetUserAmountDto,
-    description: 'Total registered users',
+    type: () => GetReceiptAmountDto,
+    description: 'Total receipt amount',
   })
   @ApiOperation({
-    summary: 'Get total registered users',
+    summary: 'Get total receipt amount',
   })
-  @ApiParam({ name: 'date', type: Number })
-  @Get('/customer_report/:date')
+  @ApiQuery({
+    name: 'date',
+    type: Number,
+    required: true,
+    description: 'Date (UnixTimeStamp in seconds)',
+  })
+  @Get('/receipt_report')
   @HttpCode(HttpStatus.OK)
   @Role(UserRole.Owner)
-  async getDashboard(@Param('date', new ParseMongoDatePipe()) date: Date) {
-    return await this.dashboardService.getAllUserAmount(date);
+  async getReceiptReport(@Query('date') date: number) {
+    return await this.dashboardService.getAllReceiptAmount(
+      new ParseMongoDatePipe().transform(date),
+    );
   }
 
   @ApiResponse({
@@ -58,13 +57,13 @@ export class DashboardController {
     name: 'from',
     type: Number,
     required: true,
-    description: 'Start Date (UnixTimeStamp)',
+    description: 'Start Date (UnixTimeStamp in seconds)',
   })
   @ApiQuery({
     name: 'end',
     type: Number,
     required: true,
-    description: 'End Date (UnixTimeStamp)',
+    description: 'End Date (UnixTimeStamp in seconds)',
   })
   async getIncomeReport(
     @Query('from') date_from: number,

@@ -1,4 +1,4 @@
-import { GetUserAmountDto } from '@/dashboard/dto/getAllUserAmount.dto';
+import { GetReceiptAmountDto } from '@/dashboard/dto/getAllReceiptAmount.dto';
 import { ReceiptSchema } from '@/schema/receipt.schema';
 import { UserSchema } from '@/schema/users.schema';
 import { Injectable } from '@nestjs/common';
@@ -14,31 +14,53 @@ export class DashboardService {
     private readonly receiptModel: ReturnModelType<typeof ReceiptSchema>,
   ) {}
 
-  async getAllUserAmount(date: Date): Promise<GetUserAmountDto> {
-    const calculate = await this.userModel.aggregate([
+  async getAllReceiptAmount(date: Date): Promise<GetReceiptAmountDto> {
+    let receipt_no_user = 0;
+
+    const no_receipt_user = await this.receiptModel.aggregate([
       {
-        $match: { _id: { $exists: true }, role: 1, created_at: { $lte: date } },
+        $match: {
+          created_at: { $gte: date },
+        },
       },
       {
-        $group: { _id: null, count: { $sum: 1 } },
+        $lookup: {
+          from: 'sessions',
+          localField: 'session',
+          foreignField: '_id',
+          as: 'session',
+        },
+      },
+      {
+        $match: {
+          'session.user': null,
+        },
+      },
+      {
+        $group: {
+          _id: '$session.user',
+          total: {
+            $sum: 1,
+          },
+        },
       },
     ]);
 
-    const total = await this.userModel.countDocuments({
-      deleted_at: null,
-      role: 1,
-    });
-
-    let old_user = 0;
-
-    if (calculate.length !== 0) {
-      old_user = calculate[0].count;
+    if (no_receipt_user.length > 0) {
+      receipt_no_user = no_receipt_user[0].total;
     }
 
+    const receipt_all = await this.receiptModel.countDocuments({
+      created_at: { $gte: date },
+    });
+
+    const all_receipt = receipt_all;
+    const receipt_user = receipt_all - receipt_no_user;
+
     return {
-      total_user: total,
-      old_user,
-      new_user: total - old_user,
+      all_receipt,
+      receipt_user,
+      receipt_no_user,
     };
   }
 

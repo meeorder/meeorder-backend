@@ -31,7 +31,10 @@ export class SessionSchema {
   })
   finished_at: Date;
 
-  @Prop({ default: null, ref: () => UserSchema })
+  @Prop({
+    default: null,
+    ref: () => UserSchema,
+  })
   @ApiProperty({
     type: String,
     description: 'Current head user of session',
