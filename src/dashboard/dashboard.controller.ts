@@ -1,5 +1,7 @@
 import { DashboardService } from '@/dashboard/dashboard.service';
 import { GetUserAmountDto } from '@/dashboard/dto/getAllUserAmount.dto';
+import { GetCouponReportTodayDto } from '@/dashboard/dto/getCouponReportToday.dto';
+import { GetCouponReportTotalDto } from '@/dashboard/dto/getCouponReportTotal.dto';
 import { GetNetIncomeDto } from '@/dashboard/dto/getNetIncom.dto';
 import { Role } from '@/decorator/roles.decorator';
 import { ParseMongoDatePipe } from '@/pipes/mongo-date.pipe';
@@ -74,5 +76,33 @@ export class DashboardController {
       new ParseMongoDatePipe().transform(date_from),
       new ParseMongoDatePipe().transform(date_end),
     );
+  }
+
+  @ApiOperation({
+    summary: 'Get total coupon usage today',
+  })
+  @Get('/coupon_report/today')
+  @HttpCode(HttpStatus.OK)
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: () => GetCouponReportTodayDto,
+    description: 'Total Coupon usage today',
+  })
+  async getCouponReportToday() {
+    return await this.dashboardService.getCouponReportToday();
+  }
+
+  @ApiOperation({
+    summary: 'Get total coupon usage',
+  })
+  @Get('/coupon_report')
+  @HttpCode(HttpStatus.OK)
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: () => GetCouponReportTotalDto,
+    description: 'Total Coupon usage',
+  })
+  async geCouponReportTotal() {
+    return await this.dashboardService.getCouponReportTotal();
   }
 }
