@@ -13,7 +13,7 @@ import { Ref, modelOptions, prop } from '@typegoose/typegoose';
 })
 export class OrderCancelSchema {
   @prop({ default: [], type: String })
-  @ApiProperty({ type: String })
+  @ApiProperty({ type: String, isArray: true })
   reasons: string[];
 
   @prop({ ref: () => IngredientSchema, default: [] })
