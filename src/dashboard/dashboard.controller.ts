@@ -140,13 +140,13 @@ export class DashboardController {
   @HttpCode(HttpStatus.OK)
   @Role(UserRole.Owner)
   @ApiQuery({
-    name: 'from',
+    name: 'startTime',
     type: Number,
     required: true,
     description: 'Start Date (UnixTimeStamp in seconds)',
   })
   @ApiQuery({
-    name: 'end',
+    name: 'endTime',
     type: Number,
     required: true,
     description: 'End Date (UnixTimeStamp in seconds)',
