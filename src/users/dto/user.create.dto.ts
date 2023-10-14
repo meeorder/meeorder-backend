@@ -21,10 +21,10 @@ export class CreateUserDto {
   @IsString()
   @IsAlphanumeric()
   @Validate(MinUsernameLength, {
-    message: 'ชื่อผู้ใช้ต้องมีความยาวมากกว่าหรือเท่ากับ 4 ตัวอักษร',
+    message: `ชื่อผู้ใช้ต้องมีความยาวมากกว่าหรือเท่ากับ ${minUsernameLength} ตัวอักษร`,
   })
   @Validate(MaxUsernameLength, {
-    message: 'ชื่อผู้ใช้ต้องมีความยาวน้อยกว่าหรือเท่ากับ 32 ตัวอักษร',
+    message: `ชื่อผู้ใช้ต้องมีความยาวน้อยกว่าหรือเท่ากับ ${maxUsernameLength} ตัวอักษร`,
   })
   username: string;
 
