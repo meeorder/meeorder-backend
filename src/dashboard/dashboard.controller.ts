@@ -71,7 +71,7 @@ export class DashboardController {
   @ApiOperation({
     summary: 'Get total coupon usage today',
   })
-  @Get('/coupon_report/today')
+  @Get('/coupon_report')
   @HttpCode(HttpStatus.OK)
   @ApiResponse({
     status: HttpStatus.OK,
@@ -93,7 +93,7 @@ export class DashboardController {
   @ApiOperation({
     summary: 'Get total coupon usage',
   })
-  @Get('/coupon_report')
+  @Get('/coupon_report/all')
   @HttpCode(HttpStatus.OK)
   @ApiResponse({
     status: HttpStatus.OK,
