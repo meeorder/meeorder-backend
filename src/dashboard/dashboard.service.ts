@@ -1,4 +1,5 @@
 import { GetReceiptAmountDto } from '@/dashboard/dto/getAllReceiptAmount.dto';
+import { GetIncomePerReceiptDto } from '@/dashboard/dto/getIncomeReportPerReceipt.dto';
 import { CouponSchema } from '@/schema/coupons.schema';
 import { ReceiptSchema } from '@/schema/receipt.schema';
 import { UserSchema } from '@/schema/users.schema';
@@ -123,7 +124,7 @@ export class DashboardService {
       couponUsageToday = numberOfCouponUsageToday[0].totalCouponUsage;
     }
 
-    return couponUsageToday;
+    return { couponUsageToday };
   }
 
   async getCouponReportTotal() {
@@ -146,6 +147,22 @@ export class DashboardService {
     return {
       couponUsageTotal,
       couponQuota,
+    };
+  }
+
+  async getIncomeReportPerReceipt(date: Date): Promise<GetIncomePerReceiptDto> {
+    const Receipt = await this.getAllReceiptAmount(date);
+    const Income = await this.getIncomeReport(date);
+
+    const receipt_amount = Receipt.all_receipt;
+    const net_income = Income.netIncome;
+    const income_per_receipt =
+      net_income / receipt_amount ? net_income / receipt_amount : 0;
+
+    return {
+      income_per_receipt,
+      receipt_amount,
+      net_income,
     };
   }
 }

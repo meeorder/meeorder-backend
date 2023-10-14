@@ -2,6 +2,7 @@ import { DashboardService } from '@/dashboard/dashboard.service';
 import { GetReceiptAmountDto } from '@/dashboard/dto/getAllReceiptAmount.dto';
 import { GetCouponReportTodayDto } from '@/dashboard/dto/getCouponReportToday.dto';
 import { GetCouponReportTotalDto } from '@/dashboard/dto/getCouponReportTotal.dto';
+import { GetIncomePerReceiptDto } from '@/dashboard/dto/getIncomeReportPerReceipt.dto';
 import { GetNetIncomeDto } from '@/dashboard/dto/getNetIncom.dto';
 import { Role } from '@/decorator/roles.decorator';
 import { ParseMongoDatePipe } from '@/pipes/mongo-date.pipe';
@@ -101,5 +102,26 @@ export class DashboardController {
   })
   async geCouponReportTotal() {
     return await this.dashboardService.getCouponReportTotal();
+  }
+
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: () => GetIncomePerReceiptDto,
+    description: 'Total Coupon usage',
+  })
+  @ApiOperation({
+    summary: 'Get income per receipt Today',
+  })
+  @ApiQuery({
+    name: 'date',
+    type: Number,
+    required: true,
+    description: 'Start Date (UnixTimeStamp in seconds)',
+  })
+  @Get('/income_per_receipt')
+  async getIncomePerReceipt(@Query('date') date: number) {
+    return await this.dashboardService.getIncomeReportPerReceipt(
+      new ParseMongoDatePipe().transform(date),
+    );
   }
 }
