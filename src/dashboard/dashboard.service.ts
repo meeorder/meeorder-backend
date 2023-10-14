@@ -1,4 +1,5 @@
 import { GetReceiptAmountDto } from '@/dashboard/dto/getAllReceiptAmount.dto';
+import { CouponSchema } from '@/schema/coupons.schema';
 import { ReceiptSchema } from '@/schema/receipt.schema';
 import { UserSchema } from '@/schema/users.schema';
 import { Injectable } from '@nestjs/common';
@@ -12,6 +13,8 @@ export class DashboardService {
     private readonly userModel: ReturnModelType<typeof UserSchema>,
     @InjectModel(ReceiptSchema)
     private readonly receiptModel: ReturnModelType<typeof ReceiptSchema>,
+    @InjectModel(CouponSchema)
+    private readonly couponModel: ReturnModelType<typeof CouponSchema>,
   ) {}
 
   async getAllReceiptAmount(date: Date): Promise<GetReceiptAmountDto> {
@@ -98,6 +101,54 @@ export class DashboardService {
       netIncome,
       totalIncome,
       totalDiscount,
+    };
+  }
+
+  async getCouponReportToday() {
+    const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+
+    const numberOfCouponUsageToday = await this.receiptModel
+      .aggregate([
+        {
+          $match: {
+            created_at: { $gte: currentDate },
+          },
+        },
+        {
+          $count: 'totalCouponUsage',
+        },
+      ])
+      .exec();
+
+    let couponUsageToday = 0;
+    if (numberOfCouponUsageToday.length !== 0) {
+      couponUsageToday = numberOfCouponUsageToday[0].totalCouponUsage;
+    }
+
+    return couponUsageToday;
+  }
+
+  async getCouponReportTotal() {
+    const numberOfCouponUsageTotal = await this.receiptModel
+      .aggregate([
+        {
+          $count: 'totalCouponUsage',
+        },
+      ])
+      .exec();
+    const couponQuota = await this.couponModel.countDocuments({
+      deleted_at: null,
+    });
+
+    let couponUsageTotal = 0;
+    if (numberOfCouponUsageTotal.length !== 0) {
+      couponUsageTotal = numberOfCouponUsageTotal[0].totalCouponUsage;
+    }
+
+    return {
+      couponUsageTotal,
+      couponQuota,
     };
   }
 }
