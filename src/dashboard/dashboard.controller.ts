@@ -69,14 +69,14 @@ export class DashboardController {
   }
 
   @ApiOperation({
-    summary: 'Get total coupon usage today',
+    summary: 'Get total coupon usage Today',
   })
   @Get('/coupon_report')
   @HttpCode(HttpStatus.OK)
   @ApiResponse({
     status: HttpStatus.OK,
     type: () => GetCouponReportTodayDto,
-    description: 'Total Coupon usage today',
+    description: 'Total Coupon usage Today',
   })
   @ApiQuery({
     name: 'date',
@@ -107,7 +107,7 @@ export class DashboardController {
   @ApiResponse({
     status: HttpStatus.OK,
     type: () => GetIncomePerReceiptDto,
-    description: 'Total Coupon usage today',
+    description: 'Total Coupon usage Today',
   })
   @ApiOperation({
     summary: 'Get income per receipt Today',
