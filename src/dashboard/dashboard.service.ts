@@ -1,5 +1,8 @@
 import { GetReceiptAmountDto } from '@/dashboard/dto/getAllReceiptAmount.dto';
+import { GetCouponReportTodayDto } from '@/dashboard/dto/getCouponReportToday.dto';
+import { GetCouponReportTotalDto } from '@/dashboard/dto/getCouponReportTotal.dto';
 import { GetIncomePerReceiptDto } from '@/dashboard/dto/getIncomeReportPerReceipt.dto';
+import { GetNetIncomeDto } from '@/dashboard/dto/getNetIncom.dto';
 import { CouponSchema } from '@/schema/coupons.schema';
 import { ReceiptSchema } from '@/schema/receipt.schema';
 import { UserSchema } from '@/schema/users.schema';
@@ -68,7 +71,7 @@ export class DashboardService {
     };
   }
 
-  async getIncomeReport(date: Date) {
+  async getIncomeReport(date: Date): Promise<GetNetIncomeDto> {
     const data = await this.receiptModel.aggregate([
       {
         $match: {
@@ -88,24 +91,24 @@ export class DashboardService {
       },
     ]);
 
-    let netIncome = 0;
+    let totalNetIncome = 0;
     let totalIncome = 0;
     let totalDiscount = 0;
 
     if (data.length !== 0) {
-      netIncome = data[0].totalIncome - data[0].totalDiscount;
+      totalNetIncome = data[0].totalIncome - data[0].totalDiscount;
       totalIncome = data[0].totalIncome;
       totalDiscount = data[0].totalDiscount;
     }
 
     return {
-      netIncome,
+      totalNetIncome,
       totalIncome,
       totalDiscount,
     };
   }
 
-  async getCouponReportToday(date: Date) {
+  async getCouponReportToday(date: Date): Promise<GetCouponReportTodayDto> {
     const numberOfCouponUsageToday = await this.receiptModel
       .aggregate([
         {
@@ -127,7 +130,7 @@ export class DashboardService {
     return { couponUsageToday };
   }
 
-  async getCouponReportTotal() {
+  async getCouponReportTotal(): Promise<GetCouponReportTotalDto> {
     const numberOfCouponUsageTotal = await this.receiptModel
       .aggregate([
         {
@@ -145,8 +148,8 @@ export class DashboardService {
     }
 
     return {
-      couponUsageTotal,
       couponQuota,
+      couponUsageTotal,
     };
   }
 
@@ -155,7 +158,7 @@ export class DashboardService {
     const Income = await this.getIncomeReport(date);
 
     const receipt_amount = Receipt.all_receipt;
-    const net_income = Income.netIncome;
+    const net_income = Income.totalNetIncome;
     const income_per_receipt =
       net_income / receipt_amount ? net_income / receipt_amount : 0;
 
