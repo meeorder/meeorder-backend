@@ -6,9 +6,10 @@ import { GetUserAmountDto } from '@/dashboard/dto/getAllUserAmount.dto';
 import { HourlySubDto } from '@/dashboard/dto/hourly.sub.dto';
 import { MonthlySubDto } from '@/dashboard/dto/monthly.sub.dto';
 import { QuarterlySubDto } from '@/dashboard/dto/quarterly.sub.dto';
+import { GetReceiptAmountDto } from '@/dashboard/dto/getAllReceiptAmount.dto';
+import { CouponSchema } from '@/schema/coupons.schema';
 import { ReceiptSchema } from '@/schema/receipt.schema';
 import { UserSchema } from '@/schema/users.schema';
-import { UsersService } from '@/users/users.service';
 import { Injectable } from '@nestjs/common';
 import { ReturnModelType } from '@typegoose/typegoose';
 import { InjectModel } from 'nest-typegoose';
@@ -20,35 +21,61 @@ export class DashboardService {
     private readonly userModel: ReturnModelType<typeof UserSchema>,
     @InjectModel(ReceiptSchema)
     private readonly receiptModel: ReturnModelType<typeof ReceiptSchema>,
-    private readonly userService: UsersService,
+    @InjectModel(CouponSchema)
+    private readonly couponModel: ReturnModelType<typeof CouponSchema>,
   ) {}
 
-  async getAllUserAmount(date: Date): Promise<GetUserAmountDto> {
-    const calculate = await this.userModel.aggregate([
+  async getAllReceiptAmount(date: Date): Promise<GetReceiptAmountDto> {
+    let receipt_no_user = 0;
+
+    const no_receipt_user = await this.receiptModel.aggregate([
       {
-        $match: { _id: { $exists: true }, role: 1, created_at: { $lte: date } },
+        $match: {
+          created_at: { $gte: date },
+        },
       },
       {
-        $group: { _id: null, count: { $sum: 1 } },
+        $lookup: {
+          from: 'sessions',
+          localField: 'session',
+          foreignField: '_id',
+          as: 'session',
+        },
+      },
+      {
+        $match: {
+          'session.user': null,
+        },
+      },
+      {
+        $group: {
+          _id: '$session.user',
+          total: {
+            $sum: 1,
+          },
+        },
       },
     ]);
 
-    const total = await this.userModel.countDocuments({
-      deleted_at: null,
-      role: 1,
+    if (no_receipt_user.length > 0) {
+      receipt_no_user = no_receipt_user[0].total;
+    }
+
+    const receipt_all = await this.receiptModel.countDocuments({
+      created_at: { $gte: date },
     });
 
-    const old_user = calculate[0].count;
+    const all_receipt = receipt_all;
+    const receipt_user = receipt_all - receipt_no_user;
 
     return {
-      total_user: total,
-      old_user,
-      new_user: total - old_user,
+      all_receipt,
+      receipt_user,
+      receipt_no_user,
     };
   }
 
   async getIncomeReport(date_from: Date, date_end: Date) {
-    console.log(date_from, date_end);
     const data = await this.receiptModel.aggregate([
       {
         $match: {
@@ -342,5 +369,53 @@ export class DashboardService {
         item.total_price - item.discount_price;
     });
     return dto;
+  }
+
+  async getCouponReportToday() {
+    const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+
+    const numberOfCouponUsageToday = await this.receiptModel
+      .aggregate([
+        {
+          $match: {
+            created_at: { $gte: currentDate },
+          },
+        },
+        {
+          $count: 'totalCouponUsage',
+        },
+      ])
+      .exec();
+
+    let couponUsageToday = 0;
+    if (numberOfCouponUsageToday.length !== 0) {
+      couponUsageToday = numberOfCouponUsageToday[0].totalCouponUsage;
+    }
+
+    return couponUsageToday;
+  }
+
+  async getCouponReportTotal() {
+    const numberOfCouponUsageTotal = await this.receiptModel
+      .aggregate([
+        {
+          $count: 'totalCouponUsage',
+        },
+      ])
+      .exec();
+    const couponQuota = await this.couponModel.countDocuments({
+      deleted_at: null,
+    });
+
+    let couponUsageTotal = 0;
+    if (numberOfCouponUsageTotal.length !== 0) {
+      couponUsageTotal = numberOfCouponUsageTotal[0].totalCouponUsage;
+    }
+
+    return {
+      couponUsageTotal,
+      couponQuota,
+    };
   }
 }

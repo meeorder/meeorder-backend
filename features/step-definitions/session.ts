@@ -20,10 +20,10 @@ export class SessionStepDefination {
     for (const session of sessions) {
       const doc = await this.sessionModel.create({
         table: new Types.ObjectId(session.table),
-        user: session.user ?? null,
+        user: session.user ? session.user : null,
         _id: new Types.ObjectId(session._id),
         finished_at: session.finished_at ? new Date(session.finished_at) : null,
-        point: session.point ?? 0,
+        point: session.point ? session.point : 0,
       });
 
       expect(doc._id.toHexString()).toBe(session._id);
@@ -73,6 +73,29 @@ export class SessionStepDefination {
     this.workspace.response = await this.workspace.axiosInstance.get(
       `/sessions/${id}`,
     );
+  }
+
+  @when('apply user to session {string}')
+  async applyUserToSession(id: string) {
+    this.workspace.response = await this.workspace.axiosInstance.patch(
+      `/sessions/${id}/user`,
+    );
+  }
+
+  @when('session {string} use coupon {string}')
+  async whenSessionUseCoupon(sessionId: string, couponId: string) {
+    this.workspace.response = await this.workspace.axiosInstance.patch(
+      `/sessions/${sessionId}/coupon`,
+      {
+        coupon_id: couponId,
+      },
+    );
+  }
+
+  @then('session {string} should have coupon')
+  async thenSessionShouldHaveCoupon(sessionId: string) {
+    const session = await this.sessionModel.findById(sessionId);
+    expect(session.coupon).not.toBeNull();
   }
 
   @then('should session appear in database')

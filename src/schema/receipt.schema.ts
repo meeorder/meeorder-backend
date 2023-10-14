@@ -42,6 +42,10 @@ export class ReceiptSchema {
     return this.total_price - this.discount_price;
   }
 
+  @prop({ default: 0 })
+  @ApiProperty()
+  received_point: number;
+
   @ApiProperty()
   created_at: Date;
 }

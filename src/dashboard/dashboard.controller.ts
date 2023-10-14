@@ -3,19 +3,14 @@ import { ChartDataDailyDto } from '@/dashboard/dto/chartData.daily.dto';
 import { ChartDataMonthlyDto } from '@/dashboard/dto/chartData.monthly.dto';
 import { ChartDataYearlyDto } from '@/dashboard/dto/chartData.yearly.dto';
 import { ChartGroupResponseDto } from '@/dashboard/dto/chartGroup.dto';
-import { GetUserAmountDto } from '@/dashboard/dto/getAllUserAmount.dto';
+import { GetReceiptAmountDto } from '@/dashboard/dto/getAllReceiptAmount.dto';
+import { GetCouponReportTodayDto } from '@/dashboard/dto/getCouponReportToday.dto';
+import { GetCouponReportTotalDto } from '@/dashboard/dto/getCouponReportTotal.dto';
 import { GetNetIncomeDto } from '@/dashboard/dto/getNetIncom.dto';
 import { Role } from '@/decorator/roles.decorator';
 import { ParseMongoDatePipe } from '@/pipes/mongo-date.pipe';
 import { UserRole } from '@/schema/users.schema';
-import {
-  Controller,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Param,
-  Query,
-} from '@nestjs/common';
+import { Controller, Get, HttpCode, HttpStatus, Query } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -32,17 +27,23 @@ export class DashboardController {
 
   @ApiResponse({
     status: HttpStatus.OK,
-    type: () => GetUserAmountDto,
-    description: 'Total registered users',
+    type: () => GetReceiptAmountDto,
+    description: 'Total receipt amount',
   })
   @ApiOperation({
-    summary: 'Get total registered users',
+    summary: 'Get total receipt amount',
   })
-  @Get('/customer_report/:date')
+  @ApiQuery({
+    name: 'date',
+    type: Number,
+    required: true,
+    description: 'Date (UnixTimeStamp in seconds)',
+  })
+  @Get('/receipt_report')
   @HttpCode(HttpStatus.OK)
   @Role(UserRole.Owner)
-  async getDashboard(@Param('date') date: number) {
-    return await this.dashboardService.getAllUserAmount(
+  async getReceiptReport(@Query('date') date: number) {
+    return await this.dashboardService.getAllReceiptAmount(
       new ParseMongoDatePipe().transform(date),
     );
   }
@@ -62,13 +63,13 @@ export class DashboardController {
     name: 'from',
     type: Number,
     required: true,
-    description: 'Start Date (UnixTimeStamp)',
+    description: 'Start Date (UnixTimeStamp in seconds)',
   })
   @ApiQuery({
     name: 'end',
     type: Number,
     required: true,
-    description: 'End Date (UnixTimeStamp)',
+    description: 'End Date (UnixTimeStamp in seconds)',
   })
   async getIncomeReport(
     @Query('from') date_from: number,
@@ -181,5 +182,33 @@ export class DashboardController {
       );
 
     return allGroupedNetIncome;
+  }
+
+  @ApiOperation({
+    summary: 'Get total coupon usage today',
+  })
+  @Get('/coupon_report/today')
+  @HttpCode(HttpStatus.OK)
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: () => GetCouponReportTodayDto,
+    description: 'Total Coupon usage today',
+  })
+  async getCouponReportToday() {
+    return await this.dashboardService.getCouponReportToday();
+  }
+
+  @ApiOperation({
+    summary: 'Get total coupon usage',
+  })
+  @Get('/coupon_report')
+  @HttpCode(HttpStatus.OK)
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: () => GetCouponReportTotalDto,
+    description: 'Total Coupon usage',
+  })
+  async geCouponReportTotal() {
+    return await this.dashboardService.getCouponReportTotal();
   }
 }
