@@ -1,13 +1,10 @@
 import { UserRole } from '@/schema/users.schema';
+import { MaxUsernameLength } from '@/utils/max-username-check';
+import { MinUsernameLength } from '@/utils/min-username-check';
 import { UserRoleTransform } from '@/utils/role-transoform';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import {
-  IsAlphanumeric,
-  IsString,
-  MaxLength,
-  MinLength,
-} from 'class-validator';
+import { IsAlphanumeric, IsString, Validate } from 'class-validator';
 
 export const maxUsernameLength = 32;
 export const minUsernameLength = 4;
@@ -22,9 +19,13 @@ export enum UserRoleString {
 export class CreateUserDto {
   @ApiProperty({ type: String, description: 'Username' })
   @IsString()
-  @MaxLength(maxUsernameLength)
-  @MinLength(minUsernameLength)
   @IsAlphanumeric()
+  @Validate(MinUsernameLength, {
+    message: 'ชื่อผู้ใช้ต้องมีความยาวมากกว่าหรือเท่ากับ 4 ตัวอักษร',
+  })
+  @Validate(MaxUsernameLength, {
+    message: 'ชื่อผู้ใช้ต้องมีความยาวน้อยกว่าหรือเท่ากับ 32 ตัวอักษร',
+  })
   username: string;
 
   @ApiProperty({ type: String, description: 'Password' })
