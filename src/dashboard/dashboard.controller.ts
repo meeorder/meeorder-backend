@@ -138,6 +138,18 @@ export class DashboardController {
   @Get('/net_income/chart_group')
   @HttpCode(HttpStatus.OK)
   @Role(UserRole.Owner)
+  @ApiQuery({
+    name: 'from',
+    type: Number,
+    required: true,
+    description: 'Start Date (UnixTimeStamp in seconds)',
+  })
+  @ApiQuery({
+    name: 'end',
+    type: Number,
+    required: true,
+    description: 'End Date (UnixTimeStamp in seconds)',
+  })
   async getAllGroupedNetIncome(
     @Query('startTime') startTime: number,
     @Query('endTime') endTime: number,
