@@ -107,7 +107,7 @@ export class DashboardController {
   @ApiResponse({
     status: HttpStatus.OK,
     type: () => GetIncomePerReceiptDto,
-    description: 'Total Coupon usage',
+    description: 'Total Coupon usage today',
   })
   @ApiOperation({
     summary: 'Get income per receipt Today',
