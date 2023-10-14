@@ -67,11 +67,11 @@ export class DashboardService {
     };
   }
 
-  async getIncomeReport(date_from: Date, date_end: Date) {
+  async getIncomeReport(date: Date) {
     const data = await this.receiptModel.aggregate([
       {
         $match: {
-          created_at: { $gte: date_from, $lte: date_end },
+          created_at: { $gte: date },
         },
       },
       {
@@ -104,15 +104,12 @@ export class DashboardService {
     };
   }
 
-  async getCouponReportToday() {
-    const currentDate = new Date();
-    currentDate.setHours(0, 0, 0, 0);
-
+  async getCouponReportToday(date: Date) {
     const numberOfCouponUsageToday = await this.receiptModel
       .aggregate([
         {
           $match: {
-            created_at: { $gte: currentDate },
+            created_at: { $gte: date },
           },
         },
         {

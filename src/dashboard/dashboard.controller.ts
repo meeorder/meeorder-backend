@@ -24,16 +24,16 @@ export class DashboardController {
   @ApiResponse({
     status: HttpStatus.OK,
     type: () => GetReceiptAmountDto,
-    description: 'Total receipt amount',
+    description: 'Total receipt amount Today',
   })
   @ApiOperation({
-    summary: 'Get total receipt amount',
+    summary: 'Get total receipt amount Today',
   })
   @ApiQuery({
     name: 'date',
     type: Number,
     required: true,
-    description: 'Date (UnixTimeStamp in seconds)',
+    description: 'Start Date (UnixTimeStamp in seconds)',
   })
   @Get('/receipt_report')
   @HttpCode(HttpStatus.OK)
@@ -47,33 +47,23 @@ export class DashboardController {
   @ApiResponse({
     status: HttpStatus.OK,
     type: () => GetNetIncomeDto,
-    description: 'Net income & Discount in range date',
+    description: 'Net income & Discount Today',
   })
   @ApiOperation({
-    summary: 'Get net income & discount in range date',
+    summary: 'Get net income & discount Today',
   })
   @Get('/incomes_report')
   @HttpCode(HttpStatus.OK)
   @Role(UserRole.Owner)
   @ApiQuery({
-    name: 'from',
+    name: 'date',
     type: Number,
     required: true,
     description: 'Start Date (UnixTimeStamp in seconds)',
   })
-  @ApiQuery({
-    name: 'end',
-    type: Number,
-    required: true,
-    description: 'End Date (UnixTimeStamp in seconds)',
-  })
-  async getIncomeReport(
-    @Query('from') date_from: number,
-    @Query('end') date_end: number,
-  ) {
+  async getIncomeReport(@Query('date') date: number) {
     return await this.dashboardService.getIncomeReport(
-      new ParseMongoDatePipe().transform(date_from),
-      new ParseMongoDatePipe().transform(date_end),
+      new ParseMongoDatePipe().transform(date),
     );
   }
 
@@ -87,8 +77,16 @@ export class DashboardController {
     type: () => GetCouponReportTodayDto,
     description: 'Total Coupon usage today',
   })
-  async getCouponReportToday() {
-    return await this.dashboardService.getCouponReportToday();
+  @ApiQuery({
+    name: 'date',
+    type: Number,
+    required: true,
+    description: 'Start Date (UnixTimeStamp in seconds)',
+  })
+  async getCouponReportToday(@Query('date') date: number) {
+    return await this.dashboardService.getCouponReportToday(
+      new ParseMongoDatePipe().transform(date),
+    );
   }
 
   @ApiOperation({
