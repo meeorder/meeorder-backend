@@ -86,6 +86,7 @@ export class TablesController {
   @ApiOperation({
     summary: 'Soft delete table',
   })
+  @ApiParam({ name: 'id', type: String })
   @Role(UserRole.Owner)
   @Delete()
   async deleteTable(@Param('id', new ParseMongoDatePipe()) id: Types.ObjectId) {
