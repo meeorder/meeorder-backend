@@ -100,6 +100,7 @@ export class TablesController {
   @ApiNotFoundResponse({
     type: () => ErrorDto,
   })
+  @ApiParam({ name: 'id', type: String })
   @Role(UserRole.Owner)
   @Put()
   async updateTable(
