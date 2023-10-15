@@ -41,4 +41,7 @@ export class MenuDtoForAllMenu {
 
   @ApiProperty({ type: Date, nullable: true, description: 'Menu Deleted Date' })
   deleted_at: Date;
+
+  @ApiProperty()
+  can_order: boolean;
 }

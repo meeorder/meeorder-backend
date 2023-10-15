@@ -21,7 +21,7 @@ export class ReceiptService {
 
   async calculatePoint(totalPrice: number) {
     const ratio = await this.settingService.getRatioPoint();
-    return Math.floor(totalPrice / ratio);
+    return ratio === 0 ? 0 : Math.floor(totalPrice / ratio);
   }
 
   async generateReceipt(session: DocumentType<SessionSchema>) {
