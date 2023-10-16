@@ -1,5 +1,4 @@
 import { Role } from '@/decorator/roles.decorator';
-import { ParseMongoDatePipe } from '@/pipes/mongo-date.pipe';
 import { ParseMongoIdPipe } from '@/pipes/mongo-id.pipe';
 import { TablesSchema } from '@/schema/tables.schema';
 import { UserRole } from '@/schema/users.schema';
@@ -88,8 +87,8 @@ export class TablesController {
   })
   @ApiParam({ name: 'id', type: String })
   @Role(UserRole.Owner)
-  @Delete()
-  async deleteTable(@Param('id', new ParseMongoDatePipe()) id: Types.ObjectId) {
+  @Delete(':id')
+  async deleteTable(@Param('id', new ParseMongoIdPipe()) id: Types.ObjectId) {
     await this.tablesService.deleteTable(id);
   }
 
