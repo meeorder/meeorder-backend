@@ -54,9 +54,9 @@ export class SessionService {
     id: Types.ObjectId,
   ): Promise<DocumentType<SessionSchema>> {
     if (
-      !(await this.ordersService.getOrdersBySession(id)).every(
-        ({ status }) => status === OrderStatus.Done,
-      )
+      !(await this.ordersService.getOrdersBySession(id))
+        .filter((order) => order.status !== OrderStatus.Cancelled)
+        .every(({ status }) => status === OrderStatus.Done)
     ) {
       throw new HttpException(
         'Session has orders that are not finished',
@@ -148,74 +148,6 @@ export class SessionService {
     if (doc) {
       throw new ConflictException(`Table ${table} has session ${doc._id}`);
     }
-  }
-
-  async findTotalPrice(id: Types.ObjectId): Promise<number> {
-    const res = await this.sessionModel
-      .aggregate([
-        {
-          $lookup: {
-            from: 'orders',
-            localField: '_id',
-            foreignField: 'session',
-            as: 'orders',
-          },
-        },
-        {
-          $project: {
-            _id: 1,
-            table: 1,
-            orders: 1,
-          },
-        },
-        {
-          $lookup: {
-            from: 'menus',
-            localField: 'orders.menu',
-            foreignField: '_id',
-            as: 'menu',
-          },
-        },
-        {
-          $lookup: {
-            from: 'addons',
-            localField: 'orders.addons',
-            foreignField: '_id',
-            as: 'menu_addons',
-          },
-        },
-        {
-          $project: {
-            _id: 1,
-            menu: 1,
-            menu_addons: 1,
-          },
-        },
-        {
-          $project: {
-            menu_total: {
-              $sum: '$menu.price',
-            },
-            addons_total: {
-              $sum: '$menu_addons.price',
-            },
-          },
-        },
-        {
-          $project: {
-            totalprice: {
-              $add: ['$menu_total', '$addons_total'],
-            },
-          },
-        },
-        {
-          $match: {
-            _id: id,
-          },
-        },
-      ])
-      .exec();
-    return res[0].totalprice;
   }
 
   async listOrdersBySession(id: Types.ObjectId): Promise<OrdersListDto> {

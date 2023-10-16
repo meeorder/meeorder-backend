@@ -47,10 +47,11 @@ Feature: Session
       | 650aee30396a9c0064ae125e | menu_2 | 200   | 2023-09-20T13:06:08.311Z |
       | 650aee30396a9c0064ae125f | menu_3 | 300   | 2023-09-20T13:06:08.311Z |
     And orders
-      | _id                      | session                  | menu                     | status |
-      | 650aedb2396a9c0064ae125c | 64c5485a510698e8c9e7bdb5 | 650aee30396a9c0064ae125d | DONE   |
-      | 650aedb2396a9c0064ae125d | 64c5485a510698e8c9e7bdb5 | 650aee30396a9c0064ae125e | DONE   |
-      | 650aedb2396a9c0064ae125e | 64c5485a510698e8c9e7bdb5 | 650aee30396a9c0064ae125f | DONE   |
+      | _id                      | session                  | menu                     | status    |
+      | 650aedb2396a9c0064ae125c | 64c5485a510698e8c9e7bdb5 | 650aee30396a9c0064ae125d | DONE      |
+      | 650aedb2396a9c0064ae125d | 64c5485a510698e8c9e7bdb5 | 650aee30396a9c0064ae125e | DONE      |
+      | 650aedb2396a9c0064ae125e | 64c5485a510698e8c9e7bdb5 | 650aee30396a9c0064ae125f | DONE      |
+      | 650aedb2396a9c0064ae125f | 64c5485a510698e8c9e7bdb5 | 650aee30396a9c0064ae125f | CANCELLED |
     When finish session "64c5485a510698e8c9e7bdb5"
     Then should return status code 200
     Then should session "64c5485a510698e8c9e7bdb5" update to finished

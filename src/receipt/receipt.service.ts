@@ -1,3 +1,4 @@
+import { OrderStatus } from '@/orders/enums/orders.status';
 import { ReceiptCouponSchema } from '@/schema/receipt.coupon.schema';
 import { ReceiptMenuSchema } from '@/schema/receipt.menu.schema';
 import { ReceiptSchema } from '@/schema/receipt.schema';
@@ -30,6 +31,7 @@ export class ReceiptService {
       {
         path: 'orders',
         select: 'menu',
+        match: { status: { $ne: OrderStatus.Cancelled } },
         populate: {
           path: 'menu',
           select: '_id title price',
