@@ -102,7 +102,7 @@ export class TablesController {
   })
   @ApiParam({ name: 'id', type: String })
   @Role(UserRole.Owner)
-  @Put()
+  @Put(':id')
   async updateTable(
     @Param('id', new ParseMongoIdPipe()) id: Types.ObjectId,
     @Body() body: TableUpdateRequestDto,
