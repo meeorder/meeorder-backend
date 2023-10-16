@@ -150,74 +150,6 @@ export class SessionService {
     }
   }
 
-  async findTotalPrice(id: Types.ObjectId): Promise<number> {
-    const res = await this.sessionModel
-      .aggregate([
-        {
-          $lookup: {
-            from: 'orders',
-            localField: '_id',
-            foreignField: 'session',
-            as: 'orders',
-          },
-        },
-        {
-          $project: {
-            _id: 1,
-            table: 1,
-            orders: 1,
-          },
-        },
-        {
-          $lookup: {
-            from: 'menus',
-            localField: 'orders.menu',
-            foreignField: '_id',
-            as: 'menu',
-          },
-        },
-        {
-          $lookup: {
-            from: 'addons',
-            localField: 'orders.addons',
-            foreignField: '_id',
-            as: 'menu_addons',
-          },
-        },
-        {
-          $project: {
-            _id: 1,
-            menu: 1,
-            menu_addons: 1,
-          },
-        },
-        {
-          $project: {
-            menu_total: {
-              $sum: '$menu.price',
-            },
-            addons_total: {
-              $sum: '$menu_addons.price',
-            },
-          },
-        },
-        {
-          $project: {
-            totalprice: {
-              $add: ['$menu_total', '$addons_total'],
-            },
-          },
-        },
-        {
-          $match: {
-            _id: id,
-          },
-        },
-      ])
-      .exec();
-    return res[0].totalprice;
-  }
-
   async listOrdersBySession(id: Types.ObjectId): Promise<OrdersListDto> {
     const res = new OrdersListDto();
     const orders = await this.ordersService.getOrdersBySession(id);
@@ -234,7 +166,7 @@ export class SessionService {
         );
       })
       .reduce((prev, current) => prev + current, 0);
-    // find total disount price
+    // find total discount price
     const session = await this.getSessionById(id);
     const coupon = await this.couponModel.findById(session.coupon).exec();
     res.discount_price = coupon ? coupon.discount : 0;
