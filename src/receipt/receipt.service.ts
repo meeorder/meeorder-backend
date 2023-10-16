@@ -55,7 +55,8 @@ export class ReceiptService {
     );
     receipt.coupon = coupon ? ReceiptCouponSchema.fromRef(coupon) : null;
     receipt.total_price = receipt.menus.reduce(
-      (prev, { price }) => prev + price,
+      (prev, { price, addons }) =>
+        prev + price + addons?.reduce((p, { price }) => p + price, 0),
       0,
     );
     receipt.discount_price = receipt.coupon?.discount ?? 0;
