@@ -1,5 +1,4 @@
 import { Role } from '@/decorator/roles.decorator';
-import { ParseMongoDatePipe } from '@/pipes/mongo-date.pipe';
 import { ParseMongoIdPipe } from '@/pipes/mongo-id.pipe';
 import { TablesSchema } from '@/schema/tables.schema';
 import { UserRole } from '@/schema/users.schema';
@@ -13,6 +12,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   HttpStatus,
   Param,
   Post,
@@ -25,6 +25,7 @@ import {
   ApiOkResponse,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -80,6 +81,12 @@ export class TablesController {
   }
 
   @ApiNoContentResponse()
+  @ApiQuery({
+    name: 'id',
+    type: String,
+    description: 'table id',
+    required: true,
+  })
   @ApiNotFoundResponse({
     type: () => ErrorDto,
   })
@@ -88,8 +95,9 @@ export class TablesController {
   })
   @Role(UserRole.Owner)
   @Delete()
-  async deleteTable(@Param('id', new ParseMongoDatePipe()) id: Types.ObjectId) {
-    await this.tablesService.deleteTable(id);
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async deleteTable(@Param('id', new ParseMongoIdPipe()) id: Types.ObjectId) {
+    this.tablesService.deleteTable(id);
   }
 
   @ApiOkResponse({

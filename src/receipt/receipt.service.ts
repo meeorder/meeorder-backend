@@ -1,3 +1,4 @@
+import { OrderStatus } from '@/orders/enums/orders.status';
 import { ReceiptCouponSchema } from '@/schema/receipt.coupon.schema';
 import { ReceiptMenuSchema } from '@/schema/receipt.menu.schema';
 import { ReceiptSchema } from '@/schema/receipt.schema';
@@ -29,6 +30,7 @@ export class ReceiptService {
     const { orders, coupon } = await session.populate([
       {
         path: 'orders',
+        match: { status: { $ne: OrderStatus.Cancelled } },
         select: 'menu',
         populate: {
           path: 'menu',
@@ -43,6 +45,7 @@ export class ReceiptService {
     if (!isDocumentArray(orders)) {
       throw new Error('orders is not populated');
     }
+
     receipt.session = session._id;
     receipt.menus = orders.map(({ menu }) => ReceiptMenuSchema.fromRef(menu));
     receipt.coupon = coupon ? ReceiptCouponSchema.fromRef(coupon) : null;
