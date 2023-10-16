@@ -12,7 +12,6 @@ import {
   Controller,
   Delete,
   Get,
-  HttpCode,
   HttpStatus,
   Param,
   Post,
@@ -93,11 +92,11 @@ export class TablesController {
   @ApiOperation({
     summary: 'Soft delete table',
   })
+  @ApiParam({ name: 'id', type: String })
   @Role(UserRole.Owner)
-  @Delete()
-  @HttpCode(HttpStatus.NO_CONTENT)
+  @Delete(':id')
   async deleteTable(@Param('id', new ParseMongoIdPipe()) id: Types.ObjectId) {
-    this.tablesService.deleteTable(id);
+    await this.tablesService.deleteTable(id);
   }
 
   @ApiOkResponse({
@@ -107,8 +106,9 @@ export class TablesController {
   @ApiNotFoundResponse({
     type: () => ErrorDto,
   })
+  @ApiParam({ name: 'id', type: String })
   @Role(UserRole.Owner)
-  @Put()
+  @Put(':id')
   async updateTable(
     @Param('id', new ParseMongoIdPipe()) id: Types.ObjectId,
     @Body() body: TableUpdateRequestDto,
