@@ -154,7 +154,7 @@ export class SessionController {
   @HttpCode(HttpStatus.OK)
   async finishSession(@Param('id', new ParseMongoIdPipe()) id: Types.ObjectId) {
     const session = await this.sessionService.finishSession(id);
-    const receipt = await this.receiptService.generateReceipt(session);
+    const receipt = await this.receiptService.generateReceipt(id);
     if (session.user) {
       await this.userService.updateUserPoint(
         <Types.ObjectId>session.user,

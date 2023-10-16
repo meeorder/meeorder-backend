@@ -11,7 +11,7 @@ import {
   forwardRef,
 } from '@nestjs/common';
 import { DocumentType, ReturnModelType } from '@typegoose/typegoose';
-import { Types } from 'mongoose';
+import { FilterQuery, Types } from 'mongoose';
 import { InjectModel } from 'nest-typegoose';
 
 @Injectable()
@@ -102,11 +102,13 @@ export class OrdersService {
 
   async getOrdersBySession(
     session: Types.ObjectId,
+    canceled = true,
   ): Promise<DocumentType<OrdersSchema>[]> {
-    return await this.orderModel
-      .find({ session })
-      .populate('menu addons')
-      .exec();
+    const filter: FilterQuery<OrdersSchema> = {
+      session,
+      ...(canceled ? {} : { cancel: null }),
+    };
+    return await this.orderModel.find(filter).populate('menu addons').exec();
   }
 
   updateOrder(
