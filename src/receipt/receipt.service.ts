@@ -33,7 +33,11 @@ export class ReceiptService {
         populate: [
           {
             path: 'menu',
-            select: '_id title price',
+            select: '_id title price category',
+            populate: {
+              path: 'category',
+              select: '_id title',
+            },
           },
           {
             path: 'addons',
