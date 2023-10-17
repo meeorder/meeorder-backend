@@ -6,8 +6,8 @@ import { ChartGroupResponseDto } from '@/dashboard/dto/chartGroup.dto';
 import { GetReceiptAmountDto } from '@/dashboard/dto/getAllReceiptAmount.dto';
 import { GetCouponReportTodayDto } from '@/dashboard/dto/getCouponReportToday.dto';
 import { GetCouponReportTotalDto } from '@/dashboard/dto/getCouponReportTotal.dto';
+import { GetIncomePerReceiptDto } from '@/dashboard/dto/getIncomeReportPerReceipt.dto';
 import { GetNetIncomeDto } from '@/dashboard/dto/getNetIncom.dto';
-import { SaleReportDto } from '@/dashboard/dto/salesReport.dto';
 import { Role } from '@/decorator/roles.decorator';
 import { ParseMongoDatePipe } from '@/pipes/mongo-date.pipe';
 import { UserRole } from '@/schema/users.schema';
@@ -29,16 +29,16 @@ export class DashboardController {
   @ApiResponse({
     status: HttpStatus.OK,
     type: () => GetReceiptAmountDto,
-    description: 'Total receipt amount',
+    description: 'Total receipt amount Today',
   })
   @ApiOperation({
-    summary: 'Get total receipt amount',
+    summary: 'Get total receipt amount Today',
   })
   @ApiQuery({
     name: 'date',
     type: Number,
     required: true,
-    description: 'Date (UnixTimeStamp in seconds)',
+    description: 'Start Date (UnixTimeStamp in seconds)',
   })
   @Get('/receipt_report')
   @HttpCode(HttpStatus.OK)
@@ -52,33 +52,23 @@ export class DashboardController {
   @ApiResponse({
     status: HttpStatus.OK,
     type: () => GetNetIncomeDto,
-    description: 'Net income & Discount in range date',
+    description: 'Net income & Discount Today',
   })
   @ApiOperation({
-    summary: 'Get net income & discount in range date',
+    summary: 'Get net income & discount Today',
   })
   @Get('/incomes_report')
   @HttpCode(HttpStatus.OK)
   @Role(UserRole.Owner)
   @ApiQuery({
-    name: 'from',
+    name: 'date',
     type: Number,
     required: true,
     description: 'Start Date (UnixTimeStamp in seconds)',
   })
-  @ApiQuery({
-    name: 'end',
-    type: Number,
-    required: true,
-    description: 'End Date (UnixTimeStamp in seconds)',
-  })
-  async getIncomeReport(
-    @Query('from') date_from: number,
-    @Query('end') date_end: number,
-  ) {
+  async getIncomeReport(@Query('date') date: number) {
     return await this.dashboardService.getIncomeReport(
-      new ParseMongoDatePipe().transform(date_from),
-      new ParseMongoDatePipe().transform(date_end),
+      new ParseMongoDatePipe().transform(date),
     );
   }
 
@@ -186,23 +176,31 @@ export class DashboardController {
   }
 
   @ApiOperation({
-    summary: 'Get total coupon usage today',
+    summary: 'Get total coupon usage Today',
   })
-  @Get('/coupon_report/today')
+  @Get('/coupon_report')
   @HttpCode(HttpStatus.OK)
   @ApiResponse({
     status: HttpStatus.OK,
     type: () => GetCouponReportTodayDto,
-    description: 'Total Coupon usage today',
+    description: 'Total Coupon usage Today',
   })
-  async getCouponReportToday() {
-    return await this.dashboardService.getCouponReportToday();
+  @ApiQuery({
+    name: 'date',
+    type: Number,
+    required: true,
+    description: 'Start Date (UnixTimeStamp in seconds)',
+  })
+  async getCouponReportToday(@Query('date') date: number) {
+    return await this.dashboardService.getCouponReportToday(
+      new ParseMongoDatePipe().transform(date),
+    );
   }
 
   @ApiOperation({
     summary: 'Get total coupon usage',
   })
-  @Get('/coupon_report')
+  @Get('/coupon_report/all')
   @HttpCode(HttpStatus.OK)
   @ApiResponse({
     status: HttpStatus.OK,
@@ -213,24 +211,24 @@ export class DashboardController {
     return await this.dashboardService.getCouponReportTotal();
   }
 
-  @ApiOperation({
-    summary: 'Get all sales report from start date to end date',
-  })
-  @Get('/sales_report')
-  @HttpCode(HttpStatus.OK)
   @ApiResponse({
     status: HttpStatus.OK,
-    type: () => SaleReportDto,
-    isArray: true,
-    description: 'Sales report from start date to end date',
+    type: () => GetIncomePerReceiptDto,
+    description: 'Total Coupon usage Today',
   })
-  async getSaleReports(
-    @Query('startTime') startTime: number,
-    @Query('endTime') endTime: number,
-  ) {
-    return await this.dashboardService.getSalesReport(
-      new ParseMongoDatePipe().transform(startTime),
-      new ParseMongoDatePipe().transform(endTime),
+  @ApiOperation({
+    summary: 'Get income per receipt Today',
+  })
+  @ApiQuery({
+    name: 'date',
+    type: Number,
+    required: true,
+    description: 'Start Date (UnixTimeStamp in seconds)',
+  })
+  @Get('/income_per_receipt')
+  async getIncomePerReceipt(@Query('date') date: number) {
+    return await this.dashboardService.getIncomeReportPerReceipt(
+      new ParseMongoDatePipe().transform(date),
     );
   }
 }

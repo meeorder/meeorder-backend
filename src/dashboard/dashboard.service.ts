@@ -3,6 +3,10 @@ import { ChartDataMonthlyDto } from '@/dashboard/dto/chartData.monthly.dto';
 import { ChartDataYearlyDto } from '@/dashboard/dto/chartData.yearly.dto';
 import { DaysOfWeekSubDto } from '@/dashboard/dto/daysOfWeek.sub.dto';
 import { GetReceiptAmountDto } from '@/dashboard/dto/getAllReceiptAmount.dto';
+import { GetCouponReportTodayDto } from '@/dashboard/dto/getCouponReportToday.dto';
+import { GetCouponReportTotalDto } from '@/dashboard/dto/getCouponReportTotal.dto';
+import { GetIncomePerReceiptDto } from '@/dashboard/dto/getIncomeReportPerReceipt.dto';
+import { GetNetIncomeDto } from '@/dashboard/dto/getNetIncom.dto';
 import { HourlySubDto } from '@/dashboard/dto/hourly.sub.dto';
 import { MonthlySubDto } from '@/dashboard/dto/monthly.sub.dto';
 import { QuarterlySubDto } from '@/dashboard/dto/quarterly.sub.dto';
@@ -74,11 +78,11 @@ export class DashboardService {
     };
   }
 
-  async getIncomeReport(date_from: Date, date_end: Date) {
+  async getIncomeReport(date: Date): Promise<GetNetIncomeDto> {
     const data = await this.receiptModel.aggregate([
       {
         $match: {
-          created_at: { $gte: date_from, $lte: date_end },
+          created_at: { $gte: date },
         },
       },
       {
@@ -94,18 +98,18 @@ export class DashboardService {
       },
     ]);
 
-    let netIncome = 0;
+    let totalNetIncome = 0;
     let totalIncome = 0;
     let totalDiscount = 0;
 
     if (data.length !== 0) {
-      netIncome = data[0].totalIncome - data[0].totalDiscount;
+      totalNetIncome = data[0].totalIncome - data[0].totalDiscount;
       totalIncome = data[0].totalIncome;
       totalDiscount = data[0].totalDiscount;
     }
 
     return {
-      netIncome,
+      totalNetIncome,
       totalIncome,
       totalDiscount,
     };
@@ -370,15 +374,12 @@ export class DashboardService {
     return dto;
   }
 
-  async getCouponReportToday() {
-    const currentDate = new Date();
-    currentDate.setHours(0, 0, 0, 0);
-
+  async getCouponReportToday(date: Date): Promise<GetCouponReportTodayDto> {
     const numberOfCouponUsageToday = await this.receiptModel
       .aggregate([
         {
           $match: {
-            created_at: { $gte: currentDate },
+            created_at: { $gte: date },
           },
         },
         {
@@ -392,10 +393,10 @@ export class DashboardService {
       couponUsageToday = numberOfCouponUsageToday[0].totalCouponUsage;
     }
 
-    return couponUsageToday;
+    return { couponUsageToday };
   }
 
-  async getCouponReportTotal() {
+  async getCouponReportTotal(): Promise<GetCouponReportTotalDto> {
     const numberOfCouponUsageTotal = await this.receiptModel
       .aggregate([
         {
@@ -413,8 +414,24 @@ export class DashboardService {
     }
 
     return {
-      couponUsageTotal,
       couponQuota,
+      couponUsageTotal,
+    };
+  }
+
+  async getIncomeReportPerReceipt(date: Date): Promise<GetIncomePerReceiptDto> {
+    const Receipt = await this.getAllReceiptAmount(date);
+    const Income = await this.getIncomeReport(date);
+
+    const receipt_amount = Receipt.all_receipt;
+    const net_income = Income.totalNetIncome;
+    const income_per_receipt =
+      net_income / receipt_amount ? net_income / receipt_amount : 0;
+
+    return {
+      income_per_receipt,
+      receipt_amount,
+      net_income,
     };
   }
 

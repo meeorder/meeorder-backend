@@ -54,9 +54,9 @@ export class SessionService {
     id: Types.ObjectId,
   ): Promise<DocumentType<SessionSchema>> {
     if (
-      !(await this.ordersService.getOrdersBySession(id)).every(
-        ({ status }) => status === OrderStatus.Done,
-      )
+      !(await this.ordersService.getOrdersBySession(id))
+        .filter((order) => order.status !== OrderStatus.Cancelled)
+        .every(({ status }) => status === OrderStatus.Done)
     ) {
       throw new HttpException(
         'Session has orders that are not finished',

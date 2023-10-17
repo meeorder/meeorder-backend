@@ -1,5 +1,4 @@
 import { Role } from '@/decorator/roles.decorator';
-import { ParseMongoDatePipe } from '@/pipes/mongo-date.pipe';
 import { ParseMongoIdPipe } from '@/pipes/mongo-id.pipe';
 import { TablesSchema } from '@/schema/tables.schema';
 import { UserRole } from '@/schema/users.schema';
@@ -13,6 +12,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   HttpStatus,
   Param,
   Post,
@@ -86,9 +86,11 @@ export class TablesController {
   @ApiOperation({
     summary: 'Soft delete table',
   })
+  @ApiParam({ name: 'id', type: String })
   @Role(UserRole.Owner)
-  @Delete()
-  async deleteTable(@Param('id', new ParseMongoDatePipe()) id: Types.ObjectId) {
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Delete(':id')
+  async deleteTable(@Param('id', new ParseMongoIdPipe()) id: Types.ObjectId) {
     await this.tablesService.deleteTable(id);
   }
 
@@ -99,8 +101,10 @@ export class TablesController {
   @ApiNotFoundResponse({
     type: () => ErrorDto,
   })
+  @ApiParam({ name: 'id', type: String })
   @Role(UserRole.Owner)
-  @Put()
+  @HttpCode(HttpStatus.OK)
+  @Put(':id')
   async updateTable(
     @Param('id', new ParseMongoIdPipe()) id: Types.ObjectId,
     @Body() body: TableUpdateRequestDto,
