@@ -417,4 +417,66 @@ export class DashboardService {
       couponQuota,
     };
   }
+
+  async getSalesReport(date_from: Date, date_end: Date) {
+    const agg = await this.receiptModel
+      .aggregate([
+        {
+          $match: {
+            created_at: { $gte: date_from, $lte: date_end },
+          },
+        },
+        {
+          $addFields: {
+            calculateAddons: {
+              $map: {
+                input: '$menus',
+                as: 'menu',
+                in: {
+                  _id: '$$menu._id',
+                  title: '$$menu.title',
+                  price: {
+                    $add: [
+                      '$$menu.price',
+                      {
+                        $reduce: {
+                          input: '$$menu.addons',
+                          initialValue: 0,
+                          in: {
+                            $add: ['$$value', '$$this.price'],
+                          },
+                        },
+                      },
+                    ],
+                  },
+                },
+              },
+            },
+          },
+        },
+        {
+          $unwind: '$calculateAddons',
+        },
+        {
+          $group: {
+            _id: '$calculateAddons._id',
+            menu_title: { $first: '$calculateAddons.title' },
+            menu_id: { $first: '$calculateAddons._id' },
+            total_amount: { $count: {} },
+            total_price: { $sum: '$calculateAddons.price' },
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            menu_id: 1,
+            menu_title: 1,
+            total_amount: 1,
+            total_price: 1,
+          },
+        },
+      ])
+      .exec();
+    return agg;
+  }
 }

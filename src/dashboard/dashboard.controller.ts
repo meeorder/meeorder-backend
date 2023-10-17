@@ -211,4 +211,23 @@ export class DashboardController {
   async geCouponReportTotal() {
     return await this.dashboardService.getCouponReportTotal();
   }
+
+  @ApiOperation({
+    summary: 'Get all sales report from start date to end date',
+  })
+  @Get('/sales_report')
+  @HttpCode(HttpStatus.OK)
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Sales report from start date to end date',
+  })
+  async getCouponReportChartData(
+    @Query('startTime') startTime: number,
+    @Query('endTime') endTime: number,
+  ) {
+    return await this.dashboardService.getSalesReport(
+      new ParseMongoDatePipe().transform(startTime),
+      new ParseMongoDatePipe().transform(endTime),
+    );
+  }
 }
