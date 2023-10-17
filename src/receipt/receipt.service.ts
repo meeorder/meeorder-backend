@@ -30,6 +30,7 @@ export class ReceiptService {
       {
         path: 'orders',
         select: 'menu addons',
+        match: { status: { $ne: 'cancelled' } },
         populate: [
           {
             path: 'menu',
