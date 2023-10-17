@@ -12,6 +12,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   HttpStatus,
   Param,
   Post,
@@ -87,6 +88,7 @@ export class TablesController {
   })
   @ApiParam({ name: 'id', type: String })
   @Role(UserRole.Owner)
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
   async deleteTable(@Param('id', new ParseMongoIdPipe()) id: Types.ObjectId) {
     await this.tablesService.deleteTable(id);
@@ -101,6 +103,7 @@ export class TablesController {
   })
   @ApiParam({ name: 'id', type: String })
   @Role(UserRole.Owner)
+  @HttpCode(HttpStatus.OK)
   @Put(':id')
   async updateTable(
     @Param('id', new ParseMongoIdPipe()) id: Types.ObjectId,
