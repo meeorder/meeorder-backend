@@ -7,6 +7,7 @@ import { GetReceiptAmountDto } from '@/dashboard/dto/getAllReceiptAmount.dto';
 import { GetCouponReportTodayDto } from '@/dashboard/dto/getCouponReportToday.dto';
 import { GetCouponReportTotalDto } from '@/dashboard/dto/getCouponReportTotal.dto';
 import { GetNetIncomeDto } from '@/dashboard/dto/getNetIncom.dto';
+import { SaleReportDto } from '@/dashboard/dto/salesReport.dto';
 import { Role } from '@/decorator/roles.decorator';
 import { ParseMongoDatePipe } from '@/pipes/mongo-date.pipe';
 import { UserRole } from '@/schema/users.schema';
@@ -219,9 +220,11 @@ export class DashboardController {
   @HttpCode(HttpStatus.OK)
   @ApiResponse({
     status: HttpStatus.OK,
+    type: () => SaleReportDto,
+    isArray: true,
     description: 'Sales report from start date to end date',
   })
-  async getCouponReportChartData(
+  async getSaleReports(
     @Query('startTime') startTime: number,
     @Query('endTime') endTime: number,
   ) {

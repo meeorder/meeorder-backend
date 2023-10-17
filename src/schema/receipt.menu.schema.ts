@@ -1,6 +1,7 @@
 import { AddonSchema } from '@/schema/addons.schema';
 import { MenuSchema } from '@/schema/menus.schema';
 import { ReceiptAddonMenuSchema } from '@/schema/receipt.menu.addon.schema';
+import { ReceiptCategoryMenuSchema } from '@/schema/receipt.menu.category';
 import { ApiProperty } from '@nestjs/swagger';
 import { Ref, isDocument, prop } from '@typegoose/typegoose';
 import { Types } from 'mongoose';
@@ -20,6 +21,10 @@ export class ReceiptMenuSchema
   @ApiProperty()
   price: number;
 
+  @prop({ type: () => ReceiptCategoryMenuSchema })
+  @ApiProperty({ type: () => ReceiptCategoryMenuSchema })
+  categories: ReceiptCategoryMenuSchema;
+
   @prop({ type: () => [ReceiptAddonMenuSchema] })
   @ApiProperty({ type: () => ReceiptAddonMenuSchema, isArray: true })
   addons: ReceiptAddonMenuSchema[];
@@ -33,6 +38,7 @@ export class ReceiptMenuSchema
     receiptMenu._id = menu._id;
     receiptMenu.title = menu.title;
     receiptMenu.price = menu.price;
+    receiptMenu.categories = ReceiptCategoryMenuSchema.fromRef(menu.category);
     receiptMenu.addons = addons.map((addon) =>
       ReceiptAddonMenuSchema.fromRef(addon),
     );

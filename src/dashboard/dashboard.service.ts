@@ -435,6 +435,7 @@ export class DashboardService {
                 in: {
                   _id: '$$menu._id',
                   title: '$$menu.title',
+                  category: '$$menu.categories.title',
                   price: {
                     $add: [
                       '$$menu.price',
@@ -462,6 +463,7 @@ export class DashboardService {
             _id: '$calculateAddons._id',
             menu_title: { $first: '$calculateAddons.title' },
             menu_id: { $first: '$calculateAddons._id' },
+            menu_category: { $first: '$calculateAddons.category' },
             total_amount: { $count: {} },
             total_price: { $sum: '$calculateAddons.price' },
           },
@@ -471,6 +473,7 @@ export class DashboardService {
             _id: 0,
             menu_id: 1,
             menu_title: 1,
+            menu_category: 1,
             total_amount: 1,
             total_price: 1,
           },
