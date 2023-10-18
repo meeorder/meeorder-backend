@@ -166,7 +166,7 @@ export class SessionService {
         );
       })
       .reduce((prev, current) => prev + current, 0);
-    // find total disount price
+    // find total discount price
     const session = await this.getSessionById(id);
     const coupon = await this.couponModel.findById(session.coupon).exec();
     res.discount_price = coupon ? coupon.discount : 0;

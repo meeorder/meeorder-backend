@@ -1,4 +1,5 @@
 import { ReceiptService } from '@/receipt/receipt.service';
+import { CategorySchema } from '@/schema/categories.schema';
 import { CouponSchema } from '@/schema/coupons.schema';
 import { MenuSchema } from '@/schema/menus.schema';
 import { OrdersSchema } from '@/schema/order.schema';
@@ -21,6 +22,7 @@ describe('ReceiptService', () => {
   const orderModel = getModelForClass(OrdersSchema);
   const menuModel = getModelForClass(MenuSchema);
   const couponModel = getModelForClass(CouponSchema);
+  const categoryModel = getModelForClass(CategorySchema);
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
@@ -50,6 +52,7 @@ describe('ReceiptService', () => {
         const menu = new menuModel();
         menu.title = `menu ${k}`;
         menu.price = NUMBERS[k];
+        menu.category = new categoryModel();
         return menu;
       });
 

@@ -30,12 +30,22 @@ export class ReceiptService {
     const { orders, coupon } = await session.populate([
       {
         path: 'orders',
-        select: 'menu',
+        select: 'menu addons',
         match: { status: { $ne: OrderStatus.Cancelled } },
-        populate: {
-          path: 'menu',
-          select: '_id title price',
-        },
+        populate: [
+          {
+            path: 'menu',
+            select: '_id title price category',
+            populate: {
+              path: 'category',
+              select: '_id title',
+            },
+          },
+          {
+            path: 'addons',
+            select: '_id title price',
+          },
+        ],
       },
       {
         path: 'coupon',
@@ -46,10 +56,13 @@ export class ReceiptService {
       throw new Error('orders is not populated');
     }
     receipt.session = session._id;
-    receipt.menus = orders.map(({ menu }) => ReceiptMenuSchema.fromRef(menu));
+    receipt.menus = orders.map(({ menu, addons }) =>
+      ReceiptMenuSchema.fromRef(menu, addons),
+    );
     receipt.coupon = coupon ? ReceiptCouponSchema.fromRef(coupon) : null;
     receipt.total_price = receipt.menus.reduce(
-      (prev, { price }) => prev + price,
+      (prev, { price, addons }) =>
+        prev + price + addons?.reduce((p, { price }) => p + price, 0),
       0,
     );
     receipt.discount_price = receipt.coupon?.discount ?? 0;
