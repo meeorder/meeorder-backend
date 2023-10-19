@@ -3,21 +3,21 @@ import { ApiProperty } from '@nestjs/swagger';
 export class SaleReportDto {
   @ApiProperty({
     description: 'Menu ID',
-    type: Number,
+    type: String,
     required: true,
   })
   menu_id: string;
 
   @ApiProperty({
     description: 'Menu title',
-    type: Number,
+    type: String,
     required: true,
   })
   menu_title: string;
 
   @ApiProperty({
     description: 'Menu category',
-    type: Number,
+    type: String,
     required: true,
   })
   menu_category: string;
