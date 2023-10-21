@@ -47,115 +47,117 @@ export class OrdersService {
   }
 
   async getOrders() {
-    const orders = await this.orderModel.aggregate([
-      {
-        $match: {
-          deleted_at: null,
+    const orders = await this.orderModel
+      .aggregate([
+        {
+          $match: {
+            deleted_at: null,
+          },
         },
-      },
-      {
-        $lookup: {
-          from: 'sessions',
-          localField: 'session',
-          foreignField: '_id',
-          as: 'session',
+        {
+          $lookup: {
+            from: 'sessions',
+            localField: 'session',
+            foreignField: '_id',
+            as: 'session',
+          },
         },
-      },
-      {
-        $unwind: {
-          path: '$session',
-          includeArrayIndex: '0',
-          preserveNullAndEmptyArrays: false,
+        {
+          $unwind: {
+            path: '$session',
+            includeArrayIndex: '0',
+            preserveNullAndEmptyArrays: false,
+          },
         },
-      },
-      {
-        $lookup: {
-          from: 'tables',
-          localField: 'session.table',
-          foreignField: '_id',
-          as: 'session.table',
+        {
+          $lookup: {
+            from: 'tables',
+            localField: 'session.table',
+            foreignField: '_id',
+            as: 'session.table',
+          },
         },
-      },
-      {
-        $unwind: {
-          path: '$session.table',
-          includeArrayIndex: '0',
-          preserveNullAndEmptyArrays: false,
+        {
+          $unwind: {
+            path: '$session.table',
+            includeArrayIndex: '0',
+            preserveNullAndEmptyArrays: false,
+          },
         },
-      },
-      {
-        $match: {
-          'session.finished_at': null,
+        {
+          $match: {
+            'session.finished_at': null,
+          },
         },
-      },
-      {
-        $lookup: {
-          from: 'menus',
-          localField: 'menu',
-          foreignField: '_id',
-          as: 'menu',
+        {
+          $lookup: {
+            from: 'menus',
+            localField: 'menu',
+            foreignField: '_id',
+            as: 'menu',
+          },
         },
-      },
-      {
-        $unwind: {
-          path: '$menu',
-          includeArrayIndex: '0',
-          preserveNullAndEmptyArrays: false,
+        {
+          $unwind: {
+            path: '$menu',
+            includeArrayIndex: '0',
+            preserveNullAndEmptyArrays: false,
+          },
         },
-      },
-      {
-        $lookup: {
-          from: 'categories',
-          localField: 'menu.category',
-          foreignField: '_id',
-          as: 'menu.category',
+        {
+          $lookup: {
+            from: 'categories',
+            localField: 'menu.category',
+            foreignField: '_id',
+            as: 'menu.category',
+          },
         },
-      },
-      {
-        $lookup: {
-          from: 'ingredients',
-          localField: 'menu.ingredients',
-          foreignField: '_id',
-          as: 'menu.ingredients',
+        {
+          $lookup: {
+            from: 'ingredients',
+            localField: 'menu.ingredients',
+            foreignField: '_id',
+            as: 'menu.ingredients',
+          },
         },
-      },
-      {
-        $unwind: {
-          path: '$menu.category',
-          includeArrayIndex: '0',
-          preserveNullAndEmptyArrays: false,
+        {
+          $unwind: {
+            path: '$menu.category',
+            includeArrayIndex: '0',
+            preserveNullAndEmptyArrays: false,
+          },
         },
-      },
-      {
-        $lookup: {
-          from: 'ingredients',
-          localField: 'cancel.ingredients',
-          foreignField: '_id',
-          as: 'cancel.ingredients',
+        {
+          $lookup: {
+            from: 'ingredients',
+            localField: 'cancel.ingredients',
+            foreignField: '_id',
+            as: 'cancel.ingredients',
+          },
         },
-      },
-      {
-        $lookup: {
-          from: 'addons',
-          localField: 'cancel.addons',
-          foreignField: '_id',
-          as: 'cancel.addons',
+        {
+          $lookup: {
+            from: 'addons',
+            localField: 'cancel.addons',
+            foreignField: '_id',
+            as: 'cancel.addons',
+          },
         },
-      },
-      {
-        $lookup: {
-          from: 'addons',
-          localField: 'addons',
-          foreignField: '_id',
-          as: 'addons',
+        {
+          $lookup: {
+            from: 'addons',
+            localField: 'addons',
+            foreignField: '_id',
+            as: 'addons',
+          },
         },
-      },
-      {
-        $project: {
-          '0': 0,
+        {
+          $project: {
+            '0': 0,
+          },
         },
-      },
-    ]);
+      ])
+      .exec();
     return orders;
   }
 
