@@ -65,8 +65,8 @@ export class OrdersController {
   @ApiBearerAuth()
   @Role(UserRole.Employee)
   @HttpCode(HttpStatus.OK)
-  getOrders() {
-    return this.ordersService.getOrders();
+  async getOrders() {
+    return await this.ordersService.getOrders();
   }
 
   @Patch('/:id')
