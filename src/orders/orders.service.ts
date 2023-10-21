@@ -46,8 +46,8 @@ export class OrdersService {
     await this.orderModel.insertMany(insertObject);
   }
 
-  getOrders() {
-    return this.orderModel
+  async getOrders() {
+    const orders = await this.orderModel
       .find({ deleted_at: null })
       .populate('addons')
       .populate({
@@ -63,6 +63,7 @@ export class OrdersService {
       .populate('cancel.addons')
       .lean()
       .exec();
+    return orders.filter((order) => order.session !== null);
   }
 
   async setStatus(id: Types.ObjectId, status: OrderStatus) {
