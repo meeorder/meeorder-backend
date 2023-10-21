@@ -47,23 +47,116 @@ export class OrdersService {
   }
 
   async getOrders() {
-    const orders = await this.orderModel
-      .find({ deleted_at: null })
-      .populate('addons')
-      .populate({
-        path: 'session',
-        match: { finished_at: null },
-        populate: { path: 'table' },
-      })
-      .populate({
-        path: 'menu',
-        populate: { path: 'category ingredients' },
-      })
-      .populate('cancel.ingredients')
-      .populate('cancel.addons')
-      .lean()
-      .exec();
-    return orders.filter((order) => order.session !== null);
+    const orders = await this.orderModel.aggregate([
+      {
+        $match: {
+          deleted_at: null,
+        },
+      },
+      {
+        $lookup: {
+          from: 'sessions',
+          localField: 'session',
+          foreignField: '_id',
+          as: 'session',
+        },
+      },
+      {
+        $unwind: {
+          path: '$session',
+          includeArrayIndex: '0',
+          preserveNullAndEmptyArrays: false,
+        },
+      },
+      {
+        $lookup: {
+          from: 'tables',
+          localField: 'session.table',
+          foreignField: '_id',
+          as: 'session.table',
+        },
+      },
+      {
+        $unwind: {
+          path: '$session.table',
+          includeArrayIndex: '0',
+          preserveNullAndEmptyArrays: false,
+        },
+      },
+      {
+        $match: {
+          'session.finished_at': null,
+        },
+      },
+      {
+        $lookup: {
+          from: 'menus',
+          localField: 'menu',
+          foreignField: '_id',
+          as: 'menu',
+        },
+      },
+      {
+        $unwind: {
+          path: '$menu',
+          includeArrayIndex: '0',
+          preserveNullAndEmptyArrays: false,
+        },
+      },
+      {
+        $lookup: {
+          from: 'categories',
+          localField: 'menu.category',
+          foreignField: '_id',
+          as: 'menu.category',
+        },
+      },
+      {
+        $lookup: {
+          from: 'ingredients',
+          localField: 'menu.ingredients',
+          foreignField: '_id',
+          as: 'menu.ingredients',
+        },
+      },
+      {
+        $unwind: {
+          path: '$menu.category',
+          includeArrayIndex: '0',
+          preserveNullAndEmptyArrays: false,
+        },
+      },
+      {
+        $lookup: {
+          from: 'ingredients',
+          localField: 'cancel.ingredients',
+          foreignField: '_id',
+          as: 'cancel.ingredients',
+        },
+      },
+      {
+        $lookup: {
+          from: 'addons',
+          localField: 'cancel.addons',
+          foreignField: '_id',
+          as: 'cancel.addons',
+        },
+      },
+      {
+        $lookup: {
+          from: 'addons',
+          localField: 'addons',
+          foreignField: '_id',
+          as: 'addons',
+        },
+      },
+      {
+        $project: {
+          '0': 0,
+        },
+      },
+    ]);
+    return orders;
   }
 
   async setStatus(id: Types.ObjectId, status: OrderStatus) {
