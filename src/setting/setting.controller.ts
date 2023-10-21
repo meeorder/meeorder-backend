@@ -13,7 +13,6 @@ import {
 
 @Controller({ path: 'settings', version: '1' })
 @ApiTags('settings')
-@ApiBearerAuth()
 export class SettingController {
   constructor(private readonly settingService: SettingService) {}
 
@@ -25,7 +24,6 @@ export class SettingController {
   @ApiOperation({
     summary: 'Get Restaurant Settings',
   })
-  @Role(UserRole.Owner)
   @Get()
   async getSettings() {
     return await this.settingService.getSettings();
@@ -39,6 +37,7 @@ export class SettingController {
   @ApiOperation({
     summary: 'Update Restaurant Settings',
   })
+  @ApiBearerAuth()
   @Role(UserRole.Owner)
   @Patch()
   async updateSettings(@Body() settingDto: SettingDto) {
