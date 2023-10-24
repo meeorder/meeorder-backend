@@ -3,6 +3,8 @@ import { ChartDataDailyDto } from '@/dashboard/dto/chartData.daily.dto';
 import { ChartDataMonthlyDto } from '@/dashboard/dto/chartData.monthly.dto';
 import { ChartDataYearlyDto } from '@/dashboard/dto/chartData.yearly.dto';
 import { ChartGroupResponseDto } from '@/dashboard/dto/chartGroup.dto';
+import dailyIncomeDto from '@/dashboard/dto/dailyIncome.dto';
+import DailyReceiptCountDto from '@/dashboard/dto/dailyReceiptCount.dto';
 import { GetReceiptAmountDto } from '@/dashboard/dto/getAllReceiptAmount.dto';
 import { GetCouponReportTodayDto } from '@/dashboard/dto/getCouponReportToday.dto';
 import { GetCouponReportTotalDto } from '@/dashboard/dto/getCouponReportTotal.dto';
@@ -261,6 +263,72 @@ export class DashboardController {
     @Query('endTime') endTime: number,
   ) {
     return await this.dashboardService.getSalesReport(
+      new ParseMongoDatePipe().transform(startTime),
+      new ParseMongoDatePipe().transform(endTime),
+    );
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: () => dailyIncomeDto,
+    isArray: true,
+    description: 'Income report for 30 days',
+  })
+  @ApiOperation({
+    summary: 'Get income report for 30 days',
+  })
+  @ApiQuery({
+    name: 'startTime',
+    type: Number,
+    required: true,
+    description: 'Start Date (UnixTimeStamp in seconds)',
+  })
+  @ApiQuery({
+    name: 'endTime',
+    type: Number,
+    required: true,
+    description: 'End Date (UnixTimeStamp in seconds)',
+  })
+  @Get('/income_report_30days')
+  async getNetIncomeReport30Days(
+    @Query('startTime') startTime: number,
+    @Query('endTime') endTime: number,
+  ) {
+    return await this.dashboardService.getIncomeReport30days(
+      new ParseMongoDatePipe().transform(startTime),
+      new ParseMongoDatePipe().transform(endTime),
+    );
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: () => DailyReceiptCountDto,
+    isArray: true,
+    description: 'Income report for 30 days',
+  })
+  @ApiOperation({
+    summary: 'Get income report for 30 days',
+  })
+  @ApiQuery({
+    name: 'startTime',
+    type: Number,
+    required: true,
+    description: 'Start Date (UnixTimeStamp in seconds)',
+  })
+  @ApiQuery({
+    name: 'endTime',
+    type: Number,
+    required: true,
+    description: 'End Date (UnixTimeStamp in seconds)',
+  })
+  @Get('/receipt_report_30days')
+  async getReceiptIncomeReport30Days(
+    @Query('startTime') startTime: number,
+    @Query('endTime') endTime: number,
+  ) {
+    return await this.dashboardService.getReceiptReport30days(
       new ParseMongoDatePipe().transform(startTime),
       new ParseMongoDatePipe().transform(endTime),
     );

@@ -1,6 +1,8 @@
 import { ChartDataDailyDto } from '@/dashboard/dto/chartData.daily.dto';
 import { ChartDataMonthlyDto } from '@/dashboard/dto/chartData.monthly.dto';
 import { ChartDataYearlyDto } from '@/dashboard/dto/chartData.yearly.dto';
+import dailyIncomeDto from '@/dashboard/dto/dailyIncome.dto';
+import DailyReceiptCountDto from '@/dashboard/dto/dailyReceiptCount.dto';
 import { DaysOfWeekSubDto } from '@/dashboard/dto/daysOfWeek.sub.dto';
 import { GetReceiptAmountDto } from '@/dashboard/dto/getAllReceiptAmount.dto';
 import { GetCouponReportTodayDto } from '@/dashboard/dto/getCouponReportToday.dto';
@@ -498,5 +500,71 @@ export class DashboardService {
       ])
       .exec();
     return agg;
+  }
+
+  async getIncomeReport30days(
+    startDate: Date,
+    endDate: Date,
+  ): Promise<dailyIncomeDto[]> {
+    const agg = await this.receiptModel.aggregate([
+      {
+        $match: {
+          created_at: {
+            $gte: startDate,
+            $lte: endDate,
+          },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            date: {
+              $dateToString: { format: '%Y-%m-%d', date: '$created_at' },
+            },
+          },
+          total_price: { $sum: '$total_price' },
+          discount_price: { $sum: '$discount_price' },
+        },
+      },
+    ]);
+    console.log(endDate);
+    return agg.map((item) => {
+      return {
+        date: +new Date(item._id.date),
+        net_income: item.total_price - item.discount_price,
+      };
+    });
+  }
+
+  async getReceiptReport30days(
+    startDate: Date,
+    endDate: Date,
+  ): Promise<DailyReceiptCountDto[]> {
+    const agg = await this.receiptModel.aggregate([
+      {
+        $match: {
+          created_at: {
+            $gte: startDate,
+            $lte: endDate,
+          },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            date: {
+              $dateToString: { format: '%Y-%m-%d', date: '$created_at' },
+            },
+          },
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+    return agg.map((item) => {
+      return {
+        date: +new Date(item._id.date),
+        total_receipt_count: item.count,
+      };
+    });
   }
 }
