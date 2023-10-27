@@ -184,6 +184,8 @@ export class AddonsController {
   @ApiOperation({
     summary: 'Make all addons available',
   })
+  @ApiBearerAuth()
+  @Role(UserRole.Employee)
   @Post('/activate/all')
   @HttpCode(HttpStatus.NO_CONTENT)
   async activateAllAddon(@User() { id: userId }: UserJwt) {
