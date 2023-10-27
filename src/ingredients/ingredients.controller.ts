@@ -149,7 +149,7 @@ export class IngredientsController {
     summary: 'Make all ingredient available',
   })
   @ApiBearerAuth()
-  @Role(UserRole.Owner)
+  @Role(UserRole.Employee)
   @Post('/activate/all')
   @HttpCode(HttpStatus.NO_CONTENT)
   async activateAllIngredient(@User() { id }: UserJwt) {
