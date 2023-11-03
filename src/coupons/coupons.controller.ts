@@ -53,7 +53,7 @@ export class CouponsController {
   })
   @Get()
   @HttpCode(HttpStatus.OK)
-  @Role(UserRole.Owner)
+  @Role(UserRole.Customer)
   async findAll() {
     return await this.couponsService.getAllCoupons();
   }
