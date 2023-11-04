@@ -155,6 +155,7 @@ export class SessionService {
     const orders = await this.ordersService.getOrdersBySession(id);
     // find total price
     res.total_price = orders
+      .filter((order) => order.status !== OrderStatus.Cancelled)
       .map(({ menu, addons }) => {
         const addonPrice = addons?.reduce(
           (prev, current) => prev + (<AddonSchema>current).price,
