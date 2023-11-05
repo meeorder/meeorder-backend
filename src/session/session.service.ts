@@ -199,7 +199,11 @@ export class SessionService {
         (coupon) => new CouponDto(coupon.toObject(), false),
       );
     }
-    const orders = await this.ordersService.getOrdersBySession(id);
+    const orders = await this.ordersService.getOrdersBySession(id, {
+      status: {
+        $ne: OrderStatus.Cancelled,
+      },
+    });
     const menu_arr = orders.map((order) => order.menu);
 
     if (!session.user && !userId) {
