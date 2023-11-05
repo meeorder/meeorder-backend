@@ -244,17 +244,18 @@ export class SessionService {
   }
 
   async validateCoupon(session: Types.ObjectId) {
-    const doc = await this.getSessionById(session).then((doc) =>
-      doc.populate({
-        path: 'orders',
-        match: {
-          status: {
-            $ne: OrderStatus.Cancelled,
+    const doc = await this.getSessionById(session).then(
+      (doc) =>
+        doc?.populate({
+          path: 'orders',
+          match: {
+            status: {
+              $ne: OrderStatus.Cancelled,
+            },
           },
-        },
-      }),
+        }),
     );
-    if (!doc.coupon || !doc.user) {
+    if (!doc?.coupon || !doc?.user) {
       return;
     }
     const isRedeemableCoupon = this.isRedeemableCoupon(
