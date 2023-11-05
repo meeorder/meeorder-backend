@@ -9,6 +9,7 @@ import { OrderStatus } from '@/orders/enums/orders.status';
 import { ParseMongoIdPipe } from '@/pipes/mongo-id.pipe';
 import { OrdersSchema } from '@/schema/order.schema';
 import { UserRole } from '@/schema/users.schema';
+import { SessionService } from '@/session/session.service';
 import {
   Body,
   Controller,
@@ -16,10 +17,11 @@ import {
   Get,
   HttpCode,
   HttpStatus,
-  NotFoundException,
+  Inject,
   Param,
   Patch,
   Post,
+  forwardRef,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -41,6 +43,8 @@ export class OrdersController {
     private readonly ordersService: OrdersService,
     private readonly addonsService: AddonsService,
     private readonly ingredientService: IngredientsService,
+    @Inject(forwardRef(() => SessionService))
+    private readonly sessionService: SessionService,
   ) {}
 
   @Post()
@@ -165,15 +169,13 @@ export class OrdersController {
     @Body() { ingredients, addons, reasons }: CancelOrderDto,
     @Param('id', new ParseMongoIdPipe()) id: Types.ObjectId,
   ) {
-    const op = await this.ordersService.cancel(
+    const doc = await this.ordersService.cancel(
       id,
       reasons,
       ingredients,
       addons,
     );
-    if (op.matchedCount === 0) {
-      throw new NotFoundException({ message: 'Order not found' });
-    }
+    await this.sessionService.validateCoupon(<Types.ObjectId>doc.session);
     await this.addonsService.disableAddons(addons);
     await this.ingredientService.disableIngredients(ingredients);
   }

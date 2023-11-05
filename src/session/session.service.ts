@@ -8,6 +8,7 @@ import { OrdersService } from '@/orders/orders.service';
 import { AddonSchema } from '@/schema/addons.schema';
 import { CouponSchema } from '@/schema/coupons.schema';
 import { MenuSchema } from '@/schema/menus.schema';
+import { OrdersSchema } from '@/schema/order.schema';
 import { SessionSchema } from '@/schema/session.schema';
 import { UserSchema } from '@/schema/users.schema';
 import { CouponDto } from '@/session/dto/getcoupon.dto';
@@ -240,6 +241,31 @@ export class SessionService {
     return coupon_required_menus.some((menu) =>
       menus.some((order) => order._id.equals(menu)),
     );
+  }
+
+  async validateCoupon(session: Types.ObjectId) {
+    const doc = await this.getSessionById(session).then((doc) =>
+      doc.populate({
+        path: 'orders',
+        match: {
+          status: {
+            $ne: OrderStatus.Cancelled,
+          },
+        },
+      }),
+    );
+    if (!doc.coupon || !doc.user) {
+      return;
+    }
+    const isRedeemableCoupon = this.isRedeemableCoupon(
+      <UserSchema>doc.user,
+      <CouponSchema>doc.coupon,
+      (<OrdersSchema[]>doc.orders).map(({ menu }) => menu),
+    );
+    if (!isRedeemableCoupon) {
+      doc.coupon = null;
+      await doc.save();
+    }
   }
 
   async updateSessionCoupon(id: Types.ObjectId, body: UpdateSessionCouponDto) {

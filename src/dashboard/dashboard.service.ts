@@ -527,7 +527,6 @@ export class DashboardService {
         },
       },
     ]);
-    console.log(endDate);
     return agg.map((item) => {
       return {
         date: +new Date(item._id.date),

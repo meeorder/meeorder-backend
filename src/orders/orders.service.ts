@@ -8,6 +8,7 @@ import {
   HttpStatus,
   Inject,
   Injectable,
+  NotFoundException,
   forwardRef,
 } from '@nestjs/common';
 import { DocumentType, ReturnModelType } from '@typegoose/typegoose';
@@ -184,7 +185,7 @@ export class OrdersService {
     addons: Types.ObjectId[],
   ) {
     return this.orderModel
-      .updateOne(
+      .findOneAndUpdate(
         { _id: id },
         {
           $set: {
@@ -193,6 +194,9 @@ export class OrdersService {
           },
         },
       )
+      .orFail(() => {
+        throw new NotFoundException({ message: 'Order not found' });
+      })
       .exec();
   }
 
